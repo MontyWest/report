@@ -1,0 +1,848 @@
+\documentclass[a4paper, 11pt]{article}
+
+%\usepackage[parfill]{parskip}
+\usepackage{titlesec}
+\newcommand{\sectionbreak}{\clearpage}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[nounderscore]{syntax}
+\usepackage{multirow}
+\usepackage{chngpage}
+\usepackage{array}
+\usepackage{pbox}
+\usepackage{amsmath}
+
+
+
+\lstset{basicstyle=\footnotesize\ttfamily, columns=fullflexible}
+
+\graphicspath{ {images/} }
+
+
+\makeatletter
+\newcommand{\thickhline}{%
+    \noalign {\ifnum 0=`}\fi \hrule height 1pt
+    \futurelet \reserved@a \@xhline
+}
+\newcolumntype{"}{@{\hskip\tabcolsep\vrule width 1pt\hskip\tabcolsep}}
+\makeatother
+
+\newcommand\Tstrut{\rule{0pt}{3.3ex}}       % "top" strut
+\newcommand\Bstrut{\rule[-1.3ex]{0pt}{0pt}} % "bottom" strut
+\newcommand{\TBstrut}{\Tstrut\Bstrut} % top&bottom struts
+
+\begin{document}
+
+%------------------
+% Title Page
+%------------------
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\center
+
+\textsc{\LARGE Birkbeck College}\\[1.5cm] % Name of your university/college
+
+\textsc{\Large Msc Computer Science Project Proposal}
+
+\HRule \\[0.4cm]
+{ \LARGE \bfseries Reinforcement Learning and Video Games: Implementing an Evolutionary Agent}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+Monty \textsc{West} % Your name
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisor:} \\
+Dr. George \textsc{Magoulas} % Supervisor's Name
+\end{flushright}
+\end{minipage}\\[4cm]
+
+\emph{MSc Computer Science project proposal, Department of
+Computer Science and Information Systems, Birkbeck College,
+University of London 2015}
+
+\vspace{5mm}
+
+\emph{This proposal is substantially the result of my own work,
+expressed in my own words, except where explicitly indicated in
+the text. I give my permission for it to be submitted to the
+JISC Plagiarism Detection Service.}
+
+\vspace{5mm}
+
+\emph{The proposal may be freely copied and distributed provided the
+source is explicitly acknowledged.}
+
+\end{titlepage}
+
+%------------------
+% Abstract
+%------------------
+
+\begin{abstract}
+Artificial intelligence in video games has long shunned the use of machine learning in favour of a handcrafted approach. However, the recent rise in the use of video games as a benchmark for academic AI research has demonstrated interesting and successful learning approaches. This project aims to follow this research and explore the viability of a game-playing learning AI. Considering previous approaches, an evolutionary agent will be created for a platform game based on Mario Bros.
+
+The project will build on top of software developed for the Mario AI Competition, which provides the game-engine and agent interface, as well as several other pertinent features. The basic agent being constructed first and then a learning framework built to improve it, utilising a genetic algorithm. The project will follow an agile methodology, revisiting design by analysing learning capability. The aim is to produce an agent that shows meaningful improvement during learning.
+\end{abstract}
+
+\vspace{10mm}
+
+\iffalse
+\begin{center}
+\includegraphics[scale=0.3]{mario}  %What are you doing, remove this.
+\end{center}
+\fi
+
+\clearpage
+
+%------------------
+% Contents
+%------------------
+
+\tableofcontents
+\clearpage
+
+%-------------------------------------------------------------------------
+% Introduction (Brief Description of Topic + Fits in Field)
+%-------------------------------------------------------------------------
+
+
+\section{Introduction}
+
+Artificial intelligence (AI) is a core tenant of video games, traditionally utilised as adversaries or opponents to human players. Likewise, game playing has long been a staple of AI research. However, academic research has traditionally focused mostly on board and card games and advances in game AI and academic AI have largely remained distinct.
+
+The first video game opponents were simple discrete algorithms, such as the computer paddle in \emph{Pong}. In the late 1970s video game AIs became more advanced, utilising search algorithms and reacting to user input. In \emph{Pacman}, the ghost displayed distinct personalities and worked together against the human player \cite{pacmanghosts}. In the mid 1990s, approaches became more `agent' based. Finite State Machines (FSMs) emerged as a dominant game AI technique, as seen in games like \emph{Half-Life} \cite{halflife}. Later, in the 2000s, Behaviour Trees gained preeminence, as seen in games such as \emph{F.E.A.R.} \cite{fear} and \emph{Halo 2} \cite{halo}. These later advances borrowed little from contemporary development in academic AI and remained localised to the gaming industry.
+
+However, with increases in processing power and the complexity of games over the last ten years many academic techniques have been harnessed by developers. For example, Monte Carlo Tree Search techniques developed for use in Go AI research has been used in \emph{Total War: Rome II} \cite{rome}. In 2008's \emph{Left 4 Dead}, Player Modelling was used to alter play experience for different users \cite[p.~10]{playermod}. Furthermore, AI and related techniques are no longer only being used as adversaries. There has been a rise in intelligent Procedural Content Generation in games in recent years, in both a game-world sense (for example \emph{MineCraft} and \emph{Terraria}) and also a story sense (for example \emph{Skyrim's} Radiant Quest System) \cite{skyrim}.
+
+Moreover, games have recently enjoyed more consideration in academic research. Commercial games such as \emph{Ms. Pac Man}, \emph{Starcraft}, \emph{Unreal Tournament} and \emph{Super Mario Bros.} and open-source games like \emph{TORCS} \cite{torcs} and \emph{Cellz} \cite{cellz} have been at the centre of recent competitions and papers \cite{panorama} \cite{marioaicomp}.
+
+These competitions are the forefront of research and development into reinforcement learning techniques in video games, and will be explored in more detail in section \ref{subsec:gameaicomps}.
+
+\vspace{\baselineskip}
+ 
+The aim of this project is to follow this research and explore the use of reinforcement learning in an agent-based game-playing AI. Previous approaches will be explored and influence the implementation of such an agent in \emph{Platform} game environment. 
+%-----------------------------------------------------------------------
+% Definitions
+%-----------------------------------------------------------------------
+\clearpage
+\section{Background}
+
+Reinforcement learning has long been a staple of academic research into AI and dynamic programming, especially in robotics and board games. However, it has also had success in more niche problems, such as helicopter control \cite{rlheli} and human-computer dialogue \cite{rlhci}.
+
+Similarly the agent model is a popular approach to AI problems. It is seen in commercial applications, as mentioned above, as well as academic applications, such as board game AI. 
+
+The agent model's autonomous nature makes it particularly suited to utilising reinforcement learning.
+
+\subsection{Concept Definitions}
+
+At this point it is useful to introduce some high level descriptions/definitions of some key concepts.
+
+\subsubsection{Intelligent Agents (IAs)}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.6]{intelligentagent.png}
+	\caption{Illustration of an intelligent agent, taking from \cite[p.~32]{modernai1}}
+	\label{fig:ia}
+\end{figure}
+
+An intelligent agent is an entity that uses \emph{sensors} to perceive it's \emph{environment} and acts based on that perception through \emph{actuators} or \emph{effectors}. In software, this is often realised as an autonomous program or module that takes it's perception of the  \emph{environment} as input an returns \emph{actions} as output. \cite[p.~34]{modernai3}
+
+Figure \ref{fig:ia} shows the basic structure of an intelligent agent.
+
+
+
+\subsubsection{Rule-based systems}
+
+A rule-based system decides \emph{actions} from \emph{inputs} as prescribed by a \emph{ruleset} or \emph{rule base}. A \emph{semantic reasoner} is used to manage to the relationship between input and the ruleset. This follows a \emph{match-resolve-act} cycle, which first finds all rules matching an input, chooses one based on a conflict strategy and then uses the rule to act on the input, usually in the form of an output. \cite[pp.~28-29]{rbsys}
+
+\subsubsection{Behaviour Trees (BTs)}
+
+Behaviour Trees are a construct which encodes tiered behaviour. From the top of the tree broad behaviours are broken down in to subtrees, which pertain to specific actions. BTs are executed by traversing the tree and executing nodes.
+
+Nodes of the tress can either be \emph{control} nodes or \emph{leaf} nodes. \emph{Control} nodes affect how their children will be executed, for example a \textbf{Sequence} node asserts that it's children be executed in order from left to right (akin to AND) and a \textbf{Selector} node executed children in order from left to right until one succeeds (akin to OR). \emph{Leaf} nodes can be \textbf{Conditions}, which succeed if the game state passes the condition and \textbf{Actions}, which carry out a set of moves or decisions. \cite{gramev}
+
+
+\subsubsection{Reinforcement Learning}
+
+A reinforcement learning agent focuses on a learning problem, with it's goal to maximise \emph{reward}. Given a current \emph{state} the agent chooses an \emph{action} available to it, which is determined by a \emph{policy}. This action maps the current \emph{state} to a new \emph{state}. This \emph{transition} is then evaluated for it's \emph{reward} . This \emph{reward} often affects the \emph{policy} of future iterations, but \emph{policies} may be stochastic to some level. \cite[s.~1.3]{suttonrl}
+
+\subsubsection{Online/Offline Learning}
+\begin{description}
+	\item[Offline] An offline (or batch) learner trains on an entire dataset before applying changes. 
+	\item[Online] A online learner reacts/learns from data immediately after each datapoint.
+\end{description} 
+	
+\subsubsection{Genetic Algorithms (GAs)}
+
+Genetic Algorithms are an subset of evolutionary algorithms, a biologically inspired form of reinforcement learning. They model the solution as a \emph{population} of \emph{individuals}. Each \emph{individual} has a set of \emph{chromosomes}, which can be thought of as simple pieces of analogous information (most often in the form of bit strings). Each \emph{individual} is assessed by some \emph{fitness function}. This assessment is used to cull the \emph{population}, akin to survival of the fittest. Then a new \emph{population} is created (possibly containing the fittest from the previous \emph{population}) using \emph{crossover} of \emph{chromosomes} from two (or more) \emph{individuals} (akin to sexual reproduction), \emph{mutation} of \emph{chromosomes} from one \emph{individual} (akin to asexual reproduction) and \emph{re-ordering} of  \emph{chromosomes}. Each new  \emph{population} is called a \emph{generation}. \cite[p.~7]{mitchellga}
+
+
+
+%-----------------------------------------------------------------------
+% Reinforcement Learning in Games (Current Work in Field)
+%-----------------------------------------------------------------------
+
+\subsection{Reinforcement Learning Agents and Commercial Games}
+
+\subsubsection*{Desirability}
+
+Ventures in utilising reinforcement learning in commercial video games have been limited and largely ineffectual. However, there are many reasons why good execution of these techniques is desirable. Firstly, modern games have large and diverse player bases, having a game that can respond and personalise to a specific player can help cater to all. Secondly, learning algorithms produce agents that can respond well in new situations (over say FSMs or discrete logic), hence making new content easy to produce or generate. Lastly, humans must learn and react to environments and scenarios during games. Having non-playable characters do the same may produce a more believable, immersive and relatable AI, which is one of the key criticisms with current games. \cite[p.~7, p.~13]{panorama}
+
+\subsubsection*{Issues}
+
+The main issue with constructing effectual learning (or learnt) agent AI in game is risk versus reward. Game development works on strict cycles and there are limited resources to invest into AI research, especially if the outcome is uncertain. Furthermore, one player playing one game produces a very small data set, making learning from the player challenging. Moreover, AI that is believably human is a field still in it's infancy. \cite{evolutioningamedesign}
+
+\subsection{Reinforcement Learning Agents and Game AI Competitions}
+\label{subsec:gameaicomps}
+
+Despite the lack of commercial success, video games can act as great benchmark for reinforcement learning agents. They are designed to challenge humans, and therefore will challenge learning methods. Games naturally have some level of learning curve associated with playing them (as a human). Also, games require quick reactions to stimulus, something not true of traditional AI challenges such as board games. Most games have some notion of scoring suitable for a fitness function. Lastly, they are generally accessible to students, academics and the general public alike. \cite[p.~9]{panorama} \cite[p.~1]{marioaicomp} \cite[p.~2]{2012the}
+
+Over the last few years several game based AI competitions have been run, over a variety of genres. These competitions challenge entrants to implement an agent that plays a game and is rated according to the competitions specification. They have attracted both academic \cite[p.~2]{2012the} and media interest \cite[p.~2]{marioaicomp}. The competition tend to encourage the use of learning techniques. Hence, several interesting papers concerning the application of reinforcement learning agents in video games have recently been published. Approaches tend to vary widely, modelling and tackling the problem very differently and specialising techniques in previously unseen ways. \cite[p.~11]{2012the}
+
+Some brief details of the competitions which are of relevance to this project are compiled in to Table \ref{tab:gameaicomp}. The Mario AI Competition is also explored in more detail below.
+
+\begin{table}
+  \begin{adjustwidth}{-4cm}{-4cm}
+  \begin{center} \small
+    \begin{tabular}{ | >{\raggedright}p{2cm} | >{\raggedright}p{2cm} | p{7.5cm} |}
+    \hline
+    \textbf{Genre} & \textbf{Game} & \textbf{Description} \TBstrut \\ \thickhline
+    Racing & TORCS (Open-source) \cite{torcs} &  
+    \textbf{The Simulated Car Racing Competition}\newline Competitors enter agent drivers, that undergo races against other entrants which include qualifying and multi-car racing. The competition encourages the use of learning techniques. \cite{scrc}
+      \\ \hline
+    First Person Shooter (FPS) & Unreal Tournament 2004 &
+    \textbf{The 2K BotPrize}\newline Competitors enter `bots' that play a multi-player game against a mix of other bots and humans. Entrants are judged on Turing test basis, where a panel of judges attempt to identify the human players. \cite{2kbot}
+       \\ \hline
+    Real Time Strategy (RTS) & Starcraft &
+    \textbf{The Starcraft AI Competition}\newline Agents play against each other in a 1 on 1 knockout style tournament. Implementing an agent involves solving both micro objectives, such as path-planning, and macro objectives, such as base progression. \cite{starcomp}
+       \\ \hline
+    Platformer & Infinite Mario Bros (Open-source) &
+    \textbf{The Mario AI Competition}\newline Competitors submit agents that attempt to play (as a human would) or create levels. The competition is split into `tracks', including Gameplay, Learning, Turing and Level Generation. In Gameplay, each agent must play unseen levels, earning a score, which is compared to other entrants. \cite{2012the} 
+       \\ \hline
+    
+    \end{tabular}
+  \end{center}
+  \end{adjustwidth}
+  \caption{This table summarises some recent game AI competitions \cite{2014how}}
+  \label{tab:gameaicomp}
+\end{table}
+
+\subsubsection{The Mario AI Competition}
+
+The Mario AI Competition, organised by Sergey Karakovskiy and Julian Togelius, ran between 2009-2012 and used an adapted version of the open-source game Infinite Mario Bros. From 2010 onwards the competition was split into four distinct `tracks'. We shall focus on the unseen Gameplay track, where agents play several unseen levels as Mario with the aim to finish the level (and score highly). \cite{marioaicomp} \cite{2012the}
+
+\subsubsection*{\hspace{6pt}Infinite Mario Bros.}
+
+Infinite Mario Bros (IMB) \cite{imb} is an open-source clone of Super Mario Bros.~3, created by Markus Persson. The core gameplay is described as a \emph{Platformer}. The game is viewed side-on with a 2D perspective. Players control Mario and travel left to right in an attempt to reach the end of the level (and maximise score). The screen shows a short section of the level, with Mario centred. Mario must navigating terrain and avoid enemies and pits. To do this Mario can move left and right, jump, duck and speed up. Mario also exists in 3 different states, \emph{small}, \emph{big} and \emph{fire} (the latter of which enables Mario to shoot fireballs), accessed by finding powerups. Touching an enemy (in most cases) reverts Mario to a previous state. Mario dies if he touches an enemy in the \emph{small} state or falls into a pit, at which point the level ends. Score is affected by how many coins Mario has collected, how many enemies he has killed (by jumping on them or by using fireballs or shells) and how quickly he has completed the level. \cite[p.~3]{2012the}
+
+\subsubsection*{\hspace{6pt}Suitability to Reinforcement Learning}
+
+The competitions adaptation of IMB (known henceforth as the `benchmark') incorporates a tuneable level generator and allows for the game to be sped-up by removing the reliance on the GUI and system clock. This makes it a great testbed for reinforcement learning. The ability to learn from large sets of diverse data makes learning a much more effective technique. \cite[p.~3]{2012the}
+
+Besides that, the Mario benchmark presents an interesting challenge for reinforcement learning algorithms. Despite only a limited view of the ``world" at any one time the state and observable space is still of quite high-dimension. Though not to the same extent, so too is the action space. Any combination of five key presses per timestep gives a action space of $2^5$ \cite[p.~3]{2012the}. Hence part of the problem when implementing a learning algorithm for the Mario benchmark is reducing these search spaces. This has the topic of papers by Handa and Ross and Bagnell \cite{rossbagnell} separately addressed this issue in their papers \cite{handa} and \cite{rossbagnell} respectively.
+
+Lastly, there is a considerable learning curve associated with Mario. The simplest levels could easily be solved by agents hard coded to jump when they reach an obstruction, whereas difficult levels require complex and varied behaviour. For example, traversing a series of pits may require a well placed series of jumps, or passing a group of enemies may require careful timing. Furthermore, considerations such as score, or the need to backtrack from a dead-end greatly increase the complexity of the problem. \cite[p.~3, p.~12]{2012the}
+
+
+\subsection{Previous Learning Agent Approaches}
+\label{ssec:prevagents}
+
+Agent-based AI approaches in commercial games tend to focus on finite state machines, behaviour trees and rulesets, with no learning component. Learning agents are more prevalent in AI competitions and academia, where it is not only encouraged, but viewed as an interesting research topic \cite[p.~1]{marioaicomp}. Examples from both standpoints are compiled in Table \ref{tab:agents}.
+
+\subsubsection{Evolutionary Algorithms}
+
+Evolutionary algorithms are a common choice of reinforcement learning methods used in game-playing agents. D. Perez et al. note in their paper \cite[p.~1]{gramev} that they are particular suitable for game environments: 
+\begin{quote}\itshape
+`Their stochastic nature, along with tunable high- or low-level representations, contribute to the discovery of non-obvious solutions, while their population-based nature can contribute to adaptability, particularly in dynamic environments.'
+\end{quote}
+The evolutionary approach has been used across several genres of video games. For example, \emph{neuroevolution}, a technique that evolves neural networks, was used in both a racing game agent (by L. Cardamone \cite[p.~137]{scrc}) and a FPS agent (by the UT$\wedge$2 team \cite{2kbot}). Perhaps the most popular approach was to use genetic algorithms (GAs) to evolve a more traditional game AI agent. R. Small used a GA to evolve a ruleset for a FPS agent \cite{agentsmith}, T. Sandberg evolved parameters of a potential field in his Starcraft agent \cite{emapf} , \emph{City Conquest's} in-game AI used an agent-based GA-evolved build plan \cite{evolutioningamedesign} and D. Perez et al. used a grammatical evolution (a GA variant) to produce behaviour trees for a Mario AI Competition entry \cite{gramev}.
+
+\subsubsection{Multi-tiered Approaches}
+
+Several of the most successful learning agents take a multi-tiered approach. By splitting high-level behaviour from low-level actions agents can demonstrate more a complex, and even human-like, performance. For example, COBOSTAR, an entrant in the 2009 Simulated Car Racing Competition, used offline learning to determine high-level parameters such as desired speed and angle alongside a low-level crash avoidance module \cite[p.~136]{scrc}. UT$\wedge$2 used learning to give their FPS bot broad human behaviours and a separate constraint system to limit aiming ability \cite{2kbot}.  Overmind, the winner of the 2010 Starcraft Competition, planned resource use and technology progression at a macro level, but used A* search micro-controllers to coordinate units \cite{overmind}. 
+
+\vspace{\baselineskip} \noindent
+One learning agent that successfully utilised both an evolutionary algorithm and a multi-tiered approach is the Mario agent REALM, which is explored in more detail below. 
+
+\subsubsection{REALM}
+\label{ssec:realm}
+
+The REALM agent, developed by Slawomir Bojarski and Clare Bates Congdon, was the winner of the 2010 Mario AI competition, in both the unseen and learning Gameplay tracks. REALM stands for \textbf{R}ule Based \textbf{E}volutionary Computation \textbf{A}gent that \textbf{L}earns to Play \textbf{M}ario. REALM went through two versions (V1 and V2), with the second being the agent submitted to the 2010 competition.
+
+\subsubsection*{\hspace{6pt}Rule-based}
+
+Each time step REALM creates a list of binary observations of the current scene, for example {\footnotesize IS\_ENEMY\_CLOSE\_LOWER\_RIGHT} and {\footnotesize IS\_PIT\_AHEAD}. Conditions on observations are mapped to actions in a simple ruleset. These conditions are ternary (either {\footnotesize TRUE}, {\footnotesize FALSE} or {\footnotesize DONT\_CARE}) \cite[p.~85]{realm}. A rule is chosen that best fits the current observations, with ties being settled by rule order, and an action is returned \cite[p.~86]{realm}.
+
+Actions in V1 are explicit key-press combinations, whereas in V2 they are high-level plans. These plans are passed to a simulator, which reassesses the environment and uses A* to produce the key-press combination. This two-tier approach was designed in part to reduce the search space of the learning algorithm. \cite[pp.~85-87]{realm}
+
+\subsubsection*{\hspace{6pt}Learning}
+
+REALM evolves ruleset using a GA for 1000 generations. The best performing rule set from the final generation was chosen to act as the agent for the competition. Hence, REALM is an agent focused on offline learning. \cite[pp.~87-89]{realm}
+
+Populations have a fixed size of 50 individuals, with each individual being a ruleset. Each rule represents a genome and each individual has 20. Initially rules are randomised, with each condition having a 30\%, 30\%, 40\% chance to be {\footnotesize TRUE}, {\footnotesize FALSE} or {\footnotesize DONT\_CARE} respectively.
+
+Individuals are evaluated by running through 12 different levels. The fitness of an individual is a modified score, averaged over the levels. Score focuses on distance, completion of level, Mario's state at the end and number of kills. Each level an individual plays increases in difficulty. Levels are predictably generated, with the seed being recalculated at the start of each generation. This is to avoid over-fitting and to encourage more general rules.
+
+The breeding phase takes the five best individuals from the population and produces 9 offspring each. These parents are then also included in the next generation. Offspring are exposed to: \textbf{Mutation}, where rule conditions and actions may change value; \textbf{Crossover}, where a rule from one child may be swapped with a rule from another child and \textbf{Reordering}, where rules are randomly reordered. These occur with probabilities of 10\%, 10\% and 20\% respectively.
+
+\subsubsection*{\hspace{6pt}Performance}
+
+The REALM V1 agent saw a larger improvement over the evolution, but only achieved 65\% of the V2 agent's score on average. It is noted that V1 struggled with high concentrations of enemies and large pits. The creators also assert that the V2 agent was more interesting to watch, exhibiting more advanced and human-like behaviours. \cite[pp.~89-90]{realm}
+
+The ruleset developed from REALM V2 was entered into the 2010 unseen Gameplay track. It not only scored the highest overall score, but also highest number of kills and was never disqualified (by getting stuck in a dead-end). Competition organisers note that REALM dealt with difficult levels better than other entrants. \cite[p.~10]{2012the}
+
+
+\begin{table}
+  \begin{adjustwidth}{-4cm}{-4cm}
+  \begin{center} \small
+    \begin{tabular}{ | >{\raggedright}p{2.2cm} | >{\raggedright}p{3.5cm} | p{6.8cm} |}
+    \hline
+    \textbf{Name} & \textbf{Game/Competition} & \textbf{Approach} \TBstrut \\ \thickhline
+    
+    M. Erickson \cite{2012the} & 2009 Mario AI Competition &
+    A crossover heavy GA to evolve an expression tree.
+    \\ \hline
+    E. Speed \cite{2010the} & 2009 Mario AI Competition &
+    GA to evolve grid-based rulesets. Ran out of memory during the competition.
+    \\ \hline
+    S. Polikarpov \cite[p.~7]{2010the} & 2009-10 The Mario AI Competition &
+    Ontogenetic reinforcement learning to train a neural network with action sequences as neurons.
+    \\ \hline
+    REALM \cite{realm} & 2010 Mario AI Competition &
+    GA to evolve rulesets mapping environment to high-level behaviour.
+    \\ \hline
+    D. Perez et al \cite{gramev} & 2010 Mario AI Competition &
+    Grammatical evolution with a GA to develop behaviour trees. 
+    \\ \hline
+    FEETSIES \cite{feetsies} & 2010 Mario AI Competition &
+    ``Cuckoo Search via L\'evy Flights" to develop a ruleset mapping an observation grid to actions. 
+    \\ \hline
+    COBOSTAR \cite[p.~136]{scrc} & 2009 Simulated Car Racing Competition &
+    Covariance matrix adaptation evolution strategy to map sensory information to target angle and speed.
+    Online reinforcement learning to avoid repeating mistakes.
+    \\ \hline
+    L. Cardamone \cite[p.~137]{scrc} & 2009 Simulated Car Racing Competition &
+    Neuroevolution to develop basic driving behaviour.
+    \\ \hline
+    Agent Smith \cite{agentsmith} & Unreal Tournament 3 &
+    GAs to evolve very simple rulesets, which determine basic bot behaviour.
+     \\ \hline
+    UT$\wedge$2 \cite{2kbot} & 2013 2K Botprize &
+    Neuroevolution with a fitness function focused on being `human-like'.
+    \\ \hline
+    T. Sandberg \cite{emapf} & Starcraft &
+    Evolutionary algorithms to tune potential field parameters.
+     \\ \hline
+    Berkeley Overmind \cite{overmind} & The Starcraft AI Competition &
+    Reinforcement learning to tune parameters for potential fields and A* search.
+    \\ \hline
+    In-game Opponent AI \cite{evolutioningamedesign} & City Conquest &
+    GAs to evolve build plans with fitness measured in a 1-on-1 AI match.
+    \\ \hline
+    In-game Creature AI\cite{blackandwhite} & Black \& White &
+    Reinforcement Learning applied to a neural network representing the creatures desires.
+    \\ \hline
+    In-game Car AI \cite{projectgothamracing} & Project Gotham Racing &
+    Reinforcement learning to optomise racing lines.
+     \\ \hline
+    
+    \end{tabular}
+  \end{center}
+  \end{adjustwidth}
+  \caption{Reinforcement learning agent-based approaches to game playing AI}
+  \label{tab:agents}
+\end{table}
+
+
+%-----------------------------
+% Aims and Objectives
+%-----------------------------
+\clearpage
+\section{Aim and Objectives}
+
+\subsection{Aim}
+
+The aim of the project is to explore the use of reinforcement learning techniques in creating a game-playing agent-based AI. This will be achieved by producing an intelligent agent that learns to play the Mario AI benchmark. The main focus will be the effectiveness of the learning technique.
+
+\subsection{Objectives}
+
+\begin{enumerate}
+	\item \label{obj:prep}
+	\textbf{Preparation} \\
+	Assess the available Mario benchmark software and carry out a feasibility study in regards to language, testing frameworks, build tools and logging.
+	
+	\item \label{obj:design}
+	\textbf{Design} \\
+	Influenced by previous approaches, design an agent and a reinforcement learning procedure that can demonstrate meaningful improvement during learning.
+	
+	\item \label{obj:impl}
+	\textbf{Implementation} \\
+	Implement agent and learning designs in a modular, customisable and test-driven manner, utilising external libraries and features of the benchmark software.
+	
+	\item \label{obj:test}
+	\textbf{Testing} \\
+	Provide significant test coverage to the functionality of the implementation.
+	
+	\item \label{obj:learn}
+	\textbf{Learning} \\
+	Grant the agent a large and diverse testbed from which to learn as well as ample time and resources to do so.
+	
+	\item \label{obj:eval}
+	\textbf{Evaluation} \\
+	Evaluate both the competence and learning capability of the agent and compare to alternative approaches.
+
+\end{enumerate}
+
+\subsection{Limitations}
+\label{ssec:limits}
+
+It is unlikely that the final agent will be able to compete at the level of the previous Mario AI competitions. The focus of the project is on an effective learning procedure rather than pure attainment of the agent.
+
+
+%---------------------
+% Methodology
+%---------------------
+\clearpage
+\section{Methodology}
+
+The two central components to this project, the agent and the learning process, will be designed, implemented and tested as two separate modules. This presents a clean separation of concerns. The agent module will be completed first, followed by the learning module.
+
+It is foreseeable that certain parts of the project will be exploratory and as such a redesign of the either the agent or the learning modules may become required. Hence it will be important to take an agile and iterative approach to production, revisiting past objectives if need be.
+
+\subsection{Objective \ref{obj:prep}: Preparation}
+\label{meth:prep}
+
+The Mario benchmark software is open-source\footnote{Available at http://www.marioai.org/gameplay-track/getting-started} and will form the initial codebase for this project. It is written in Java and contains the game-engine and useful features such as level generation and level playing classes. It also provides an agent interface, which will act as the link between my agent module and the game-engine. The source files will imported into an Eclipse IDE project.
+
+I intend to use Scala as the main language of this project as I believe that it's functional and concurrent features will suit the problem. Scala and Java are widely compatible (as they both compile JVM bytecode) so this should not require a significant amount of work. However, the codebase will be assessed for the suitability of this approach, and Java 8 will be used if Scala proves to be counterproductive.
+
+Furthermore the software will be assessed for the inclusion of build tools, such as \emph{sbt} and \emph{Maven}; testing frameworks, such as \emph{ScalaMock} and \emph{Mockito} and logging, such as \emph{log4j} and Scala's inbuilt logging package.
+
+\subsection{Objective \ref{obj:design}: Design}
+\label{meth:design}
+
+The design of both the agent and learning module will follow the approach of the REALM agent, discussed in \ref{ssec:realm}.
+
+The agent module will be a rule-based system that maps environment based conditions to explicit key presses. This project will look to differ from the REALM agent in regards to specific environment perceptions. The available sensory information will be assessed and distilled into a list of simple observations. As in REALM these will likely be binary values with ternary conditions encoding preference in the rules, but other approaches will be considered.
+
+The learning module will utilise an offline genetic algorithm with the same configuration seen in \ref{ssec:realm}. Rulesets will be individuals, with rules as genomes. Fitness of an individual will be determined by playing generated levels. However, different approaches to mutation, crossover and reordering will be explored, as well as careful consideration of calculating fitness from level playing statistics.
+
+If time permits, a redesign of the agent, to incorporate a multi-tiered approach, will be explored. This will involve a reflection on previous approaches such as REALM V2 \cite{realm}, D. Perez et al. \cite{gramev} and Baumgarten \cite[p.~5]{2010the}.
+
+\subsection{Objective \ref{obj:impl}: Implementation}
+\label{meth:impl}
+
+The agent module will implement the \emph{Agent} interface including in the benchmark, which will allow for the agent to used in other areas of the benchmark software, such as the game-playing and evaluation classes.
+\smallskip
+\begin{lstlisting}[language=Java]
+public interface Agent {
+	boolean[] getAction();
+	void integrateObservation(Environment environment);
+	...	
+}
+\end{lstlisting}
+
+A specific ruleset will be persisted externally and loaded into memory on the startup of the agent module. The {\fontfamily{tt}\selectfont\small getAction()} method will be implemented as the semantic reasoner for the ruleset, returning a boolean array of key presses as prescribed by the chosen rule.
+
+The mapping of the sensory information to conditions will be handled by the {\fontfamily{tt}\selectfont\small integrateObservation()} method. The \emph{Environment} interface provides the sensory information to the agent. It includes a 22x22 grid charting terrain and box locations, pixel-resolution of enemy positions and information about Mario's state. As discussed in \ref{meth:design}, this will be simplified to a list of observations, which will be stored in memory and compared to the ruleset by the semantic reasoner.
+
+\vspace{\baselineskip}
+
+The learning module will utilise an external library alongside features of the benchmark software. Many evolutionary computation libraries exist for Java (and therefore Scala), \emph{ECJ} \cite{ecj} and \emph{JGAP} \cite{jgap} will both be considered for use in this project.
+
+The implementation will manage the integration of this library with both the agent module and the relevant features of the benchmark software. For the breeding phase it will  hold and edit several rulesets at a time. It will then inject these rulesets into an instance of the agent and pass it to sped-up level playing class in the benchmark. The statistics returned from that class will form the basis of the fitness function. This phase will also include generation of the levels. The breeding, fitness and level generation parameters will be held externally to allow for easy tuning, which will assist the agile approach of the project. Lastly, fitness results will be logged to provide a basis for evaluating the learning of the agent.
+
+
+\subsection{Objective \ref{obj:test}: Testing}
+\label{meth:test}
+
+Testing of the agent module will be provided on two levels. Unit tests will be written to test the semantic reasoner and the environment observation methods. To achieve this, the Environment interface and rulesets will be mocked. Black-box integration tests will test the agent module as a whole. One focus of these tests will be response time, the benchmark game-engine runs at a constant 25fps (frames per second), therefore the agent must respond within 40ms when deciding an action each frame.
+
+Due to the stochastic nature of genetic algorithms, testing of the learning module will be limited. However, the breeding can be tested by verifying that children stay within parameters. Some evolutionary libraries, such as JGAP, provide several unit tests. If available these will become the primary source of test coverage for the module.
+
+
+\subsection{Objective \ref{obj:learn}: Learning}
+\label{meth:learn}
+
+The learning testbed will be levels generated by the benchmark. The software offers the \emph{LevelGenerator} class, which is tuneable by over 20 parameters including level complexity, enemy density and level length. The level generation is controlled by a seed, allowing levels to be regenerated if necessary. A new seed will be chosen for each generation and several levels will be generated with differing difficulties, lengths etc. In this way each individual of a generation will play the same levels, but over the course of the evolution many levels will have been played, providing a large and diverse testbed.
+
+Optimising the testbed parameters, as well as the parameters of the breeding phase and fitness function, will be an important stage of the project. Assessment of the parameters used in previous agent such as REALM (discussed in \ref{ssec:realm}) D. Perez et al. \cite{gramev} and Agent Smith \cite{agentsmith} will inform the initial values. From there learning module logs will be analysed for improvements. For example, if there is a lot of variation in fitness then perhaps mutation should be restricted, or if the average fitness does not eventually level out then the further generations should be created.
+
+The design of the agent can also influence the effectiveness of the learning algorithm. The size of the search space is determined by the conditions and actions of the rulesets, the reduction of which could improve evolutionary capability. Hence, the learning phase of the project may inform a redesign of the agent, which is one of the main reasons this project will take an agile approach.
+
+The learning itself is likely to be a time consuming, computationally heavy procedure. To assist in providing ample resources to this process the project will have access to two 8 core servers, as well as a laptop with an Intel i7 processor.
+
+
+\subsection{Objective \ref{obj:eval}: Evaluation}
+\label{meth:eval}
+
+The benchmark software provides classes for evaluating agents. The best ruleset will be chosen from the final generation of the genetic algorithm and tested using the \emph{GamePlayTrack} class. Here the agent will play 512 unseen levels of varying type and difficulty. These levels are initiated by a seed, and therefore multiple agents can be scored on the same levels, which allows agents to be directly compared. Due to the limitations of the project discussed in \ref{ssec:limits}, editing this class to make the trial less demanding will be explored as it may produce a more useful evaluation.
+
+The primary comparison will be with a handcrafted ruleset, which will assess the significance of the agent evolution. Other comparisons can be drawn against agents that are included as examples in the benchmark, such as the \emph{ForwardJumpingAgent} that was used for similar comparisons in the 2009 competition. As the \emph{GamePlayTrack} class was the method of evaluation for the 2010 Mario AI Competition, if the unedited class is used further comparisons can be drawn against it's entrants.
+
+The second part of this objective is to evaluate the learning procedure. Figures such as average and maximum generation fitness can provide an insight into the effectiveness of the genetic algorithm. Furthermore, a baseline for these values can be provided by having the handcrafted agent play the levels alongside the evolving agent. The final evaluation report will provide an analysis of these figures.
+
+%--------------
+% Timeline
+%--------------
+\clearpage
+\section{Time Allocation}
+
+Work will begin on June 10th and run until the 14th of September, when the report will be submitted. The writing of the report will be a continual process over these 96 days.
+
+This section aims to break each objective into tasks and allocate a number of days to their completion. This time allocation, along with how well the objectives are met, will form the basis of a critique of the project, to be included in the final report.
+
+\subsection{Objective \ref{obj:prep}: Preparation}
+\label{time:prep}
+
+\begin{center}
+\begin{tabular}{ >{\bfseries}p{0.16\textwidth} p{0.79\textwidth} }
+	$\tfrac{1}{2}$ a day & Importing of benchmark software into Eclipse IDE.   \\[6pt] 
+	1 day & Assessment of use and possible inclusion of the Scala language.  \\[6pt] 
+	$\tfrac{1}{2}$ a day & Inclusion of build tools, testing frameworks and logging into the project files.  \\[6pt] 
+\end{tabular}
+\end{center}
+
+
+\subsection{Objective \ref{obj:design}: Design}
+\label{time:design}
+\begin{center}
+\begin{tabular}{ >{\bfseries}p{0.16\textwidth} p{0.79\textwidth} }
+	2-3 days & Design structure and content of the observation list (discussed in \ref{meth:design}). \\[6pt] 
+	2-3 days & Design the crossover, mutation and reordering procedures used within the genetic algorithm. \\[6pt] 
+	7-10 days & Re-design of the agent to adopt a multi-tier system, including reexamining previous approaches (Non-core task). \\[6pt] 
+\end{tabular}
+\end{center}
+
+\subsection{Objective \ref{obj:impl}: Implementation}
+\label{time:impl}
+\begin{center}
+\begin{tabular}{ >{\bfseries}p{0.16\textwidth} p{0.79\textwidth} }
+	4-7 days & Implementation of translation of \emph{Environment} to observation list in agent module (discussed in \ref{meth:impl}). \\[6pt] 
+	4-7 days & Implementation of the semantic reasoner for rulesets in the agent module. \\[6pt] 
+	5-8 days & Implementation of the external ruleset persistence, including read and write access. \\[6pt] 
+	5-10 days & Implementation of possible agent re-design (Non-core task). \\[6pt] 
+\end{tabular}
+\end{center}	
+\begin{center}
+\begin{tabular}{ >{\bfseries}p{0.16\textwidth} p{0.79\textwidth} }
+	10-14 days & Integration of external evolutionary library with the benchmark software. \\[6pt] 
+	3-6 days & Implementation of the crossover, mutation and reordering of rulesets in the genetic algorithm. \\[6pt] 
+	3-6 days & Implementation of evolution fitness tracking and logging. \\[6pt] 
+\end{tabular}
+\end{center}
+
+\subsection{Objective \ref{obj:test}: Testing}
+\label{time:test}
+\begin{center}
+\begin{tabular}{ >{\bfseries}p{0.16\textwidth} p{0.79\textwidth} }
+	2-3 days & Writing of unit tests for the agent module. \\[6pt] 
+	2 days & Writing black-box integration test for the agent module. \\[6pt] 
+	4-7 days & Assessing and writing testing strategy for the learning module. \\[6pt] 
+\end{tabular}
+\end{center}
+
+\subsection{Objective \ref{obj:learn}: Learning}
+\label{time:learn}
+\begin{center}
+\begin{tabular}{ >{\bfseries}p{0.16\textwidth} p{0.79\textwidth} }
+	10-20 days & Offline evolution of the agent. \\[6pt] 
+	3 days & Tuning of learning parameters (discussed in \ref{meth:learn}). \\[6pt] 
+\end{tabular}
+\end{center}
+
+\subsection{Objective \ref{obj:eval}: Evaluation}
+\label{time:eval}
+\begin{center}
+\begin{tabular}{ >{\bfseries}p{0.16\textwidth} p{0.79\textwidth} }
+	2-3 days & Evaluating capability of the final agent. \\[6pt] 
+	5 days & Collecting and charting data pertaining to agent evolution. \\[6pt] 
+	7 days & Finishing touches to the project report. \\[6pt] 
+\end{tabular}
+\end{center}
+
+\subsection{Total Allocation}
+The completion of tasks will not follow the order presented here. This project is adopting an agile approach, revisiting tasks as it becomes necessary. The allocation given here is the time expected to be spend on each task in total. 
+
+Core task day allocation sums to between 70 and 106 days. This therefore allows a possible 26 days for non-core tasks (in \ref{time:design} and \ref{time:impl}) related to reengineering the agent to adopt a multi-tier approach.
+
+
+
+
+\clearpage
+\begin{thebibliography}{11}
+
+\bibitem{myangelcafe}
+  Siyuan Xu,
+  \emph{History of AI design in video games and its development in RTS games},
+  Department of Interactive Media \& Game development, Worcester Polytechnic Institute, USA,
+  \url{https://sites.google.com/site/myangelcafe/articles/history_ai}.
+
+\bibitem{pacmanghosts}
+  Chad Birch,
+  \emph{Understanding Pac-Man Ghost Behaviour},
+  \url{http://gameinternals.com/post/2072558330/understanding-pac-man-ghost-behavior},
+  2010.
+  
+\bibitem{halflife}
+  Alex J. Champandard,
+  \emph{The AI From Half-Like's SDK in Retrospective},
+  \url{http://aigamedev.com/open/article/halflife-sdk/},
+  2008.
+  
+\bibitem{fear}
+  Tommy Thompson,
+  \emph{Facing Your Fear},
+  \url{http://t2thompson.com/2014/03/02/facing-your-fear/},
+  2014.
+
+\bibitem{halo}
+  Damian Isla,
+  \emph{GDC 2005 Proceeding: Handling Complexity in the Halo 2 AI},
+  \url{http://www.gamasutra.com/view/feature/130663/gdc_2005_proceeding_handling_.php},
+  2005.
+  
+\bibitem{rome}
+  Alex J. Champandard,
+ \emph{Monte-Carlo Tree Search in TOTAL WAR: Rome II Campaign AI},
+ \url{http://aigamedev.com/open/coverage/mcts-rome-ii/},
+ 2014.
+ 
+\bibitem{playermod}
+  Georgios N. Yannakakis, Pieter Spronck, Daniele Loiacono and Elisabeth Andre,
+  \emph{Player Modelling},
+  \url{http://yannakakis.net/wp-content/uploads/2013/08/pm_submitted_final.pdf},
+  2013.
+  
+\bibitem{skyrim}
+  Matt Bertz,
+  \emph{The Technology Behind The Elder Scrolls V: Skyrim},
+  \url{http://www.gameinformer.com/games/the_elder_scrolls_v_skyrim/b/xbox360/archive/2011/01/17/the-technology-behind-elder-scrolls-v-skyrim.aspx},
+  2011.
+  
+\bibitem{overmind}
+  \emph{The Berkeley Overmind Project},
+  University of Berkeley, California.
+  \url{http://overmind.cs.berkeley.edu/}.
+  
+\bibitem{cellz}
+  Simon M. Lucas,
+  \emph{Cellz: A simple dynamical game for testing evolutionary algorithms},
+  Department of Computer Science, University of Essex, Colchester, Essex, UK,
+  \url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.96.5068&rep=rep1&type=pdf}. 
+  
+\bibitem{panorama}
+  G. N. Yannakakis and J. Togelius,
+  \emph{A Panorama of Artificial and Computational Intelligence in Games},
+  IEEE Transactions on Computational Intelligence and AI in Games,
+  \url{http://yannakakis.net/wp-content/uploads/2014/07/panorama_submitted.pdf},
+  2014.
+  
+\bibitem{marioaicomp}
+  Julian Togelius, Noor Shaker, Sergey Karakovskiy and Georgios N. Yannakakis,
+  \emph{The Mario AI Championship 2009-2012},
+  AI Magazine 34 (3), pp. 89-92,
+  \url{http://noorshaker.com/docs/theMarioAI.pdf},
+  2013.
+
+\bibitem{suttonrl}
+  Richard S. Sutton and Andrew G. Barto,
+  \emph{Reinforcement Learning: An Introduction}
+  The MIT Press, Cambridge, Massachusetts, London, England,
+  Available: \url{http://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html},
+  1998.
+  
+\bibitem{modernai3}
+  Stuart J. Russell, Peter Norvig,
+  \emph{Artificial Intelligence: A Moden Approach (3rd ed.},
+  Upper Saddle River, New Jersey,
+  2009.
+  
+\bibitem{modernai1}
+  Stuart J. Russell, Peter Norvig,
+  \emph{Artificial Intelligence: A Moden Approach (1st ed.},
+  Upper Saddle River, New Jersey,
+  1995.
+  
+\bibitem{rbsys}
+  Anoop Gupta, Charles Forgy, Allen Newell, and Robert Wedig,
+  \emph{Parallel Algorithms and Architectures for Rule-Based Systems},
+  Carnegie-Mellon University Pittsburgh, Pennsylvania,
+  ISCA '86 Proceedings of the 13th annual international symposium on Computer architecture, pp.~28-37,
+  1986.
+  
+\bibitem{mitchellga}
+  Melanie Mitchell,
+  \emph{An Introduction to Genetic Algorithms},
+  Cambridge, MA: MIT Press,
+  1996.
+
+\bibitem{rlheli}
+  Andrew Y. Ng, Adam Coates, Mark Diel, Varun Ganapathi, Jamie Schulte, Ben Tse, Eric Berger and Eric Liang,
+  \emph{Inverted autonomous helicopter flight via reinforcement learning},
+  International Symposium on Experimental Robotics,
+  \url{http://www.robotics.stanford.edu/~ang/papers/iser04-invertedflight.pdf},
+  2004.
+  
+\bibitem{rlhci}
+  S. Singh, D. Litman, M. Kearns and M. Walker,
+  \emph{Optimizing Dialogue Management with Reinforcement Learning: Experiments with the NJFun System},
+  Journal of Artificial Intelligence Research (JAIR), Volume 16, pages 105-133, 2002,
+  \url{http://web.eecs.umich.edu/~baveja/Papers/RLDSjair.pdf}.
+  
+\bibitem{evolutioningamedesign}
+  Alex J. Champandard,
+  \emph{Making Designers Obsolete? Evolution in Game Design},
+  \url{http://aigamedev.com/open/interview/evolution-in-cityconquest/},
+  2012.
+  
+\bibitem{blackandwhite}
+  James Wexler,
+  \emph{A look at the smarts behind Lionhead Studio's `Black and White' and where it can and will go in the future},
+  University of Rochester, Rochester, NY 14627,
+  \url{http://www.cs.rochester.edu/~brown/242/assts/termprojs/games.pdf},
+  2002.
+  
+\bibitem{projectgothamracing}
+  Thore Graepal (Ralf Herbrich, Mykel Kockenderfer, David Stern, Phil Trelford),
+  \emph{Learning to Play: Machine Learning in Games},
+  Applied Games Group, Microsoft Research Cambridge,
+  \url{http://www.admin.cam.ac.uk/offices/research/documents/local/events/downloads/tm/06_ThoreGraepel.pdf}.
+  
+\bibitem{forza}
+  \emph{Drivatar\texttrademark\ in Forza Motorsport},
+  \url{http://research.microsoft.com/en-us/projects/drivatar/forza.aspx}.
+  
+\bibitem{2012the}
+  Sergey Karakovskiy and Julian Togelius,
+  \emph{Mario AI Benchmark and Competitions},
+  \url{http://julian.togelius.com/Karakovskiy2012The.pdf},
+  2012.
+  
+\bibitem{2010the}
+  Julian Togelius, Sergey Karakovskiy and Robin Baumgarten,
+  \emph{The 2009 Mario AI Competition},
+  \url{http://julian.togelius.com/Togelius2010The.pdf},
+  2010.
+  
+\bibitem{2014how}
+  Julian Togelius,
+  \emph{How to run a successful game-based AI competition},
+  \url{http://julian.togelius.com/Togelius2014How.pdf},
+  2014.
+  
+\bibitem{torcs}
+  \emph{TORCS: The Open Racing Car Simulation},
+  \url{http://torcs.sourceforge.net/}.
+
+\bibitem{scrc}
+  Daniele Loiacono, Pier Luca Lanzi, Julian Togelius, Enrique Onieva, David A. Pelta, Martin V. Butz, Thies D. Lönneker, Luigi Cardamone, Diego Perez, Yago Sáez, Mike Preuss, and Jan Quadflieg,
+  \emph{The 2009 Simulated Car Racing Championship},
+  IEEE Transactions on Computational Intelligence and AI in Games, VOL. 2, NO. 2,
+  2010.
+  
+\bibitem{2kbot}
+  \emph{The 2K BotPrize},
+  \url{http://botprize.org/}
+  
+\bibitem{starcomp}
+  Michael Buro, David Churchill,
+  \emph{Real-Time Strategy Game Competitions},
+  Association for the Advancement of Artificial Intelligence, AI Magazine, pp.~106-108,
+  \url{https://skatgame.net/mburo/ps/aaai-competition-report-2012.pdf},
+  2012.
+  
+\bibitem{imb}
+  \emph{Infinite Mario Bros.},
+  Created by Markus Perrson,
+  \url{http://www.pcmariogames.com/infinite-mario.php}.
+  
+\bibitem{handa}
+  H. Handa,
+  \emph{Dimensionality reduction of scene and enemy information in mario},
+  Proceedings of the IEEE Congress on Evolutionary Computation,  
+  2011.
+  
+\bibitem{rossbagnell}
+  S. Ross and J. A. Bagnell, 
+  \emph{Efficient reductions for imitation learning},
+  International Conference on Artificial Intelligence and Statistics (AISTATS),
+  2010.
+  
+\bibitem{realm}
+  Slawomir Bojarski and Clare Bates Congdon,
+  \emph{REALM: A Rule-Based Evolutionary Computation Agent that Learns to Play Mario},
+  2010 IEEE Conference on Computational Intelligence and Games (CIG '10) pp.~83-90.
+
+\bibitem{gramev}
+   D. Perez, M. Nicolau, M. O'Neill, and A. Brabazon,
+   \emph{Evolving Behaviour Trees for the Mario AI Competition Using Grammatical Evolution},
+   Proceedings of EvoApps, 2010, pp.~123-132.
+
+\bibitem{feetsies}
+  E. R. Speed, 
+  \emph{Evolving a mario agent using cuckoo search and softmax heuristics},
+  Proceedings of the IEEE Consumer Electronics Society's Games Innovations Conference (ICE-GIC), 2010,
+  pp.~1-7.
+  
+\bibitem{emapf}
+  Thomas Willer Sandberg,
+  \emph{Evolutionary Multi-Agent Potential Field based AI approach for SSC scenarios in RTS games},
+   University of Copenhagen,
+   2011.
+  
+\bibitem{ecj}
+  \emph{ECJ: A Java-based Evolutionary Computation Research System},
+  \url{https://cs.gmu.edu/~eclab/projects/ecj/}.
+  
+\bibitem{jgap}
+  \emph{JGAP: Java Genetic Algorithms Package},
+  \url{http://jgap.sourceforge.net/}.
+
+\bibitem{astar}
+  Robin Baumgarten,
+  \emph{A* Mario Agent},
+  \url{https://github.com/jumoel/mario-astar-robinbaumgarten}.
+  
+\bibitem{agentsmith}
+  Ryan Small,
+  \emph{Agent Smith: a Real-Time Game-Playing Agent for Interactive Dynamic Games},
+  GECCO `08, July 12-16, 2008, Atlanta, Georgia, USA.
+  \url{http://www.cs.bham.ac.uk/~wbl/biblio/gecco2008/docs/p1839.pdf}.
+
+\end{thebibliography}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
