@@ -15,7 +15,7 @@
 
 
 
-\lstset{basicstyle=\footnotesize\ttfamily, columns=fullflexible}
+\lstset{basicstyle=\footnotesize\ttfamily, columns=fullflexible, breaklines=true}
 
 \graphicspath{ {images/} }
 
@@ -43,10 +43,10 @@
 
 \textsc{\LARGE Birkbeck College}\\[1.5cm] % Name of your university/college
 
-\textsc{\Large Msc Computer Science Project Proposal}
+\textsc{\Large Msc Computer Science Project Report}
 
 \HRule \\[0.4cm]
-{ \LARGE \bfseries Reinforcement Learning and Video Games: Implementing an Evolutionary Agent}\\[0.4cm] % Title of your document
+{ \LARGE \bfseries Learning and Video Games: Implementing an Evolutionary Agent}\\[0.4cm] % Title of your document
 \HRule \\[1.5cm]
 
 
@@ -64,20 +64,20 @@ Dr. George \textsc{Magoulas} % Supervisor's Name
 \end{flushright}
 \end{minipage}\\[4cm]
 
-\emph{MSc Computer Science project proposal, Department of
+\emph{MSc Computer Science project report, Department of
 Computer Science and Information Systems, Birkbeck College,
 University of London 2015}
 
 \vspace{5mm}
 
-\emph{This proposal is substantially the result of my own work,
+\emph{This report is substantially the result of my own work,
 expressed in my own words, except where explicitly indicated in
 the text. I give my permission for it to be submitted to the
 JISC Plagiarism Detection Service.}
 
 \vspace{5mm}
 
-\emph{The proposal may be freely copied and distributed provided the
+\emph{The report may be freely copied and distributed provided the
 source is explicitly acknowledged.}
 
 \end{titlepage}
@@ -93,7 +93,7 @@ The project builds on top of software developed for the Mario AI Competition, wh
 
 The aim was to produce an agent that shows meaningful improvement during learning and demonstrated unforeseen behaviours. 
 
-ADD EVAL HERE
+!ADD EVAL HERE!
 
 \end{abstract}
 
@@ -127,11 +127,41 @@ The first video game opponents were simple discrete algorithms, such as the comp
 
 However, with increases in processing power and the complexity of games over the last ten years many academic techniques have been harnessed by developers. For example, Monte Carlo Tree Search techniques developed for use in Go AI research has been used in \emph{Total War: Rome II} \cite{rome}. In 2008's \emph{Left 4 Dead}, Player Modelling was used to alter play experience for different users \cite[p.~10]{playermod}. Furthermore, AI and related techniques are no longer only being used as adversaries. There has been a rise in intelligent Procedural Content Generation in games in recent years, in both a game-world sense (for example \emph{MineCraft} and \emph{Terraria}) and also a story sense (for example \emph{Skyrim's} Radiant Quest System) \cite{skyrim}.
 
-Moreover, games have recently enjoyed more consideration in academic research. Commercial games such as \emph{Ms. Pac Man}, \emph{Starcraft}, \emph{Unreal Tournament} and \emph{Super Mario Bros.} and open-source games like \emph{TORCS} \cite{torcs} and \emph{Cellz} \cite{cellz} have been at the centre of recent competitions and papers \cite{panorama} \cite{marioaicomp}.
+Moreover, games have recently enjoyed more consideration in academic research. Commercial games such as \emph{Ms. Pac Man}, \emph{Starcraft}, \emph{Unreal Tournament} and \emph{Super Mario Bros.} and open-source games like \emph{TORCS} \cite{torcs} and \emph{Cellz} \cite{cellz} have been at the centre of recent competitions and papers \cite{panorama} \cite{marioaicomp}. These competitions are the forefront of research and development into learning techniques in video games, and will be explored in more detail in section \ref{subsec:gameaicomps}.
+!EXTEND!
 
-These competitions are the forefront of research and development into reinforcement learning techniques in video games, and will be explored in more detail in section \ref{subsec:gameaicomps}.
+\subsection{Aim}
+The aim of the project is to explore the use of behavioural learning techniques in creating a game-playing agent-based AI. This will be achieved by producing an intelligent agent, developed by a evolutionary algorithm, that plays a 2D side-scrolling platform game.
 
-The sections following detail the specification, design, implementation and testing of an agent framework and a reinforcement learning process for Super Mario Bros. The report ends with an evaluation of the learnt agent as well as the project as a whole, with possible future improvements.
+\subsection{Objectives}
+
+\begin{enumerate}
+
+	\item \label{obj:design}
+	\textbf{Design} \\
+	Influenced by previous approaches, design an agent and learning procedure that can demonstrate meaningful improvement during learning.
+	
+	\item \label{obj:impl}
+	\textbf{Implementation} \\
+	Implement agent and learning designs in a modular, customisable and test-driven manner, utilising external libraries and features of the game software.
+	
+	\item \label{obj:test}
+	\textbf{Testing} \\
+	Provide significant test coverage to the functionality of the implementation.
+	
+	\item \label{obj:learn}
+	\textbf{Learning} \\
+	Grant the agent a large and diverse testbed from which to learn as well as ample time and resources to do so.
+	
+	\item \label{obj:eval}
+	\textbf{Evaluation} \\
+	Evaluate both the competence and learning capability of the agent and compare to alternative approaches.
+
+\end{enumerate}
+
+\subsection{Report Structure}
+
+
 
 %-----------------------------------------------------------------------
 % Definitions
@@ -139,11 +169,11 @@ The sections following detail the specification, design, implementation and test
 \clearpage
 \section{Background}
 
-Reinforcement learning has long been a staple of academic research into AI and dynamic programming, especially in robotics and board games. However, it has also had success in more niche problems, such as helicopter control \cite{rlheli} and human-computer dialogue \cite{rlhci}.
+Learning has long been a staple of academic research into AI and dynamic programming, especially in robotics and board games. However, it has also had success in more niche problems, such as helicopter control \cite{rlheli} and human-computer dialogue \cite{rlhci}.
 
 Similarly the agent model is a popular approach to AI problems. It is seen in commercial applications, as mentioned above, as well as academic applications, such as board game AI. 
 
-The agent model's autonomous nature makes it particularly suited to utilising reinforcement learning.
+The agent model's autonomous nature makes it particularly suited to utilising biologically inspired learning.
 
 \subsection{Concept Definitions}
 
@@ -158,7 +188,7 @@ At this point it is useful to introduce some high level descriptions/definitions
 	\label{fig:ia}
 \end{figure}
 
-An intelligent agent is an entity that uses \textbf{sensors} to perceive its \textbf{environment} and acts based on that perception through \textbf{actuators} or \textbf{effectors}. In software, this is often realised as an autonomous program or module that takes its perception of the  \textbf{environment} as input an returns \textbf{actions} as output. Figure \ref{fig:ia} shows the basic structure of an intelligent agent. \cite[p.~34]{modernai3}
+An intelligent agent is an entity that uses \textbf{sensors} to perceive its \textbf{environment} and acts based on that perception through \textbf{actuators} or \textbf{effectors}. In software, this is often realised as an autonomous program or module that takes its perception of the \textbf{environment} as input an returns \textbf{actions} as output. Figure \ref{fig:ia} shows the basic structure of an intelligent agent. \cite[p.~34]{modernai3}
 
 
 
@@ -166,10 +196,18 @@ An intelligent agent is an entity that uses \textbf{sensors} to perceive its \te
 
 A rule-based system decides \textbf{actions} from \textbf{inputs} as prescribed by a \textbf{ruleset} or \textbf{rule base}. A \textbf{semantic reasoner} is used to manage to the relationship between input and the ruleset. This follows a \textbf{match-resolve-act} cycle, which first finds all rules matching an input, chooses one based on a conflict strategy and then uses the rule to act on the input, usually in the form of an output. \cite[pp.~28-29]{rbsys}
 
+\subsubsection{Biologically Inspired Learning} 
+
+Several computational learning approaches have derived their inspiration from learning in animals and humans. Two such approaches are relevant to this project: Reinforcement learning, strategy modelled on simplistic interpretation of how animal learn behaviour from their environment \cite[s.~1.2]{suttonrl}; and evolutionary computation, algorithms that apply Darwinian principles of evolution \cite{ev-comp}.
+
 
 \subsubsection{Reinforcement Learning}
 
 A reinforcement learning agent focuses on a learning problem, with its goal to maximise \textbf{reward}. Given a current \textbf{state} the agent chooses an \textbf{action} available to it, which is determined by a \textbf{policy}. This action maps the current \textbf{state} to a new \textbf{state}. This \textbf{transition} is then evaluated for its \textbf{reward} . This \textbf{reward} often affects the \textbf{policy} of future iterations, but \textbf{policies} may be stochastic to some level. \cite[s.~1.3]{suttonrl}
+
+\subsubsection{Evolutionary Computation}
+
+The evolutionary computation encompasses many learning algorithms, two of which are described in detail below. The process looks to optimise a data representation of the problem through random variation and selection in a \textbf{population}. It commonly employs techniques similar to survival, breeding and mutation found in biological evolutionary theory.  \cite{ev-comp}
 
 \subsubsection{Online/Offline Learning}
 \begin{description}
@@ -179,7 +217,7 @@ A reinforcement learning agent focuses on a learning problem, with its goal to m
 	
 \subsubsection{Genetic Algorithms (GAs)}
 
-Genetic Algorithms are an subset of evolutionary algorithms, a biologically inspired form of reinforcement learning. They model the solution as a \textbf{population} of \textbf{individuals}. Each \textbf{individual} has a set of \textbf{genes} (a  \textbf{genome}), which can be thought of as simple pieces of analogous information (most often in the form of bit strings). Each \textbf{individual} is assessed by some \textbf{fitness function}. This assessment can be used to cull the \textbf{population}, akin to survival of the fittest, or to increase the individual's chance of influencing the next \textbf{population}. The new \textbf{population} is created by \textbf{breeding}, using a combination of the following: \textbf{crossover} of the \textbf{genome} from two (or more) \textbf{individuals} (akin to sexual reproduction), \textbf{mutation} of the \textbf{genes} of one \textbf{individual} (akin to asexual reproduction) and \textbf{re-ordering} of the \textbf{genes} of one \textbf{individual}. Each new \textbf{population} is called a \textbf{generation}. \cite[p.~7]{mitchellga}
+Genetic Algorithms are an subset of evolutionary computation. They model the solution as a \textbf{population} of \textbf{individuals}. Each \textbf{individual} has a set of \textbf{genes} (a  \textbf{genome}), which can be thought of as simple pieces of analogous information (most often in the form of bit strings). Each \textbf{individual} is assessed by some \textbf{fitness function}. This assessment can be used to cull the \textbf{population}, akin to survival of the fittest, or to increase the individual's chance of influencing the next \textbf{population}. The new \textbf{population} is created by \textbf{breeding}, using a combination of the following: \textbf{crossover} of the \textbf{genome} from two (or more) \textbf{individuals} (akin to sexual reproduction), \textbf{mutation} of the \textbf{genes} of one \textbf{individual} (akin to asexual reproduction) and \textbf{re-ordering} of the \textbf{genes} of one \textbf{individual}. Each new \textbf{population} is called a \textbf{generation}. \cite[p.~7]{mitchellga}
 
 \subsubsection{Evolution Strategies (ESes)}
 
@@ -190,25 +228,25 @@ Evolution Strategies differ from standard Genetic Algorithms by using \textbf{tr
 \end{description}
 
 %-----------------------------------------------------------------------
-% Reinforcement Learning in Games (Current Work in Field)
+% Learning in Games (Current Work in Field)
 %-----------------------------------------------------------------------
 
-\subsection{Reinforcement Learning Agents and Commercial Games}
+\subsection{Learning Agents and Commercial Games}
 
 \subsubsection*{Desirability}
 
-Ventures in utilising reinforcement learning in commercial video games have been limited and largely ineffectual. However, there are many reasons why good execution of these techniques is desirable. Firstly, modern games have large and diverse player bases, having a game that can respond and personalise to a specific player can help cater to all. Secondly, learning algorithms produce agents that can respond well in new situations (over say FSMs or discrete logic), hence making new content easy to produce or generate. Lastly, humans must learn and react to environments and scenarios during games. Having non-playable characters do the same may produce a more believable, immersive and relatable AI, which is one of the key criticisms with current games. \cite[p.~7, p.~13]{panorama}
+Ventures in utilising learning in commercial video games have been limited and largely ineffectual. However, there are many reasons why good execution of these techniques is desirable. Firstly, modern games have large and diverse player bases, having a game that can respond and personalise to a specific player can help cater to all. Secondly, learning algorithms produce agents that can respond well in new situations (over say FSMs or discrete logic), hence making new content easy to produce or generate. Lastly, humans must learn and react to environments and scenarios during games. Having non-playable characters do the same may produce a more believable, immersive and relatable AI, which is one of the key criticisms with current games. \cite[p.~7, p.~13]{panorama}
 
 \subsubsection*{Issues}
 
 The main issue with constructing effectual learning (or learnt) agent AI in game is risk versus reward. Game development works on strict cycles and there are limited resources to invest into AI research, especially if the outcome is uncertain. Furthermore, one player playing one game produces a very small data set, making learning from the player challenging. Moreover, AI that is believably human is a field still in its infancy. \cite{evolutioningamedesign}
 
-\subsection{Reinforcement Learning Agents and Game AI Competitions}
+\subsection{Learning Agents and Game AI Competitions}
 \label{subsec:gameaicomps}
 
-Despite the lack of commercial success, video games can act as great benchmark for reinforcement learning agents. They are designed to challenge humans, and therefore will challenge learning methods. Games naturally have some level of learning curve associated with playing them (as a human). Also, games require quick reactions to stimulus, something not true of traditional AI challenges such as board games. Most games have some notion of scoring suitable for a fitness function. Lastly, they are generally accessible to students, academics and the general public alike. \cite[p.~9]{panorama} \cite[p.~1]{marioaicomp} \cite[p.~2]{2012the}
+Despite the lack of commercial success, video games can act as great benchmark for learning agents. They are designed to challenge humans, and therefore will challenge learning methods, especially those inspired by biological processes. Games naturally have some level of learning curve associated with playing them (as a human). Also, games require quick reactions to stimulus, something not true of traditional AI challenges such as board games. Most games have some notion of scoring suitable for a fitness function. Lastly, they are generally accessible to students, academics and the general public alike. \cite[p.~9]{panorama} \cite[p.~1]{marioaicomp} \cite[p.~2]{2012the}
 
-Over the last few years several game based AI competitions have been run, over a variety of genres. These competitions challenge entrants to implement an agent that plays a game and is rated according to the competitions specification. They have attracted both academic \cite[p.~2]{2012the} and media interest \cite[p.~2]{marioaicomp}. The competition tend to encourage the use of learning techniques. Hence, several interesting papers concerning the application of reinforcement learning agents in video games have recently been published. Approaches tend to vary widely, modelling and tackling the problem very differently and specialising techniques in previously unseen ways. \cite[p.~11]{2012the}
+Over the last few years several game based AI competitions have been run, over a variety of genres. These competitions challenge entrants to implement an agent that plays a game and is rated according to the competitions specification. They have attracted both academic \cite[p.~2]{2012the} and media interest \cite[p.~2]{marioaicomp}. The competition tend to encourage the use of learning techniques. Hence, several interesting papers concerning the application of biologically inspired learning agents in video games have recently been published. Approaches tend to vary widely, modelling and tackling the problem very differently and specialising techniques in previously unseen ways. \cite[p.~11]{2012the}
 
 Some brief details of the competitions which are of relevance to this project are compiled in to Table \ref{tab:gameaicomp}. The Mario AI Competition is also explored in more detail below.
 
@@ -239,6 +277,7 @@ Some brief details of the competitions which are of relevance to this project ar
 \end{table}
 
 \subsubsection{The Mario AI Competition}
+\label{subsec:marioaibench}
 
 The Mario AI Competition, organised by Sergey Karakovskiy and Julian Togelius, ran between 2009-2012 and used an adapted version of the open-source game Infinite Mario Bros. From 2010 onwards the competition was split into four distinct `tracks'. We shall focus on the unseen Gameplay track, where agents play several unseen levels as Mario with the aim to finish the level (and score highly). \cite{marioaicomp} \cite{2012the}
 
@@ -246,11 +285,11 @@ The Mario AI Competition, organised by Sergey Karakovskiy and Julian Togelius, r
 
 Infinite Mario Bros (IMB) \cite{imb} is an open-source clone of Super Mario Bros.~3, created by Markus Persson. The core gameplay is described as a \emph{Platformer}. The game is viewed side-on with a 2D perspective. Players control Mario and travel left to right in an attempt to reach the end of the level (and maximise score). The screen shows a short section of the level, with Mario centred. Mario must navigating terrain and avoid enemies and pits. To do this Mario can move left and right, jump, duck and speed up. Mario also exists in 3 different states, \emph{small}, \emph{big} and \emph{fire} (the latter of which enables Mario to shoot fireballs), accessed by finding powerups. Touching an enemy (in most cases) reverts Mario to a previous state. Mario dies if he touches an enemy in the \emph{small} state or falls into a pit, at which point the level ends. Score is affected by how many coins Mario has collected, how many enemies he has killed (by jumping on them or by using fireballs or shells) and how quickly he has completed the level. \cite[p.~3]{2012the}
 
-\subsubsection*{\hspace{6pt}Suitability to Reinforcement Learning}
+\subsubsection*{\hspace{6pt}Suitability to Learning}
 
 The competitions adaptation of IMB (known henceforth as the `benchmark') incorporates a tuneable level generator and allows for the game to be sped-up by removing the reliance on the GUI and system clock. This makes it a great testbed for reinforcement learning. The ability to learn from large sets of diverse data makes learning a much more effective technique. \cite[p.~3]{2012the}
 
-Besides that, the Mario benchmark presents an interesting challenge for reinforcement learning algorithms. Despite only a limited view of the ``world" at any one time the state and observable space is still of quite high-dimension. Though not to the same extent, so too is the action space. Any combination of five key presses per timestep gives a action space of $2^5$ \cite[p.~3]{2012the}. Hence part of the problem when implementing a learning algorithm for the Mario benchmark is reducing these search spaces. This has the topic of papers by Handa and Ross and Bagnell \cite{rossbagnell} separately addressed this issue in their papers \cite{handa} and \cite{rossbagnell} respectively.
+Besides that, the Mario benchmark presents an interesting challenge for learning algorithms. Despite only a limited view of the ``world" at any one time the state and observable space is still of quite high-dimension. Though not to the same extent, so too is the action space. Any combination of five key presses per timestep gives a action space of $2^5$ \cite[p.~3]{2012the}. Hence part of the problem when implementing a learning algorithm for the Mario benchmark is reducing these search spaces. This has the topic of papers by Handa and Ross and Bagnell \cite{rossbagnell} separately addressed this issue in their papers \cite{handa} and \cite{rossbagnell} respectively.
 
 Lastly, there is a considerable learning curve associated with Mario. The simplest levels could easily be solved by agents hard coded to jump when they reach an obstruction, whereas difficult levels require complex and varied behaviour. For example, traversing a series of pits may require a well placed series of jumps, or passing a group of enemies may require careful timing. Furthermore, considerations such as score, or the need to backtrack from a dead-end greatly increase the complexity of the problem. \cite[p.~3, p.~12]{2012the}
 
@@ -262,7 +301,7 @@ Agent-based AI approaches in commercial games tend to focus on finite state mach
 
 \subsubsection{Evolutionary Algorithms}
 
-Evolutionary algorithms are a common choice of reinforcement learning methods used in game-playing agents. D. Perez et al. note in their paper \cite[p.~1]{gramev} that they are particular suitable for game environments: 
+Evolutionary algorithms are a common choice of learning methods used in game-playing agents. D. Perez et al. note in their paper \cite[p.~1]{gramev} that they are particular suitable for game environments: 
 \begin{quote}\itshape
 `Their stochastic nature, along with tunable high- or low-level representations, contribute to the discovery of non-obvious solutions, while their population-based nature can contribute to adaptability, particularly in dynamic environments.'
 \end{quote}
@@ -366,40 +405,361 @@ The ruleset developed from REALM V2 was entered into the 2010 unseen Gameplay tr
 
 \section{Project Specification}
 
-\subsection{Aim}
-The aim of the project is to explore the use of reinforcement learning techniques in creating a game-playing agent-based AI. This will be achieved by producing an intelligent agent, evolved by a genetic algorithm, that plays the Mario AI benchmark.
-
 \subsection{Functional Requirements}
-Functionally, the project can be split into three parts: the agent framework, which is responsible for gathering sensory information from the game and producing an action; level generation and playing, which is responsible for having an agent play generated levels with varying parameters; and the learning framework, which will apply a genetic algorithm to a representation of an agent, with an aim to improving its level playing ability. 
+Functionally, the project can be split into three parts: the agent framework, which is responsible for gathering sensory information from the game and producing an action; level generation and playing, which is responsible for having an agent play generated levels with varying parameters; and the learning module, which will apply a genetic algorithm to a representation of an agent, with an aim to improving its level playing ability. 
 
-\subsubsection{Agent Framework}
+\subsubsection{Agent}
 The agent framework will conform to the interface supplied in the Mario AI benchmark\footnote{~Add agent interface code to appendix and link~}; receive the game \emph{Environment} and produce an \emph{Action}. It must be able to encode individual agents into a simple format (e.g. a bit string or collection of numbers). Additionally, it should be able to encode and decode agents to and from external files. 
 
 The framework will be assessed in three ways. Firstly on its complexity, keeping the search space of the encoded agent small is important for the learning process. Secondly on its speed, the agent must be able to respond within one game tick. Thirdly on its capability, the framework must facilitate agents that can complete the easiest levels, and attempt the hardest ones. It is also required that human created agent encoding(s) be written (within the framework) to assist this assessment.
 
 \subsubsection{Level Playing}
-The level generation and playing package must be able to generate and play levels using an agent, producing a score on completion. It should extend the existing framework included in the Mario AI Benchmark software. Furthermore, it should be able to read parameters for generation and scoring from an external file.
+The level generation and playing module must be able to generate and play levels using an agent, producing a score on completion. It should extend the existing framework included in the Mario AI Benchmark software. Furthermore, it should be able to read parameters for generation and scoring from an external file.
 
-The package will be evaluated on the level of variety in generated levels and the amount of information it can gather in order to score the agent.
+The module will be evaluated on the level of variety in generated levels and the amount of information it can gather in order to score the agent.
 
-\subsubsection{Learning Framework}
-The learning framework should utilise a genetic algorithm to evolve an agent (in encoded form). It should also ensure that as many as possible of the parameters that govern the process can be held in external files, this included overall strategy as well fine grained detail (e.g. mutation probabilities and evaluation multipliers). Where impossible or inappropriate to hold such parameters externally it must be able to read them dynamically from their governing packages, for example boundaries on the agent encoding should be loaded from the agent package, rather than held statically in the learning framework. It must have the facility to report statistics from learning runs, as well as write out final evolved agents.
+\subsubsection{Learning}
+The learning module should utilise a genetic algorithm to evolve an agent (in encoded form). It should also ensure that as many as possible of the parameters that govern the process can be held in external files, this included overall strategy as well fine grained detail (e.g. mutation probabilities and evaluation multipliers). Where impossible or inappropriate to hold such parameters externally it must be able to read them dynamically from their governing packages, for example boundaries on the agent encoding should be loaded from the agent package, rather than held statically in the learning module. It must have the facility to report statistics from learning runs, as well as write out final evolved agents.
 
-The learning framework will also be assessed on three counts. Firstly, learning should not run for too long, grating the freedom to increase generation count or adjust parameters. Secondly, the learning process should demonstrate a meaning improvement to the agent over generations as this demonstrates an effective genetic algorithm. Thirdly, the final evolved agent will be assessed, using the level playing package. It will tested against the human created agents and analysed for behaviours and strategies not considered during their creation. 
+The learning module will also be assessed on three counts. Firstly, learning should not run for too long, grating the freedom to increase generation count or adjust parameters. Secondly, the learning process should demonstrate a meaning improvement to the agent over generations as this demonstrates an effective genetic algorithm. Thirdly, the final evolved agent will be assessed, using the level playing package. It will tested against the human created agents and analysed for behaviours and strategies not considered during their creation. 
 
 \subsection{Non-functional requirements}
 
-Both the level playing package and the agent framework should not prevent or harm thread safety, allowing multi-threading in the learning framework. Each part should be deterministic, i.e. if given the same parameter files will always produce the same results. Lastly, The entire project must be able to be packaged and run externally.
+Both the level playing module and the agent framework should not prevent or harm thread safety, allowing multi-threading in the learning module. Each part should be deterministic, i.e. if given the same parameter files will always produce the same results. Lastly, the entire project must have the ability to be packaged and run externally.
+
+\subsection{Major Dependencies}
+The project has two major dependencies: a game engine and a learning library. Their selection influenced the design of all aspects of the project and hence are included here. 
+
+As previously mentioned, the project will extend the Mario AI Benchmark. As previously discussed in Section \ref{subsec:marioaibench} the Mario AI Benchmark is an open-source Java code-base, build around a clone of the game Super Mario Bros. 3. It was chosen for its aforementioned suitability to learning and for its other pertinent features, including an agent interface, level playing and generation package and other useful additions (e.g. the ability to turn off the reliance on the system clock).
+
+The use of the Mario AI Benchmark restricts the choice of language (discussed further in Section \ref{subsec:langchoice}) to those that can run on the JVM. Hence, ECJ was chosen as the learning library as it is written in Java and is available as both source-code and packaged jar. Furthermore, ECJ fit the project specification very well: it provides support for GAs and ESes, its classes and settings are decided at runtime from external parameter files, it is highly flexible and open to extension, and has facilities for logging run statistics.
+
+Although the intention is to included these major dependencies as packaged jars, code modification may be necessary. In that case sub-projects will be written, modifying the source code of the dependencies (which are available on academic licences).
+
+\section{Agent Framework}
+
+
+\subsection{Design}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.5]{diagrams/AgentClassDiagram.png}
+	\caption{UML class diagram of the agent framework.}
+	\label{fig:aumlcd}
+\end{figure}
+
+The benchmark offers an \emph{Agent} interface, which when extended can be passed into the game playing portion of the software. Every game tick the current \emph{Environment} is passed to the agent, and then the agent is asked for an \emph{Action}, which is a set of explicit key press for Mario to perform.
+
+The agent framework's basis will be extending this interface. Similar to REALM's agent, it will be a rule-based system. A UML class diagram of the system is given in Figure \ref{fig:aumlcd}.
+
+\vspace{\baselineskip}
+
+Each \emph{Agent} instance is initialised with a ruleset, consisting of a list of rules, each containing an \emph{Action}. On receiving the current game \emph{Environment} it is passed to a number of perception objects. Each one is responsible for a exactly one measurement (e.g. Enemy ahead, Mario moving to right etc.). These measurements are collected in to an observation object and stored in the agent.
+
+When asked for an action, the \emph{Agent} passes this observation to its ruleset, which tests it against each rule. Rules contain conditions on what perception measurements should be, which determine its score for a given observation. The highest scoring  rule (with a conflict strategy for ties) is then asked for its action, which is returned from the agent.
+
+\vspace{\baselineskip}
+
+Perceptions are hard coded and as such all of an agents behaviour is determined by its ruleset. If ruleset are implemented in a persistable fashion it ensures that agents can be read and written to external files. Furthermore, rulesets are immutable and only information received during the current game tick is considered. Hence, agents have no state and are deterministic and thread safe (assuming the game engine is).
+
+The capability of this framework is closely tied to the choice of perceptions, which therefore must be chosen with careful consideration. The perceptions chosen were based upon those used in the REALM v1 agent \cite[p.~85]{realm}. The following is the final list of perceptions chosen:
+\begin{description}
+\item[MarioMode] Measures whether Mario is \textbf{small}, \textbf{big} or \textbf{fire} (capable of throwing fireballs).
+\item[JumpAvailable] Detects if Mario has the ability to jump (i.e. on the ground or gripping a wall with the jump key off).
+\item[OnGround] Measures whether Mario is in the air or not.
+\item[EnemyLeft] Detects if an enemy is to the left of Mario.
+\item[EnemyUpperRight] Detects if an enemy is to the upper right of Mario.
+\item[EnemyLowerRight] Detects if an enemy is to the lower right or directly to the right of Mario.
+\item[ObstacleAhead] Detects if there is a block or terrain directly to the right of Mario.
+\item[PitAhead] Detects if there is a pit (falling into pits will end the level) to the right of Mario.
+\item[PitBelow] Detects if there is a pit directly below Mario.
+\item[MovingX] Measures the direction Mario is moving horizontally.
+\item[MovingY] Measures the direction Mario is moving vertically.
+\end{description}
+
+The set of actions Mario can take is any combination of 6 key presses: \textbf{left}, \textbf{right}, \textbf{up}, \textbf{down}, \textbf{jump} and \textbf{speed} (which also shoots a fireball if possible). It was decided that this set would be restricted for use in the ruleset agent, only allowing cobinations of \textbf{left}, \textbf{right}, \textbf{jump} and \textbf{speed}. This was to reduce the size of the rules, which reduces the search space of any learning process. The \textbf{up} key performed no function and the \textbf{down} key made Mario crouch, which seemed too niche to be useful during the design process.
 
 
 
-\section{Design}
+\subsection{Language and Tools}
 
-\section{Implementation}
+\subsubsection{Scala}
+\label{subsec:langchoice}
+The dependency on the Mario AI Benchmark restricts the language choice to those that can run on the JVM. Hence, Scala was chosen to be the primary language of the project. It's functional programming elements (pattern matching, list processing etc.) are very applicable to the ruleset and it's semantic reasoner. Scala's focus on immutability aids in maintaining the thread safety requirement. Furthermore, ECJ's structure necessitates the use of type casting, which Scala handles elegantly. Several other Scala features were used throughout the project, such as lambdas, singletons, type aliases and case classes. 
 
-\section{Testing}
+\subsubsection{Maven}
+If code modification of the major dependencies is necessary it will be done in their language, which is Java for both. In either case dependency management will be important. Maven was chosen to perform this, as well as packaging the final project. Moreover, it has the ability to package both Java and Scala projects, keeping the tools consistent across any sub-projects that have to be included.
+
+\subsection{Implementation}
+
+The design of the agent framework allows for agents to be fully determined by their ruleset. In order for an agent to be used in a evolutionary algorithm it must be represented by a simple data structure. Hence, implementation must allow for agent's rulesets to be unambiguously represented as, for example, a one dimensional collection. For this purpose a byte vector was chosen.
+
+\subsubsection{Perceptions}
+
+The Perception interface was implemented as an abstract class, with an index integer field and an apply method. \emph{apply} takes the game Environment and returns a Byte (8-bit integer), representing the measurement. Perception was extended into two further abstract classes: BoolPerception, which enforces apply's return be either 1 or 0, representing true and false respectively; and BytePerception, which has a limit field and enforces apply's return is between 0 and limit (inclusively).
+
+Concrete perceptions were implemented as objects (singletons) using the \emph{case} keyword, which allows for exhaustive pattern matching on the Perception class, as well as type safe extension by adding further case objects. Each one declares a unique index integer to the Perception superclass (starting at 0 and increasing by one for each). They implement the apply method to return their specific measurement.
+
+For illustration, consider these examples. The perception PitBelow extends BoolPerception, with a unique index of 8 and implements \emph{apply} to return 1 if there is a pit directly below Mario and 0 otherwise. MarioMode extends BytePerception, with a unique index of 0 and a limit of 2, with \emph{apply} returning 0 if Mario is \textbf{small}, 1 for \textbf{big} and 2 for \textbf{fire}.
+
+This approach keeps all the information about perceptions contained in one file. The number of perceptions is easily extended by adding more case objects. Furthermore, it allows the Observation and Conditions classes to be implemented as fixed length byte vectors, with the vector's index matching the perception's unique index field. With use of Scala's implicit and extractor functionality, building the Observation and validating the Conditions vectors is type safe and concise:
+
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+val observationVector = 
+    Vector.tabulate(Perception.NUMBER_OF_PERCEPTIONS) {
+        n: Int => n match {
+            // This retrieves the perception object with the index
+            // that matches n. 
+            case Perception(perception) => perception(environment)
+        }
+    }
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+def validateConditions(conditionsVector: Vector[Byte]): Boolean = {
+    conditionsVector.zipWithIndex.forall {
+        case (b: Byte, Perception(perception)) => perception match {
+            case boolP : BoolPerception => 
+                (b == boolP.TRUE) || (b == boolP.FALSE) 
+                    || (b == DONT_CARE)
+            case byteP : BytePerception => 
+                ((0 <= b) && (b <= byteP.limit)) || (b == DONT_CARE)
+        }
+        case _ => false 
+    }
+}
+
+\end{lstlisting}
+\end{minipage}
+
+Notice that no information about specific concrete perceptions is required, enforcing the open-closed design principle and allowing perceptions to be added without need to alter this code.
+
+\subsubsection{Perceiving the Environment}
+
+The \emph{Environment} interface contains several individual methods that report Mario's situation. Therefore implementing Perceptions that concerned Mario (e.g. MarioMode, MovingX etc.) was trivial.
+
+Perceptions pertaining to enemies, obstacles or pits was more challenging. Environment provides two 19x19 arrays, one for enemies and one for terrain. Centred around Mario, each array element represents a `square' (16 pixels) of the level scene. The value of an element marks the presence of an enemy or terrain square. 
+
+Enemy and obstacle perceptions pass the relevant array, a lambda test function, coordinates for a box segment of the array and a boolean to a helper function. This function uses Scala's for loop comprehensions to search through the box, applying the lambda to each element, returning the boolean parameter if the lambda returns true at least once. In this way it is easy to search for an enemy or obstacle in a box relative to Mario. Pits work in a similar way, but declare columns instead. If there is no terrain in the column below Mario's height, then it is considered a pit. Take EnemyLeft for example:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+case object EnemyLeft extends BoolPerception(3) {
+    // Minus = (Up,Left) | Plus = (Down,Right)
+    val AREA_UL = (-2,-2); val AREA_BR = (1, -1);
+  
+    def apply(environment: Environment): Byte = {
+        if(Perception.enemyInBoxRelativeToMario(environment, AREA_UL, AREA_BR)) 
+            1 else 0  
+    }
+}
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+def enemyInBoxRelativeToMario(
+          environment: Environment, 
+          a: (Int, Int), b: (Int, Int)): Boolean = {
+    val enemies = environment.getEnemiesObservationZ(2);
+    val test = (grid: Array[Array[Byte]], tup: Tuple2[Int, Int]) =>{
+         val x = grid(tup._1)(tup._2)
+         x == 1
+    }
+    checkBox(enemies, test, getMarioPos(environment), a, b, true)
+}
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+def checkBox(grid: Array[Array[Byte]], 
+               test: (Array[Array[Byte]], (Int, Int))=>Boolean, 
+               mario: (Int, Int), 
+               a: (Int, Int), b: (Int, Int), 
+               ret: Boolean): Boolean = {
+    import Math.min
+    import Math.max
+    val relARow = min(grid.length-1, max(0, (a._1 + mario._1)))
+    val relACol = min(grid(0).length-1, max(0, (a._2 + mario._2)))
+    val relBRow = min(grid.length-1, max(0, (b._1 + mario._1)))
+    val relBCol = min(grid(0).length-1, max(0, (b._2 + mario._2)))
+    
+    for {
+      i <- min(relARow, relBRow) to max(relARow, relBRow)
+      j <- min(relACol, relBCol) to max(relARow, relBCol)
+      if (test(grid, (i, j)))
+    }{
+        return ret
+    }
+    !ret
+}
+\end{lstlisting}
+\end{minipage}
+
+
+\subsubsection{Observation, Conditions and Actions}
+
+For clarity an Action class was created for use in the ruleset, with an adapter method to convert it into the boolean array expected in the Agent interface. As the Observation and Conditions classes were to be implemented as fixed length byte vectors, so was the Action class.
+
+Action vectors have a fixed length of 4, where elements represent \textbf{left}, \textbf{right}, \textbf{jump} and \textbf{speed} respectively. Observation vectors have a fixed length equal to the number of perceptions and hold the byte returned by each Perception's apply function. Conditions have the same length and hold data in the same range as Observation, the condition on each perception therefore being that the corresponding element in the observation be equal. They have one additional possible value, {\footnotesize DONT\_CARE} (equal to byte -1), which represents that no condition be placed on that perception.
+
+Instead of implementing these classes as wrappers for \emph{Vector[Byte]}, which can be inefficient and overly verbose, type aliases were used. This allowed each class to be referred to explicitly (rather than just by variable name), which provides readability and type safety, whilst still having direct access to the list processing methods included in the Vector class. They were declared on the agent framework's package object, making them accessible package wide. An object with static data and factory methods was included for each.
+
+For example, this allowed Observation to be used as such:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+abstract class ObservationAgent extends Agent {
+    ...
+    // Using factory method for a blank observation
+    var observation: Observation = Observation.BLANK
+    ...
+    def integrateObservation{env: Environment}: Unit = {
+        // Using the Observation factory method 
+        // to build a new observation
+        observation = Observation(env)
+        
+        if (printObservation) {
+            // Using Vector method foreach directly
+            observation.foreach { 
+                b:Byte => print(" ~ " + b)
+            }
+        } 
+        ...
+    }
+    ...
+ }
+
+\end{lstlisting}
+\end{minipage}
+
+
+\subsubsection{Rules and Rulesets}
+
+Having both Conditions and Action implemented as byte vectors allows rules to be represented in the same way. Each rule is simple the concatenation of the Conditions and Action vectors. The rule vector are fixed length as both Conditions and Action are. Moreover, as rulesets contain just a list of rules, rulesets can be unambiguously represented by a single dimension byte vector. This allows rulesets not only to be persisted easily (as say a csv) but also gives the data representation needed for the evolutionary process.
+
+In this case both Rule and Ruleset were implemented as wrapper classes for \emph{Vector[Byte]} and \emph{Seq[Rule]} respectively. Ruleset also holds a default Action, which is used if no rule matches the environment.
+
+The semantic reasoner of the rule system is split across both classes. In Rule, the \emph{scoreAgainst} method is passed the observation and produces a score by looping through the conditions and adding 1 if the condition and observation match in value and 0 if the condition is {\footnotesize DONT\_CARE}. If a mismatched condition is found, the method immediately returns with -1. It is implemented tail recursively to provide maximum efficiency.
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+def scoreAgainst(observation: Observation): Int = {
+    val conditions = ruleVector.slice(0, Conditions.LENGTH)
+    @tailrec
+    def scoreRecu(i: Int, sum: Int = 0): Int =  {
+        if (i == Conditions.LENGTH) sum
+        else conditions(i) match {
+            case Conditions.DONT_CARE => scoreRecu(i+1, sum)
+            case b if b == observation(i) => scoreRecu(i+1, sum+1)
+            case _ => -1
+        }
+    }
+    scoreRecu(0)
+}
+\end{lstlisting}
+\end{minipage}
+
+In Ruleset, the \emph{getBestAction} is passed the observation and returns an action boolean array. Using tail recursion it performs a fold operation on its rules, saving and returning the best scoring rule (preferring earlier rules when tied). If no rule gets a score of 0 or above then the default action is returned.
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+def getBestExAction(observation: Observation): Array[Boolean] = {
+    
+    @tailrec
+    def getBestRuleRecu(rs: Seq[Rule], best: Option[Rule] = None, bestScore: Int = 0): Option[Rule] = 
+        rs match {
+          case Nil => best
+          case (r +: ts) => {
+              val newScore = r.scoreAgainst(observation)
+              if (newRuleBetter(bestScore, newScore))
+                  getBestRuleRecu(ts, Some(r), newScore)
+              else
+                  getBestRuleRecu(ts, best, bestScore)
+        }
+    }
+    
+    getBestRuleRecu(rules) match {
+        case None => defaultAction.toBooleanArray
+        case Some(r) => r.getAction.toBooleanArray
+    }
+}
+\end{lstlisting}
+\end{minipage}
+
+
+\subsubsection{Persistence}
+
+Agent's are persisted by persisting their ruleset. Rulesets are persisted in single line csv files. An IO helper object is passed an agent, extracts it's ruleset and requests it's vector representation, writing each byte separated by a comma. On reading an agent file, it constructs a byte vector. This byte vector is passed to the Ruleset's factory method, which groups the vector by rule length to form the rule sequence.
+
+\subsection{Testing}
+
+!IN PROGRESS!
+
+
+\section{Level Playing Module}
+
+The main purpose of the level playing module is to evaluate the fitness of agents during the learning process. An effective learning process needs a diverse testbed, thus the level playing module must be deterministic, highly configurable and able to provide variety. 
+
+\subsection{Design}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.5]{diagrams/PlayingClassDiagram.png}
+	\caption{UML class diagram of the level playing module.}
+	\label{fig:pumlcd}
+\end{figure}
+
+In the benchmark the heart of the game engine is the \emph{MarioEnvironment} class. It is responsible for calling the \emph{LevelGeneration} class, updating the scene each tick with an action, and reporting the scene through the Environment interface. Parameters controlling level generation and playing are contained in the \emph{MarioAIOptions} class. The \emph{BasicTask} class controls the game loop in conjunction with an agent. It initialises the MarioEnvironment class with options, then runs through the loop, commanding a tick, passing the environment to the agent and finally requesting an action and passing it to the MarioEnvironment instance. Statistics pertaining to the agents performance are stored in MarioEnvironment in the \emph{EvaluationInfo} class, which are cloned to BasicTask at the end of each level. Fitness can be requested from EvaluationInfo with the optional parameter, a \emph{SystemOfValues} instance, which contains the multipliers for various measurements.
+
+The MarioAIOptions class contains several useful parameters. They include: a integer seed, which is passed to the level generator's RNGs; a boolean that toggles visualisation; integers that determine level difficulty, length and time-limit; and booleans that toggle enemies, pits and blocks. The SystemOfValues class contains multipliers for  distance achieved, whether or not the level was completed, the amount of time left on completion as well as many others.
+
+\vspace{\baselineskip}
+
+The level playing module will extend this system. It's primary objective will be to allow for multiple levels to be played with options that update as prescribed by some parameter class. Upon completion it will produce a fitness based on all levels played. Furthermore, it will allow for the injection of different agents and level seeds, to allow different agents to play the same options without rebuilding the instance. A UML class diagram for the module can be found in Figure \ref{fig:pumlcd}.
+
+Level options are stored in the \emph{MWLevelOptions} class, which acts as an adapter for the MarioAIOptions class. Each new level these will be updated by the dedicated \emph{MWLevelOptionsUpdater} class. The \emph{EvaluationMultipliers} class is an adapter for the SystemOfValues class, which is used to calculate the fitness at the end of a sequence of levels. Both MWLevelOptions and EvaluationMultipliers are immutable data classes, which provides determinism and thread safety, as well as easy persistence. MWLevelOptionsUpdater's qualities in this regard are Implementation details and are discussed in the following section. The full list of parameters held in these classes can be found in the Appendix !REF!.
+
+\subsection{Modifying the Benchmark}
+
+!IN PROGRESS!
+
+\subsection{Implementation}
+
+!IN PROGRESS!
+
+\subsection{Testing}
+
+!IN PROGRESS!
+
+\section{Learning}
+
+\subsection{Design}
+
+\subsection{Implementation}
+
+\subsection{Testing}
 
 \section{Evaluation}
+
+\subsection{Agent Framework}
+
+\subsection{Learning}
+
+\subsection{Project Evaluation}
 
 \clearpage
 \begin{thebibliography}{11}
@@ -483,6 +843,13 @@ Both the level playing package and the agent framework should not prevent or har
   The MIT Press, Cambridge, Massachusetts, London, England,
   Available: \url{http://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html},
   1998.
+
+\bibitem{ev-comp} 
+  Gary B. Fogel et al.,
+  \emph{Evolutionary Programming}
+  Scholarpedia, 6(4):1818.,
+  \url{http://www.scholarpedia.org/article/Evolutionary_programming},
+  2011.
   
 \bibitem{modernai3}
   Stuart J. Russell, Peter Norvig,
