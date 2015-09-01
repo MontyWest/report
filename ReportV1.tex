@@ -127,54 +127,14 @@ The first video game opponents were simple discrete algorithms, such as the comp
 
 However, with increases in processing power and the complexity of games over the last ten years many academic techniques have been harnessed by developers. For example, Monte Carlo Tree Search techniques developed for use in Go AI research has been used in \emph{Total War: Rome II} \cite{rome}. In 2008's \emph{Left 4 Dead}, Player Modelling was used to alter play experience for different users \cite[p.~10]{playermod}. Furthermore, AI and related techniques are no longer only being used as adversaries. There has been a rise in intelligent Procedural Content Generation in games in recent years, in both a game-world sense (for example \emph{MineCraft} and \emph{Terraria}) and also a story sense (for example \emph{Skyrim's} Radiant Quest System) \cite{skyrim}.
 
-Moreover, games have recently enjoyed more consideration in academic research. Commercial games such as \emph{Ms. Pac Man}, \emph{Starcraft}, \emph{Unreal Tournament} and \emph{Super Mario Bros.} and open-source games like \emph{TORCS} \cite{torcs} and \emph{Cellz} \cite{cellz} have been at the centre of recent competitions and papers \cite{panorama} \cite{marioaicomp}. These competitions are the forefront of research and development into learning techniques in video games, and will be explored in more detail in section \ref{subsec:gameaicomps}.
-!EXTEND!
+Moreover, games have recently enjoyed more consideration in academic research. Commercial games such as \emph{Ms. Pac Man}, \emph{Starcraft}, \emph{Unreal Tournament} and \emph{Super Mario Bros.} and open-source games like \emph{TORCS} \cite{torcs} and \emph{Cellz} \cite{cellz} have been at the centre of recent competitions and papers \cite{panorama} \cite{marioaicomp}. 
 
-\subsection{Aim}
-The aim of the project is to explore the use of behavioural learning techniques in creating a game-playing agent-based AI. This will be achieved by producing an intelligent agent, developed by a evolutionary algorithm, that plays a 2D side-scrolling platform game.
-
-\subsection{Objectives}
-
-\begin{enumerate}
-
-	\item \label{obj:design}
-	\textbf{Design} \\
-	Influenced by previous approaches, design an agent and learning procedure that can demonstrate meaningful improvement during learning.
-	
-	\item \label{obj:impl}
-	\textbf{Implementation} \\
-	Implement agent and learning designs in a modular, customisable and test-driven manner, utilising external libraries and features of the game software.
-	
-	\item \label{obj:test}
-	\textbf{Testing} \\
-	Provide significant test coverage to the functionality of the implementation.
-	
-	\item \label{obj:learn}
-	\textbf{Learning} \\
-	Grant the agent a large and diverse testbed from which to learn as well as ample time and resources to do so.
-	
-	\item \label{obj:eval}
-	\textbf{Evaluation} \\
-	Evaluate both the competence and learning capability of the agent and compare to alternative approaches.
-
-\end{enumerate}
-
-\subsection{Report Structure}
-
+Learning has long been a staple of academic research into AI and dynamic programming, especially in robotics and board games. However, it has also had success in more niche problems, such as helicopter control \cite{rlheli} and human-computer dialogue \cite{rlhci}. Similarly the agent model is a popular approach to AI problems. It is seen in commercial applications, as mentioned above, as well as academic applications, such as board game AI. Furthermore, the agent model's autonomous nature makes it particularly suited to utilising biologically inspired learning.
 
 
 %-----------------------------------------------------------------------
 % Definitions
 %-----------------------------------------------------------------------
-\clearpage
-\section{Background}
-
-Learning has long been a staple of academic research into AI and dynamic programming, especially in robotics and board games. However, it has also had success in more niche problems, such as helicopter control \cite{rlheli} and human-computer dialogue \cite{rlhci}.
-
-Similarly the agent model is a popular approach to AI problems. It is seen in commercial applications, as mentioned above, as well as academic applications, such as board game AI. 
-
-The agent model's autonomous nature makes it particularly suited to utilising biologically inspired learning.
-
 \subsection{Concept Definitions}
 
 At this point it is useful to introduce some high level descriptions/definitions of some key concepts.
@@ -189,7 +149,6 @@ At this point it is useful to introduce some high level descriptions/definitions
 \end{figure}
 
 An intelligent agent is an entity that uses \textbf{sensors} to perceive its \textbf{environment} and acts based on that perception through \textbf{actuators} or \textbf{effectors}. In software, this is often realised as an autonomous program or module that takes its perception of the \textbf{environment} as input an returns \textbf{actions} as output. Figure \ref{fig:ia} shows the basic structure of an intelligent agent. \cite[p.~34]{modernai3}
-
 
 
 \subsubsection{Rule-based systems}
@@ -227,11 +186,13 @@ Evolution Strategies differ from standard Genetic Algorithms by using \textbf{tr
 	\item[$\pmb{(\mu  + \lambda)}$] Differs from the $\pmb{(\mu \  , \   \lambda)}$ variant by adding the $\mu$ individuals chosen from generation $g-1$ to the new generation $g$ after the mutation phase. Hence the population size is $\lambda + \mu$.
 \end{description}
 
-%-----------------------------------------------------------------------
-% Learning in Games (Current Work in Field)
-%-----------------------------------------------------------------------
 
-\subsection{Learning Agents and Commercial Games}
+%-----------------------------------------------------------------------
+% Motivation
+%-----------------------------------------------------------------------
+\subsection{Motivation}
+
+Exploring the use of learning techniques for use in video games is a challenging and eminent area of research, with interest from both the video game and computation intelligence communities.
 
 \subsubsection*{Desirability}
 
@@ -241,10 +202,146 @@ Ventures in utilising learning in commercial video games have been limited and l
 
 The main issue with constructing effectual learning (or learnt) agent AI in game is risk versus reward. Game development works on strict cycles and there are limited resources to invest into AI research, especially if the outcome is uncertain. Furthermore, one player playing one game produces a very small data set, making learning from the player challenging. Moreover, AI that is believably human is a field still in its infancy. \cite{evolutioningamedesign}
 
-\subsection{Learning Agents and Game AI Competitions}
-\label{subsec:gameaicomps}
+\subsubsection*{Games as a Benchmark}
 
 Despite the lack of commercial success, video games can act as great benchmark for learning agents. They are designed to challenge humans, and therefore will challenge learning methods, especially those inspired by biological processes. Games naturally have some level of learning curve associated with playing them (as a human). Also, games require quick reactions to stimulus, something not true of traditional AI challenges such as board games. Most games have some notion of scoring suitable for a fitness function. Lastly, they are generally accessible to students, academics and the general public alike. \cite[p.~9]{panorama} \cite[p.~1]{marioaicomp} \cite[p.~2]{2012the}
+
+\vspace{\baselineskip}
+
+As such, games have now been utilised in several academic AI competitions. These competitions are the forefront of research and development into learning techniques in video games, and will be explored in more detail in section \ref{subsec:gameaicomps}.
+
+This project is motivated by the variety of previous approaches taken in these competitions and the unexpected results they produced. 
+
+
+%-----------------------------------------------------------------------
+% Aims and Objectives
+%-----------------------------------------------------------------------
+\subsection{Aim and Objectives}
+
+The aim of the project is to explore the use of behavioural learning techniques in creating a game-playing agent-based AI. This will be achieved by producing an intelligent agent, developed by a evolutionary algorithm, that plays a 2D side-scrolling platform game.
+
+\subsubsection*{Objectives}
+
+\begin{enumerate}
+
+	\item \label{obj:design}
+	\textbf{Design} \\
+	Influenced by previous approaches, design an agent and learning procedure that can demonstrate meaningful improvement during learning.
+	
+	\item \label{obj:impl}
+	\textbf{Implementation} \\
+	Implement agent and learning designs in a modular, customisable and test-driven manner, utilising external libraries and features of the game software.
+	
+	\item \label{obj:test}
+	\textbf{Testing} \\
+	Provide significant test coverage to the functionality of the implementation.
+	
+	\item \label{obj:learn}
+	\textbf{Learning} \\
+	Grant the agent a large and diverse testbed from which to learn as well as ample time and resources to do so.
+	
+	\item \label{obj:eval}
+	\textbf{Evaluation} \\
+	Evaluate both the competence and learning capability of the agent and compare to alternative approaches.
+
+\end{enumerate}
+
+%-----------------------------------------------------------------------
+% Methodology
+%-----------------------------------------------------------------------
+\subsection{Methodology}
+
+The two central components to this project, the agent and the learning process, will be designed, implemented and tested as two separate modules. This presents a clean separation of concerns. The agent module will be completed first, followed by the learning module. A third module will also be created, which will allow the agent to play generated levels and receive a score.
+
+The Mario benchmark software is open-source\footnote{Available at http://www.marioai.org/gameplay-track/getting-started} and will form the initial codebase for this project. It is written in Java and contains the game-engine and useful features such as level generation and level playing classes.
+
+I intend to use Scala as the main language of this project as I believe that it's functional and concurrent features will suit the problem. Scala and Java are widely compatible (as they both compile JVM bytecode) so this should not require a significant amount of work. However, the codebase will be assessed for the suitability of this approach, and Java 8 will be used if Scala proves to be counterproductive.
+
+Furthermore the software will be assessed for the inclusion of build tools, such as \emph{sbt} and \emph{Maven}; testing frameworks, such as \emph{ScalaMock} and \emph{Mockito} and logging, such as \emph{log4j} and Scala's inbuilt logging package.
+
+\subsubsection*{Objective \ref{obj:design}: Design}
+\label{meth:design}
+
+The design of both the agent and learning module will follow the approach of the REALM agent, discussed in \ref{ssec:realm}.
+
+The agent module will be a rule-based system that maps environment based conditions to explicit key presses. This project will look to differ from the REALM agent in regards to specific environment perceptions. The available sensory information will be assessed and distilled into a collection of simple observations.
+
+The learning module will utilise an offline genetic algorithm with a similar configuration seen in \ref{ssec:realm}. Agents will be individuals, with rulesets as genomes. Fitness of an individual will be determined by playing generated levels. However, different approaches to mutation, crossover and reordering will be explored, as well as careful consideration of calculating fitness from level playing statistics.
+
+\subsubsection*{Objective \ref{obj:impl}: Implementation}
+\label{meth:impl}
+
+The agent module will implement the \emph{Agent} interface including in the benchmark, which will allow for the agent to used in other areas of the benchmark software, such as the game-playing and evaluation classes. Each agent will be defined by it's ruleset, the contents of which will determine its behaviour. The agent will implement a semantic reasoner for the ruleset, returning a action as prescribed by the chosen rule.
+
+The agent will gather it's sensory information from the game's \emph{Environment} class, which reports visible properties of the level scene. As discussed in \ref{meth:design}, this will be simplified to a list of observations and compared against the agent's ruleset.
+
+\vspace{\baselineskip}
+
+The learning module will utilise an external library alongside the level playing module. Many evolutionary computation libraries exist for Java (and therefore Scala), \emph{ECJ} \cite{ecj} and \emph{JGAP} \cite{jgap} will both be considered for use in this project.
+
+The implementation will manage the integration of this library with both the agent and level playing modules. The algorithm will evolve a simple data structure representation of rulesets, inject them into agents and assess those agents by having them play several carefully parametrised levels. The statistics returned from these levels will form the base variables of the fitness function, with multipliers being configurable. To aid in improving the learning process, these parameters will be held 
+externally and fitness values will be logged.
+
+\subsubsection*{Objective \ref{obj:test}: Testing}
+\label{meth:test}
+
+Test coverage the agent module will handled by black-box testing. Unit tests will be written to test the semantic reasoner and the environment observation methods.
+
+Due to the stochastic nature of genetic algorithms, testing of the learning module will be limited. However, the breeding can be tested by verifying that children stay within parameters. Some evolutionary libraries, such as JGAP, provide several unit tests. If available these will become the primary source of test coverage for the module.
+
+\subsubsection*{Objective \ref{obj:learn}: Learning}
+\label{meth:learn}
+
+Optimising the learning parameters, including the parameters of the breeding phase, fitness function and level playing, will be an important stage of the project. Assessment of the parameters used in previous agent such as REALM (discussed in \ref{ssec:realm}) D. Perez et al. \cite{gramev} and Agent Smith \cite{agentsmith} will inform the initial values. From there learning module logs will be analysed for improvements. For example, if there is a lot of variation in fitness then perhaps mutation should be restricted, or if the average fitness does not eventually level out then the further generations should be created.
+
+The design of the agent can also influence the effectiveness of the learning algorithm. The size of the search space is determined by the conditions and actions of the rulesets, the reduction of which could improve evolutionary capability. Hence, the learning phase of the project may inform a redesign of the agent, which is one of the main reasons this project will take an agile approach.
+
+The learning itself is likely to be a time consuming, computationally heavy procedure. To assist in providing ample resources to this process the project will have access to two 8 core servers, as well as a laptop with an Intel i7 processor.
+
+\subsubsection*{Objective \ref{obj:eval}: Evaluation}
+\label{meth:eval}
+
+On the conclusion of the learning process the best/final agent will be extracted and evaluated. This will be done by using the level playing module. The agent will go through an extensive set of levels, based on the approach taken by the 2010 Mario AI Competition.
+
+The primary comparison will be with a handcrafted ruleset, which will assess the significance of the agent evolution. Other comparisons can be drawn against agents that are included as examples in the benchmark, such as the \emph{ForwardJumpingAgent} that was used for similar comparisons in the 2009 competition, as well as other entrants into the competition.
+
+The second part of this objective is to evaluate the learning procedure. Figures such as average and maximum generation fitness can provide an insight into the effectiveness of the genetic algorithm. Furthermore, a baseline for these values can be provided by having the handcrafted agent play the levels alongside the evolving agent. The final evaluation report will provide an analysis of these figures.
+
+%-----------------------------------------------------------------------
+% Report Structure
+%-----------------------------------------------------------------------
+\subsection{Report Structure}
+
+This report will cover previous approaches to the project's aim; the design, implementation of the agent and learning process; and evaluate both the results and the project as a whole.
+
+Section 2 details existing work, specifically relevant entrants to Game AI competitions. It will consider their approaches to both learning and agent design for both effectiveness and significance to learning in video games. It will look in particular at the Mario AI Competition and the winner entrant in 2010, the REALM agent.
+
+Section 3 will cover the projects specification, discussing functional and non-functional requirements. It will also include a description of the major dependencies that influenced project design.
+
+Section 4 will explain the design, implementation and testing of the rule-based agent. It will demonstrate how the agent was built to allow it be evolved by a genetic algorithm, as well as how it perceives its environment and choosing an action. Reasons for the choice of project language and build tools is also included here. 
+
+Section 5 will detail the development of the level playing module.This contains an account of the modifications that had to be made to the game engine software. It covers the extension to the game engine and how it as designed and implemented with a view to parametrisation and level variety.
+
+Section 6 explains the choice of genetic algorithm and the basic parameters used. It also describes extensions made to the learning library to allow it to effectively evolve the agent in an easily customisable and observable fashion. Lastly, it details how specific mutataion and fitness parameters were chosen in response to initial learning runs in order to improve the process.
+
+Section 7 evaluates the agent framework for it's capability by considering 3 hand crafting agent rulesets. It then compares these agents to the final learnt agent, assessing it for attainment, as well as interesting and unexpected behaviour. It also studies the effectiveness of the learning algorithm by examining metrics such as fitness increase over generations. Finally, it concludes with an analysis of the project as a whole, with a discussion on extensions and improvements to the learning and agent modules and the overall methodology.
+
+\clearpage
+
+%___________________________________________
+%*************************************************************
+% Existing Work
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\section{Existing Work}
+
+%-----------------------------------------------------------------------
+% Learning in Games (Current Work in Field)
+%-----------------------------------------------------------------------
+
+\subsection{Learning Agents and Game AI Competitions}
+\label{subsec:gameaicomps}
 
 Over the last few years several game based AI competitions have been run, over a variety of genres. These competitions challenge entrants to implement an agent that plays a game and is rated according to the competitions specification. They have attracted both academic \cite[p.~2]{2012the} and media interest \cite[p.~2]{marioaicomp}. The competition tend to encourage the use of learning techniques. Hence, several interesting papers concerning the application of biologically inspired learning agents in video games have recently been published. Approaches tend to vary widely, modelling and tackling the problem very differently and specialising techniques in previously unseen ways. \cite[p.~11]{2012the}
 
@@ -293,6 +390,10 @@ Besides that, the Mario benchmark presents an interesting challenge for learning
 
 Lastly, there is a considerable learning curve associated with Mario. The simplest levels could easily be solved by agents hard coded to jump when they reach an obstruction, whereas difficult levels require complex and varied behaviour. For example, traversing a series of pits may require a well placed series of jumps, or passing a group of enemies may require careful timing. Furthermore, considerations such as score, or the need to backtrack from a dead-end greatly increase the complexity of the problem. \cite[p.~3, p.~12]{2012the}
 
+
+%-----------------------------------------------------------------------
+% Previous Agents
+%-----------------------------------------------------------------------
 
 \subsection{Previous Learning Agent Approaches}
 \label{ssec:prevagents}
@@ -403,6 +504,14 @@ The ruleset developed from REALM V2 was entered into the 2010 unseen Gameplay tr
   \label{tab:agents}
 \end{table}
 
+
+
+%___________________________________________
+%*************************************************************
+% Project Specification
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 \section{Project Specification}
 
 \subsection{Functional Requirements}
@@ -434,10 +543,19 @@ As previously mentioned, the project will extend the Mario AI Benchmark. As prev
 
 The use of the Mario AI Benchmark restricts the choice of language (discussed further in Section \ref{subsec:langchoice}) to those that can run on the JVM. Hence, ECJ was chosen as the learning library as it is written in Java and is available as both source-code and packaged jar. Furthermore, ECJ fit the project specification very well: it provides support for GAs and ESes, its classes and settings are decided at runtime from external parameter files, it is highly flexible and open to extension, and has facilities for logging run statistics.
 
-Although the intention is to included these major dependencies as packaged jars, code modification may be necessary. In that case sub-projects will be written, modifying the source code of the dependencies (which are available on academic licences).
+Although the intention was to include these dependencies as packaged jars, modification of their source code was necessary (which was available on academic licences). This code was modified in Java, packaged and included as dependencies in the main project. Details of the modification is found in sections \ref{subsec:enginemod} and \ref{subsec:ecjmod}.
+
+%___________________________________________
+%*************************************************************
+% Agent
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 \section{Agent Framework}
 
+%-----------------------------------------------------------------------
+% Design
+%-----------------------------------------------------------------------
 
 \subsection{Design}
 
@@ -480,6 +598,9 @@ The capability of this framework is closely tied to the choice of perceptions, w
 The set of actions Mario can take is any combination of 6 key presses: \textbf{left}, \textbf{right}, \textbf{up}, \textbf{down}, \textbf{jump} and \textbf{speed} (which also shoots a fireball if possible). It was decided that this set would be restricted for use in the ruleset agent, only allowing cobinations of \textbf{left}, \textbf{right}, \textbf{jump} and \textbf{speed}. This was to reduce the size of the rules, which reduces the search space of any learning process. The \textbf{up} key performed no function and the \textbf{down} key made Mario crouch, which seemed too niche to be useful during the design process.
 
 
+%-----------------------------------------------------------------------
+% Lang + Tools
+%-----------------------------------------------------------------------
 
 \subsection{Language and Tools}
 
@@ -488,15 +609,20 @@ The set of actions Mario can take is any combination of 6 key presses: \textbf{l
 The dependency on the Mario AI Benchmark restricts the language choice to those that can run on the JVM. Hence, Scala was chosen to be the primary language of the project. It's functional programming elements (pattern matching, list processing etc.) are very applicable to the ruleset and it's semantic reasoner. Scala's focus on immutability aids in maintaining the thread safety requirement. Furthermore, ECJ's structure necessitates the use of type casting, which Scala handles elegantly. Several other Scala features were used throughout the project, such as lambdas, singletons, type aliases and case classes. 
 
 \subsubsection{Maven}
-If code modification of the major dependencies is necessary it will be done in their language, which is Java for both. In either case dependency management will be important. Maven was chosen to perform this, as well as packaging the final project. Moreover, it has the ability to package both Java and Scala projects, keeping the tools consistent across any sub-projects that have to be included.
+With two major and several minor dependencies, their management is important to the project. Maven was chosen to maintain this, as well as package the main project and both the sub-projects. It was chosen for its ability to package both Java and Scala projects, keeping the tools consistent across the entire code base.
+
+
+%-----------------------------------------------------------------------
+% Impl
+%-----------------------------------------------------------------------
 
 \subsection{Implementation}
 
-The design of the agent framework allows for agents to be fully determined by their ruleset. In order for an agent to be used in a evolutionary algorithm it must be represented by a simple data structure. Hence, implementation must allow for agent's rulesets to be unambiguously represented as, for example, a one dimensional collection. For this purpose a byte vector was chosen.
+The design of the agent framework allows for agents to be fully determined by their ruleset. In order for an agent to be used in a evolutionary algorithm it must be represented by a simple data structure. Hence, implementation must allow for agent's rulesets to be unambiguously represented as, for example, a one dimensional collection.
 
 \subsubsection{Perceptions}
 
-The Perception interface was implemented as an abstract class, with an index integer field and an apply method. \emph{apply} takes the game Environment and returns a Byte (8-bit integer), representing the measurement. Perception was extended into two further abstract classes: BoolPerception, which enforces apply's return be either 1 or 0, representing true and false respectively; and BytePerception, which has a limit field and enforces apply's return is between 0 and limit (inclusively).
+The Perception interface was implemented as an abstract class, with an index integer field and an apply method. \emph{apply} takes the game Environment and returns a Byte (8-bit integer) instance, representing the measurement. Perception was extended into two further abstract classes: BoolPerception, which enforces apply's return be either 1 or 0, representing true and false respectively; and BytePerception, which has a limit field and enforces apply's return is between 0 and limit (inclusively).
 
 Concrete perceptions were implemented as objects (singletons) using the \emph{case} keyword, which allows for exhaustive pattern matching on the Perception class, as well as type safe extension by adding further case objects. Each one declares a unique index integer to the Perception superclass (starting at 0 and increasing by one for each). They implement the apply method to return their specific measurement.
 
@@ -705,14 +831,50 @@ def getBestExAction(observation: Observation): Array[Boolean] = {
 
 Agent's are persisted by persisting their ruleset. Rulesets are persisted in single line csv files. An IO helper object is passed an agent, extracts it's ruleset and requests it's vector representation, writing each byte separated by a comma. On reading an agent file, it constructs a byte vector. This byte vector is passed to the Ruleset's factory method, which groups the vector by rule length to form the rule sequence.
 
+%-----------------------------------------------------------------------
+% Testing
+%-----------------------------------------------------------------------
+
 \subsection{Testing}
 
-!IN PROGRESS!
+Due to the agent modules heavy reliance of the Environment interface the use of a mocking facility was required. The ScalaMock testing library was adding to the project to provide this.
 
+Perceptions were unit tested individually, using white-box approach (due to the inclusion of mocking). Each test stubbed the Environment interface, instructing it to return a specific value (or array) for the relevant call, and testing that the perception echoed or processed it correctly. This allowed Perceptions to be tested independently of the game engine and provided test coverage. However, as there was very little documentation Environment interface, expected return values had to be investigated manually and edge cases could have easily been missed.
+
+Rulesets (and Rules) were tested with a largely black-box end-to-end style. This was required due to the reliance of type aliases. Fixed rulesets were constructed to verify that the \emph{getAction} method returned the expected action based on a fixed observation. Mocking of individual rules was not used in case the Rule class was altered to be a type alias instead of a wrapper class.
+
+These tests were added to Maven's build lifecycle, and hence run on every project build.
+
+%-----------------------------------------------------------------------
+% Handcrafted
+%-----------------------------------------------------------------------
+
+\subsection{Handcrafted Agents}
+
+For the purpose of evaluation and comparison three handcrafted rulesets were created for the agent framework.
+
+\begin{description}
+	\item[Forward Jumping] This ruleset commands the agent to jump whenever it can, regardless of its surroundings. It contains a single rule and a default action. It is a blind agent that does not take advantage of the framework, however it is surprising effective. An analogous agent was used for comparisons in the 2009 Mario AI Competition and was found to score higher than many entrants. The learning process will aim to discourage this behaviour as it is neither interesting or optimal.
+	\item[Simple Reactive] This agent only jumps when it detects an enemy, obstacle or pit in its way. It contains 5 rules and defaults to moving right at speed. This agent makes better use of the framework, but still does not use all of its perceptions. Its behaviour is more interesting, however it tends to score similarly to the forward jumping agent. Despite low attainment, a learnt agent that behaves in a similar way will be evaluating more favourably as it is using more of the agent's perceptions.
+	\item[Complex] This agent is the most interesting and highest scoring of the three. It has several different behaviours and builds off of the simple reactive agent. It contains 18 rules and makes use of all perceptions except MarioMode and EnemyLeft. Its behaviour was investigated at length and as such will form a good comparison to the final learnt agent. Effective evolved behaviours unconsidered in this agent's creation are a sign of the validity of the learning process. 
+\end{description}
+Creation of the handcrafted rulesets also informed additions and alterations to the agent's perceptions. For example, it was originally difficult to create an effective pit strategy and so PitAhead was changed from a BoolPerception to a BytePerception, returning 3 values representing \textbf{none}, \textbf{far} and \textbf{close}.
+!PUT RULESETS IN APPENDIX?!
+
+
+%___________________________________________
+%*************************************************************
+% Level Playing
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 \section{Level Playing Module}
 
 The main purpose of the level playing module is to evaluate the fitness of agents during the learning process. An effective learning process needs a diverse testbed, thus the level playing module must be deterministic, highly configurable and able to provide variety. 
+
+%-----------------------------------------------------------------------
+% Design
+%-----------------------------------------------------------------------
 
 \subsection{Design}
 
@@ -723,41 +885,253 @@ The main purpose of the level playing module is to evaluate the fitness of agent
 	\label{fig:pumlcd}
 \end{figure}
 
-In the benchmark the heart of the game engine is the \emph{MarioEnvironment} class. It is responsible for calling the \emph{LevelGeneration} class, updating the scene each tick with an action, and reporting the scene through the Environment interface. Parameters controlling level generation and playing are contained in the \emph{MarioAIOptions} class. The \emph{BasicTask} class controls the game loop in conjunction with an agent. It initialises the MarioEnvironment class with options, then runs through the loop, commanding a tick, passing the environment to the agent and finally requesting an action and passing it to the MarioEnvironment instance. Statistics pertaining to the agents performance are stored in MarioEnvironment in the \emph{EvaluationInfo} class, which are cloned to BasicTask at the end of each level. Fitness can be requested from EvaluationInfo with the optional parameter, a \emph{SystemOfValues} instance, which contains the multipliers for various measurements.
+In the benchmark the heart of the game engine is the \emph{MarioEnvironment} class. It is responsible for calling the \emph{LevelGeneration} class, updating the scene each tick with an action, and reporting the scene through the Environment interface. Parameters controlling level generation and playing are contained in the \emph{MarioAIOptions} class. The \emph{BasicTask} class controls the game loop in conjunction with an agent. It initialises the MarioEnvironment class with options, then runs through the loop, commanding a tick, passing the environment to the agent and finally requesting an action and passing it to the MarioEnvironment instance. Statistics pertaining to the agents performance are stored in MarioEnvironment in the \emph{EvaluationInfo} class, which are cloned to BasicTask at the end of the level. Fitness can be requested from EvaluationInfo with the optional parameter, a \emph{SystemOfValues} instance, which contains the multipliers for various measurements.
 
 The MarioAIOptions class contains several useful parameters. They include: a integer seed, which is passed to the level generator's RNGs; a boolean that toggles visualisation; integers that determine level difficulty, length and time-limit; and booleans that toggle enemies, pits and blocks. The SystemOfValues class contains multipliers for  distance achieved, whether or not the level was completed, the amount of time left on completion as well as many others.
 
 \vspace{\baselineskip}
 
-The level playing module will extend this system. It's primary objective will be to allow for multiple levels to be played with options that update as prescribed by some parameter class. Upon completion it will produce a fitness based on all levels played. Furthermore, it will allow for the injection of different agents and level seeds, to allow different agents to play the same options without rebuilding the instance. A UML class diagram for the module can be found in Figure \ref{fig:pumlcd}.
+The level playing module will extend this system. It's primary objective will be to allow for multiple levels (episodes) to be played with options that update as prescribed by some parameter class. Upon completion it will produce a fitness based on all levels played. Furthermore, it will allow for the injection of different agents and level seeds, to allow different agents to play the same options without rebuilding the instance. A UML class diagram for the module can be found in Figure \ref{fig:pumlcd}.
 
-Level options are stored in the \emph{MWLevelOptions} class, which acts as an adapter for the MarioAIOptions class. Each new level these will be updated by the dedicated \emph{MWLevelOptionsUpdater} class. The \emph{EvaluationMultipliers} class is an adapter for the SystemOfValues class, which is used to calculate the fitness at the end of a sequence of levels. Both MWLevelOptions and EvaluationMultipliers are immutable data classes, which provides determinism and thread safety, as well as easy persistence. MWLevelOptionsUpdater's qualities in this regard are Implementation details and are discussed in the following section. The full list of parameters held in these classes can be found in the Appendix !REF!.
+Level options are stored in the \emph{MWLevelOptions} class, which acts as an adapter for the MarioAIOptions class. Each new level these will be updated by the dedicated \emph{MWLevelOptionsUpdater} class. The \emph{EvaluationMultipliers} class is an adapter for the SystemOfValues class, which is used to calculate the fitness at the end of a sequence of levels. Both MWLevelOptions and EvaluationMultipliers are designed to be data classes, which provides determinism and thread safety, as well as easy persistence. MWLevelOptionsUpdater's qualities in this regard are Implementation details and are discussed in a following section. The full list of parameters held in these classes can be found in the Appendix !REF!.
+
+
+%-----------------------------------------------------------------------
+% Implementation
+%-----------------------------------------------------------------------
+
+\subsection{Implementation}
+
+\subsubsection{Parameter Classes}
+
+The MWLevelOptions and MWEvaluationMultipliers classes were implemented as data classes in an immutable builder pattern style. Each field has a \emph{withField(field)} method that returns a cloned instance with that field changed. This affords a concise, declarative style, whilst maintaining immutability. MWEvaluationMultipliers has a implicit converter to a SystemOfValues instance, which is required for evaluation in the benchmark. However, a similar approach was not possible for converting MWLevelOptions to a MarioAIOptions instance (required for the game-engine). MarioAIOptions hold more parameters than MWLevelOptions (e.g. agent and level seed), therefore the adapter function takes both the current MarioAIOptions and a MWLevelOptions instance as parameters and updates the former by overriding the corresponding fields with values from the latter.
+
+MWLevelOptions was not implemented as a class. Instead, MWBasicTask expects a lambda function. This lambda takes the episode number and the current MWLevelOptions, returning an updated set of options. MWLevelOptions builder structure ensures this is always a new instance, and hence maintains immutability. The inclusion of the episode number allows the function to remain deterministic. Moreover, with the ability to build closures in Scala, this lambda can be built from data (for example, a list of options, where indexes relate to episode number).
+
+\subsubsection{Persistence}
+
+The primary use of the level playing module is during the evaluation stage of the learning process. Hence, it was decided to use ECJ's parameter file system to persist level playing parameters, which allows them to be written in the same file as the rest of the learning parameters.
+
+ECJ's parameter system builds upon Java's Properties file system. From a parameter file (formatted in the Java Properties format) a ParameterDatabase can be built, from which specific parameters can be requested using the Parameter class. This system was used to persist the two parameter classes, MWLevelOptions and MWEvaluationMultipliers; the level options update lambda data; and other level playing data such as number of levels (episodes) and base level seed. For example, the following lines would set the number of levels to 10 and the base difficulty to 5:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+          level.num-levels = 10
+level.base.difficulty-num = 5
+\end{lstlisting}
+\end{minipage}
+
+A static utility class EvaluationParamsUtil was created to handle the reading of the level playing data from these files. A ParameterDatabase is built and passed to utility class, which builds the required parameter class. For MWLevelOptions and MWEvaluationMultipliers it searches for the prefixes `{\ttfamily level.base}' and `{\ttfamily mult}' respectively and then looks for suffixes corresponding to specific fields. If a field's suffix is not found then it is initialised to a default value (which is always zero for MWEvaluationMutlipliers).
+
+The update lambda is built as a closure on a collection of Map instances, one for each field in MWLevelOptions. For each {\ttfamily n} from 0 to the number of levels (episodes), the utility function looks for the prefix `{\ttfamily level.{n}}', which is used to hold the update for episode \textbf{n}. For each field a Map is built and using the same suffixes as for MWLevelOptions, key-value pairs are added mapping \textbf{n} to the value found. When the update lambda is called, it consults these maps and updates the MWLevelOptions with the new value if one is found for the current episode number.
+
+For example, if the parameter file contained the following lines:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+   level.num-levels = 4
+ level.base.enemies = false
+    level.1.enemies = true
+    level.3.enemies = false
+\end{lstlisting}
+\end{minipage}
+
+Then enemies would be off for the first episode, on for the second and third and off again for the fourth and final episode.
+
+\subsubsection{The Episode Loop}
+
+The entry point of the level playing module is the MWEvaluationTask class, which extends the abstract MWBasicTask class. MWEvaluationTask is instantiates with a base set of options (as MWLevelOptions), a MWEvaluationMutlipliers instance and an update lambda, as well as the number of episodes (levels) to run. The agent and base level seed can be injected with the \emph{withAgent(agent)} and \emph{withLevelSeed(seed)} methods (which also reset of evaluation information).
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+
+class MWEvaluationTask(val numberOfLevels: Int, 
+                       val evalValues: MWEvaluationMultipliers, 
+                       override val baseLevelOptions: MWLevelOptions, 
+                       override val updateOptionsFunc: (Int, MWLevelOptions) => MWLevelOptions)
+                           extends MWBasicTask("MWMainPlayTask", baseLevelOptions, updateOptionsFunc, visualisation, args) with EvaluationTask {
+
+    private var baseLevelSeed: Int = 0;
+    
+    override def nextLevelSeed(episode: Int, lastSeed: Int) =  {
+        (3*episode) + lastSeed
+    }    
+        
+    override def evaluate: Int = {
+        doEpisodes
+        localEvaluationInfo.computeWeightedFitness(evalValues)
+    }
+  
+    override def withAgent(agent: Agent): MWEvaluationTask = {
+        super.injectAgent(agent, true)
+        this
+    }
+    
+    override def withLevelSeed(seed: Int): MWEvaluationTask = {
+        baseLevelSeed = seed
+        super.injectLevelSeed(seed, true)
+        this
+    }
+}
+\end{lstlisting}
+\end{minipage}  
+
+On calling the \emph{evaluate()} method, the number of levels is passed to the \emph{doEpisodes(numberOfEpisode)} (a superclass method), which loops as follows:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+
+def doEpisodes(amount: Int): Unit = {
+    @tailrec
+    def runSingle(iteration: Int, prevOptions: MWLevelOptions, disqualifications: Int): Int = {
+        if (iteration == amount) { 
+            disqualifications
+        } else {
+            // Calls the update lambda to get episodes set of options
+            val newOptions = updateOptions(iteration, prevOptions)
+            
+            // Converts options to class required for game-engine
+            val marioAIOptions = MWLevelOptions.updateMarioAIOptions(super.options, newOptions)
+            
+            // Updates the level seed (which is set to increase each episode by MWEvaluationClass)
+            // Agent instance is already being held here
+            marioAIOptions.setLevelRandSeed(nextLevelSeed(iteration, marioAIOptions.getLevelRandSeed))
+            
+            // Resets the evaluation information in the super class
+            super.setOptionsAndReset(marioAIOptions)
+
+            // Generates and runs the level using the super class
+            // Returns true if the agent was not disqualified (took too long to return an action)
+            val notDisqualified: Boolean = runSingleEpisode(1)
+            val disqualification: Int = if (!notDisqualified) 1 else 0
+       
+            // Update the evaluation information for the entire run
+            // (as the super classes evaluationInfo gets reset every level
+            updateLocalEvaluationInfo(super.getEvaluationInfo)
+            
+            // Loop
+            runSingle(iteration+1, newOptions, disqualifications + disqualified)
+        }
+    }
+    
+    // Sets the base options
+    super.setOptionsAndReset(MWLevelOptions.updateMarioAIOptions(options, baseLevelOptions))
+    disqualifications = runSingle(0, baseLevelOptions, 0)
+}
+\end{lstlisting}
+\end{minipage}
+
+
+Before every episode the options are updated by the lambda, updating the base options in the first episode. A new level seed is also requested from the MWEvaluationClass, which simply increases it each episode. These updates are converted and added to a MarioAIOptions instance and passed to the superclass in the benchmark. A single level is then generated and played using the superclass. Evaluation information is added to MWBasicTask's local evaluation information (as the former is reset every episode) and the function loops tail recursively.
+
+When the number of loops equals the number of levels the function exits. At this point the \emph{evaluate()} method requests a fitness from the local evaluation information, passing in the evaluation multipliers, which is then returned.
+
+%-----------------------------------------------------------------------
+% Benchmark Edit
+%-----------------------------------------------------------------------
 
 \subsection{Modifying the Benchmark}
 
-!IN PROGRESS!
+Preliminary runs of the benchmark software revealed several issues and defects. As the learning algorithm would run over several generations, any errors could halt it prematurely, which could be costly in terms of project time keeping. In order to address this a Java project was created from the benchmark's source code and fixes were made. This code was packaged with Maven and included as a dependency in the main project.
 
-\subsection{Implementation}
+Several minor exceptions were caught or addressed, however the two largest issues failed `quietly'. They concerned the LevelGeneration class and surrounded enemy and pit generation in regards to level difficulty. Fixes were made to ensure level difficulty scaled more consistently.
 
-!IN PROGRESS!
+\subsubsection{Enemy Generation}
+
+In observing the benchmark generated levels it was apparent that enemy density was very high, even on lowest difficulties. Examining the LevelGeneration class revealed this to the result of what was probably unintended behaviour. 
+
+Levels are generated in zones of varying length. Quite often, a zero length zone is created, which has no effect on terrain. However, enemies were still being added to these zones, creating very high density columns of enemies during levels. This was addressed, with the addition of a more gentle enemy count curve and better spacing.
+
+\subsubsection{Pit Generation}
+
+Another apparent shortcoming was pit length. Pits were only of two sizes, small and very large, and after a certain level difficulty were always very large. Although this was intended behaviour, comments from the original developers suggest it was a placeholder for a more sophisticated system. An edit was made to scale maximum pit length on level difficulty. Each pit's length is chosen probabilistically on a bell curve, which is shifted by level difficulty.
+
+
+%-----------------------------------------------------------------------
+% Testing
+%-----------------------------------------------------------------------
 
 \subsection{Testing}
 
 !IN PROGRESS!
+
+\subsection{Comparator Task}
+
+
+%___________________________________________
+%*************************************************************
+% Learning
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 \section{Learning}
 
+
+%-----------------------------------------------------------------------
+% Design
+%-----------------------------------------------------------------------
+
 \subsection{Design}
+
+
+%-----------------------------------------------------------------------
+% Modifying the ECJ Library
+%-----------------------------------------------------------------------
+
+\subsection{Modifying the ECJ Library}
+
+
+%-----------------------------------------------------------------------
+% Implementation
+%-----------------------------------------------------------------------
 
 \subsection{Implementation}
 
+
+%-----------------------------------------------------------------------
+% Testing
+%-----------------------------------------------------------------------
+
 \subsection{Testing}
+
+
+%-----------------------------------------------------------------------
+% Parameters
+%-----------------------------------------------------------------------
+
+\subsection{Parameters}
+
+
+%___________________________________________
+%*************************************************************
+% Evaluation
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 \section{Evaluation}
 
+
+%-----------------------------------------------------------------------
+% Agent Framework}
+%-----------------------------------------------------------------------
+
 \subsection{Agent Framework}
 
+
+%-----------------------------------------------------------------------
+% Learning
+%-----------------------------------------------------------------------
+
 \subsection{Learning}
+
+
+%-----------------------------------------------------------------------
+% Project Evaluation
+%-----------------------------------------------------------------------
 
 \subsection{Project Evaluation}
 
@@ -1006,6 +1380,10 @@ Level options are stored in the \emph{MWLevelOptions} class, which acts as an ad
   \url{https://cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf}
   George Mason University,
   2015.
+  
+\bibitem{jgap}
+  \emph{JGAP: Java Genetic Algorithms Package},
+  \url{http://jgap.sourceforge.net/}.
 
 \bibitem{astar}
   Robin Baumgarten,
