@@ -136,8 +136,9 @@ Learning has long been a staple of academic research into AI and dynamic program
 % Definitions
 %-----------------------------------------------------------------------
 \subsection{Concept Definitions}
+\label{subsec:concepts}
 
-At this point it is useful to introduce some high level descriptions/definitions of some key concepts.
+At this point it is useful to introduce some high level descriptions/definitions of some key concepts that will be used in this report.
 
 \subsubsection{Intelligent Agents (IAs)}
 
@@ -192,25 +193,17 @@ Evolution Strategies differ from standard Genetic Algorithms by using \textbf{tr
 %-----------------------------------------------------------------------
 \subsection{Motivation}
 
-Exploring the use of learning techniques for use in video games is a challenging and eminent area of research, with interest from both the video game and computation intelligence communities.
+Ventures in utilising learning in commercial video games have been limited and largely ineffectual. Game development works on strict cycles and there are limited resources to invest into AI research, especially if the outcome is uncertain. Furthermore, one player playing one game produces a very small data set, making learning from the player challenging. \cite{evolutioningamedesign}
 
-\subsubsection*{Desirability}
-
-Ventures in utilising learning in commercial video games have been limited and largely ineffectual. However, there are many reasons why good execution of these techniques is desirable. Firstly, modern games have large and diverse player bases, having a game that can respond and personalise to a specific player can help cater to all. Secondly, learning algorithms produce agents that can respond well in new situations (over say FSMs or discrete logic), hence making new content easy to produce or generate. Lastly, humans must learn and react to environments and scenarios during games. Having non-playable characters do the same may produce a more believable, immersive and relatable AI, which is one of the key criticisms with current games. \cite[p.~7, p.~13]{panorama}
-
-\subsubsection*{Issues}
-
-The main issue with constructing effectual learning (or learnt) agent AI in game is risk versus reward. Game development works on strict cycles and there are limited resources to invest into AI research, especially if the outcome is uncertain. Furthermore, one player playing one game produces a very small data set, making learning from the player challenging. Moreover, AI that is believably human is a field still in its infancy. \cite{evolutioningamedesign}
-
-\subsubsection*{Games as a Benchmark}
+However, there are many reasons why good execution of these techniques is desirable, especially biologically inspired learning. Humans must learn and react to environments and scenarios during games, based purely on their perception of the game (and not its inner working). Having non-playable characters do the same may produce a more believable, immersive and relatable AI. Secondly, such learning algorithms produce agents that can respond well in new situations (over say FSMs or discrete logic), hence making new content easy to produce or generate. Lastly, modern games have large and diverse player bases, having a game that can respond and personalise to a specific player can help cater to all. \cite[p.~7, p.~13]{panorama}
 
 Despite the lack of commercial success, video games can act as great benchmark for learning agents. They are designed to challenge humans, and therefore will challenge learning methods, especially those inspired by biological processes. Games naturally have some level of learning curve associated with playing them (as a human). Also, games require quick reactions to stimulus, something not true of traditional AI challenges such as board games. Most games have some notion of scoring suitable for a fitness function. Lastly, they are generally accessible to students, academics and the general public alike. \cite[p.~9]{panorama} \cite[p.~1]{marioaicomp} \cite[p.~2]{2012the}
 
-\vspace{\baselineskip}
-
 As such, games have now been utilised in several academic AI competitions. These competitions are the forefront of research and development into learning techniques in video games, and will be explored in more detail in section \ref{subsec:gameaicomps}.
 
-This project is motivated by the variety of previous approaches taken in these competitions and the unexpected results they produced. 
+\vspace{\baselineskip}
+
+Exploring the use of learning techniques for use in video games is a challenging and eminent area of research, with interest from both the video game and computation intelligence communities. This project is motivated by this fact and influenced by the variety of previous approaches taken in these competitions and the unexpected results they produced. 
 
 
 %-----------------------------------------------------------------------
@@ -253,7 +246,9 @@ The aim of the project is to explore the use of behavioural learning techniques 
 
 The two central components to this project, the agent and the learning process, will be designed, implemented and tested as two separate modules. This presents a clean separation of concerns. The agent module will be completed first, followed by the learning module. A third module will also be created, which will allow the agent to play generated levels and receive a score.
 
-The Mario benchmark software is open-source\footnote{Available at http://www.marioai.org/gameplay-track/getting-started} and will form the initial codebase for this project. It is written in Java and contains the game-engine and useful features such as level generation and level playing classes.
+It is foreseeable that certain parts of the project will be exploratory and as such a redesign of the either the agent or the learning modules may become required. Hence it will be important to take an agile and iterative approach to production, revisiting past objectives if need be.
+
+The open-source Mario benchmark software\footnote{Available at http://www.marioai.org/gameplay-track/getting-started} (used in the Mario AI Competition) will form the initial codebase for this project. It is written in Java and contains the game-engine and useful features such as level generation and level playing classes.
 
 I intend to use Scala as the main language of this project as I believe that it's functional and concurrent features will suit the problem. Scala and Java are widely compatible (as they both compile JVM bytecode) so this should not require a significant amount of work. However, the codebase will be assessed for the suitability of this approach, and Java 8 will be used if Scala proves to be counterproductive.
 
@@ -262,25 +257,24 @@ Furthermore the software will be assessed for the inclusion of build tools, such
 \subsubsection*{Objective \ref{obj:design}: Design}
 \label{meth:design}
 
-The design of both the agent and learning module will follow the approach of the REALM agent, discussed in \ref{ssec:realm}.
+The design of both the agent and learning module will follow the approach adopted in previous work regarding the REALM agent, which is discussed in detail in section \ref{ssec:realm}.
 
-The agent module will be a rule-based system that maps environment based conditions to explicit key presses. This project will look to differ from the REALM agent in regards to specific environment perceptions. The available sensory information will be assessed and distilled into a collection of simple observations.
+As in previous work, the agent module developed for the project will be a rule-based system that maps environment based conditions to explicit key presses. However, the proposed approach will differ from the REALM agent by exploring several additional perceptions of the available sensory information. These perceptions will be limited to `visible' environment (e.g. the direction mario is moving, presence of enemies etc.). They will be measured and distilled into a collection of simple observations.
 
-The learning module will utilise an offline genetic algorithm with a similar configuration seen in \ref{ssec:realm}. Agents will be individuals, with rulesets as genomes. Fitness of an individual will be determined by playing generated levels. However, different approaches to mutation, crossover and reordering will be explored, as well as careful consideration of calculating fitness from level playing statistics.
+The learning module will utilise an offline genetic algorithm as seen in previous work, which will be described later in section \ref{ssec:realm}. Agents will be individuals, with rulesets as genomes. Fitness of an individual will be determined by playing generated levels. However, different approaches to mutation, crossover and reordering will be explored, as well as careful consideration of calculating fitness from level playing statistics.
 
 \subsubsection*{Objective \ref{obj:impl}: Implementation}
 \label{meth:impl}
 
 The agent module will implement the \emph{Agent} interface including in the benchmark, which will allow for the agent to used in other areas of the benchmark software, such as the game-playing and evaluation classes. Each agent will be defined by it's ruleset, the contents of which will determine its behaviour. The agent will implement a semantic reasoner for the ruleset, returning a action as prescribed by the chosen rule.
 
-The agent will gather it's sensory information from the game's \emph{Environment} class, which reports visible properties of the level scene. As discussed in \ref{meth:design}, this will be simplified to a list of observations and compared against the agent's ruleset.
+The agent will gather it's sensory information from the game's \emph{Environment} class, which reports visible properties of the level scene. If necessary this class will be extended to include any missing `visible' data. As discussed in \ref{meth:design}, this will be simplified to a list of observations and compared against the agent's ruleset.
 
 \vspace{\baselineskip}
 
 The learning module will utilise an external library alongside the level playing module. Many evolutionary computation libraries exist for Java (and therefore Scala), \emph{ECJ} \cite{ecj} and \emph{JGAP} \cite{jgap} will both be considered for use in this project.
 
-The implementation will manage the integration of this library with both the agent and level playing modules. The algorithm will evolve a simple data structure representation of rulesets, inject them into agents and assess those agents by having them play several carefully parametrised levels. The statistics returned from these levels will form the base variables of the fitness function, with multipliers being configurable. To aid in improving the learning process, these parameters will be held 
-externally and fitness values will be logged.
+The implementation will manage the integration of this library with both the agent and level playing modules. The algorithm will evolve a simple data structure representation of rulesets, inject them into agents and assess those agents by having them play several carefully parametrised levels. The statistics returned from these levels will form the base variables of the fitness function, with multipliers being configurable. To aid in improving the learning process, these parameters will be held externally and fitness values will be logged.
 
 \subsubsection*{Objective \ref{obj:test}: Testing}
 \label{meth:test}
@@ -402,7 +396,7 @@ Agent-based AI approaches in commercial games tend to focus on finite state mach
 
 \subsubsection{Evolutionary Algorithms}
 
-Evolutionary algorithms are a common choice of learning methods used in game-playing agents. D. Perez et al. note in their paper \cite[p.~1]{gramev} that they are particular suitable for game environments: 
+In section \ref{subsec:concepts} we presented some basic concepts of evolutionary and genetic computing. This approach is a common choice of learning methods used in game-playing agents. D. Perez et al. note in their paper \cite[p.~1]{gramev} that evolutionary algorithms are particularly suitable for video game environments: 
 \begin{quote}\itshape
 `Their stochastic nature, along with tunable high- or low-level representations, contribute to the discovery of non-obvious solutions, while their population-based nature can contribute to adaptability, particularly in dynamic environments.'
 \end{quote}
@@ -543,7 +537,7 @@ As previously mentioned, the project will extend the Mario AI Benchmark. As prev
 
 The use of the Mario AI Benchmark restricts the choice of language (discussed further in Section \ref{subsec:langchoice}) to those that can run on the JVM. Hence, ECJ was chosen as the learning library as it is written in Java and is available as both source-code and packaged jar. Furthermore, ECJ fit the project specification very well: it provides support for GAs and ESes, its classes and settings are decided at runtime from external parameter files, it is highly flexible and open to extension, and has facilities for logging run statistics.
 
-Although the intention was to include these dependencies as packaged jars, modification of their source code was necessary (which was available on academic licences). This code was modified in Java, packaged and included as dependencies in the main project. Details of the modification is found in sections \ref{subsec:enginemod} and \ref{subsec:ecjmod}.
+Although the intention was to include these dependencies as packaged jars, modification of their source code was necessary (which was available on academic licences). This code was modified in Java, packaged and included as dependencies in the main project. Details of the modifications can found in sections \ref{subsec:enginemod} and \ref{subsec:ecjmod}.
 
 %___________________________________________
 %*************************************************************
@@ -618,11 +612,11 @@ With two major and several minor dependencies, their management is important to 
 
 \subsection{Implementation}
 
-The design of the agent framework allows for agents to be fully determined by their ruleset. In order for an agent to be used in a evolutionary algorithm it must be represented by a simple data structure. Hence, implementation must allow for agent's rulesets to be unambiguously represented as, for example, a one dimensional collection.
+The design of the agent framework allows for agents to be fully determined by their ruleset. In order for an agent to be used in a evolutionary algorithm it must be represented by a simple data structure. Hence, implementation must allow for agent's rulesets to be unambiguously represented as, for example, a one dimensional collection. This sections will describe the implementation steps taken to represent rulesets as a array of 8-bit integers, utilising Scala's built in types Vector and Byte.
 
 \subsubsection{Perceptions}
 
-The Perception interface was implemented as an abstract class, with an index integer field and an apply method. \emph{apply} takes the game Environment and returns a Byte (8-bit integer) instance, representing the measurement. Perception was extended into two further abstract classes: BoolPerception, which enforces apply's return be either 1 or 0, representing true and false respectively; and BytePerception, which has a limit field and enforces apply's return is between 0 and limit (inclusively).
+The Perception interface was implemented as an abstract class, with an index integer field and an apply method. \emph{apply} takes the game Environment and returns a Byte (an 8-bit integer) instance, representing the measurement. Perception was extended into two further abstract classes: BoolPerception, which enforces apply's return be either 1 or 0, representing true and false respectively; and BytePerception, which has a limit field and enforces apply's return is between 0 and limit (inclusively).
 
 Concrete perceptions were implemented as objects (singletons) using the \emph{case} keyword, which allows for exhaustive pattern matching on the Perception class, as well as type safe extension by adding further case objects. Each one declares a unique index integer to the Perception superclass (starting at 0 and increasing by one for each). They implement the apply method to return their specific measurement.
 
@@ -909,6 +903,7 @@ The MWLevelOptions and MWEvaluationMultipliers classes were implemented as data 
 MWLevelOptions was not implemented as a class. Instead, MWBasicTask expects a lambda function. This lambda takes the episode number and the current MWLevelOptions, returning an updated set of options. MWLevelOptions builder structure ensures this is always a new instance, and hence maintains immutability. The inclusion of the episode number allows the function to remain deterministic. Moreover, with the ability to build closures in Scala, this lambda can be built from data (for example, a list of options, where indexes relate to episode number).
 
 \subsubsection{Persistence}
+\label{subsec:evalparams}
 
 The primary use of the level playing module is during the evaluation stage of the learning process. Hence, it was decided to use ECJ's parameter file system to persist level playing parameters, which allows them to be written in the same file as the rest of the learning parameters.
 
@@ -1035,6 +1030,7 @@ When the number of loops equals the number of levels the function exits. At this
 %-----------------------------------------------------------------------
 
 \subsection{Modifying the Benchmark}
+\label{subsec:enginemod}
 
 Preliminary runs of the benchmark software revealed several issues and defects. As the learning algorithm would run over several generations, any errors could halt it prematurely, which could be costly in terms of project time keeping. In order to address this a Java project was created from the benchmark's source code and fixes were made. This code was packaged with Maven and included as a dependency in the main project.
 
@@ -1061,6 +1057,31 @@ Another apparent shortcoming was pit length. Pits were only of two sizes, small 
 
 \subsection{Comparator Task}
 
+In order to quantifiably compare agents a competitive set of evaluation task options was created, modelled on those used during the final evaluation stage of the 2010 Mario AI Competition.
+
+Agents play 512 levels, spread equally over 16 difficulty levels (0 to 15). Options such as enemies, pits, blocks etc. are periodically turned off for a level. Length is varies greatly from level to level, with the time-limit being adjusted accordingly.
+
+Evaluation multipliers reward all possible positive statistics, such as enemy killed, coins collected and distance travelled. 
+
+The scores and other statistics attained by the three handcrafted agents playing the evaluation task, on seed 10, can be found in Table \ref{tab:hceval}.
+
+\begin{table}
+  \begin{adjustwidth}{-0cm}{-0cm}
+  \begin{center} \small
+    \begin{tabular}{ | l | c | c | c | c | c |}
+    \hline
+    & \textbf{Total} & \textbf{Levels} & \textbf{Enemies} & \Tstrut \\
+    \textbf{Agent} & \textbf{Score} & \textbf{Completed} & \textbf{Killed} & \textbf{Distance} \Bstrut \\ \thickhline
+    \textbf{Complex} & 1,817,195 & 171 (33\%) & 1498 (8\%) & 63,894 (48\%) \\ \hline
+    \textbf{Simple Reactive} & 1,095,287 & 88 (17\%) & 590 (3\%) & 43,286 (32\%) \\ \hline
+    \textbf{Forward Jumping} & 954,640 & 76 (15\%) & 677 (3\%) & 36,980 (28\%) \\ \hline
+
+    \end{tabular}
+  \end{center}
+  \end{adjustwidth}
+  \caption{Competitive statistics from handcrafted agents playing the evaluation task with a seed of 10.}
+  \label{tab:hceval}
+\end{table}
 
 %___________________________________________
 %*************************************************************
@@ -1070,19 +1091,69 @@ Another apparent shortcoming was pit length. Pits were only of two sizes, small 
 
 \section{Learning}
 
+The learning module's goal is to utilise the ECJ library to evolve a population of byte vectors (representing agent rulesets). This is achieved through extending ECJ's classes, in conjunction with a parameter file. The ECJ library is an extensive collection of learning processes and, due to the limitations of this report, only the relevant sections, and the extensions thereof, are described. An important part of the project was adjusting the parameter file in reaction to previous learning runs, these revisions are discussed in section \ref{subsec:learnparam}. However, some parameters were deemed fundamental and stayed invariant throughout this process; these are described, alongside the general evolutionary approach, in the following section.
 
 %-----------------------------------------------------------------------
 % Design
 %-----------------------------------------------------------------------
 
-\subsection{Design}
+\subsection{Evolutionary Approach}
+\label{subsec:learndes}
 
+Similar to the approach taken in developing the REALM agent (described in section \ref{ssec:realm}), this project uses a  $(\mu  + \lambda)$ evolution strategy. However, unlike REALM, it focuses purely on mutation, with no crossover between individuals (a technique not traditionally applied with ESes \cite[p.~]{ecj-tut3}).
+
+Evolution runs for 1000 generations with a population size of 50. The truncation selection size for our ES ($\mu$) is set to 5. Hence, the top 5 fittest individuals are chosen each generation. These are cloned and mutated to form 45 ($\lambda$) new individuals, which are then joined by the original 5 for the next generation.
+
+Each individual's genome is a byte vector of length 300, representing a ruleset containing 20 rules. The default action is fixed over all rulesets and is specified by the parameter file.
+
+Each element of the genome (a gene) has several mutation parameters associated to it. During the mutation phase each gene will be mutated with the probability prescribed by its mutation probability. Each gene can be mutating in one of two ways. The first will simply choose a random byte between its minimum and maximum values (inclusive), known as \textbf{reset} mutation. The second will favour one particular byte value, with a certain probability, which is known as \textbf{favour} mutation. Which method of mutation a gene undergoes, as well as the favoured byte and its probability are all contained in the individual gene's parameters, allowing for very fine grained control over the mutation process.
+
+The evaluation stage takes each individual's genome and constructs an agent. The individual's fitness is calculated by passing the agent to the MWEvaluationTask, which has been initialised with a fixed set of level playing parameters decreed by the parameter file. These parameters have a custom set of evaluation multipliers and describe a task of 10 levels, varying level options for each level. Each generation builds this task with it's own unique level seed to avoid over-fitting to one set of generated levels.
+
+Statistics for average and best fitness are logged each generation. Level seed is also reported, to allow direct comparison between the learning process and the hand-crafted agents. After the final generation a selection of agents are written to agent files, including the best individual of the final generation and the best individual over all generations.
 
 %-----------------------------------------------------------------------
-% Modifying the ECJ Library
+% Extending the ECJ Library
 %-----------------------------------------------------------------------
 
-\subsection{Modifying the ECJ Library}
+\subsection{The ECJ Library}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.5]{diagrams/ECJTopLevel.png}
+	\caption{A top-level UML class diagram of the operation facilities in EvolutionState, taken from \cite[p.~10]{ecj-manual}.}
+	\label{fig:ecjop}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.5]{diagrams/ECJTopLevelData.png}
+	\caption{A top-level UML class diagram of ECJ's data objects, taken from \cite[p.~11]{ecj-manual}.}
+	\label{fig:ecjdata}
+\end{figure}
+
+The primary method for specialising ECJ for a particular use case is to extend the classes it provides, and specify these subclasses, alongside other pertinent values, in the parameter file. Nearly every method in ECJ's classes is passed the pseudo-global EvolutionState singleton, which holds instances of all other classes in use. A top-level view of ECJ's structure can be found in figures \ref{fig:ecjop} and \ref{fig:ecjdata}.
+
+For our approach, several of these classes did not need to extended, and simply specifying their default implementations in the parameter file was enough. The classes of interest to this project are the following: \emph{Species}, \emph{Individual}, \emph{SelectionMethod}, \emph{Breeder}, \emph{BreedingPipeline}, \emph{Evaluator}, \emph{Problem} and \emph{Statisitics}.
+
+ECJ provides the \emph{ByteVectorIndividual} class, which contains a Java array of \emph{byte}s, this is used to hold individual byte vector genomes. It also decrees the use of the \emph{IntegerVectorSpecies} class, which holds the gene parameters (e.g. minimum value, mutation probability). Our design first extends this class to the \emph{DynamicParameterIntegerVectorSpecies} class, which holds an subclass instance of another new class, the \emph{DynamicSpeciesParameter} class. The specific subclass to be used is specified in the parameter file. The purpose of this class is to provide a facility to override the min, max and mutation probability properties of each gene directly from the agent framework (rather than the parameter file). This class is then further extended to the \emph{RulesetSpecies} class, which holds gene parameters pertaining to favour mutation. This class also extends the parameter file's vocabulary to allow gene parameters to specified on a \textbf{condition} or \textbf{action} (the composite parts of a rule) basis. For example, the favour byte for all genes that represent conditions can be set as follows in the parameter file:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+   ...species.condition.favour_byte 	= -1
+\end{lstlisting}
+\end{minipage}
+
+
+The \emph{SelectionMethod} and \emph{Breeder} classes are responsible for selecting individuals (based on fitness) to clone and pass to the breeding pipeline. ECJ natively supports evolution strategies and so it is enough to specify these classes to be ECJ's \emph{ESSelection} and \emph{MuPlusLambda} classes. The \emph{BreedingPipeline} extension, \emph{RulesetMutationPipeline}, performs the mutation of individuals. For each gene in a individual's genome it requests the corresponding mutation parameters from the species class. It then clones and, if required, mutates the gene with either favour or reset mutation. 
+
+The \emph{Evaluator} class is responsible for threading and batching the individuals to have their fitness calculated by cloned instances of the \emph{Problem} class. Hence, the only the Problem class is extended, to the \emph{AgentRulesetEvaluator} class. On initialisation this class reads the the level options from the parameter file using the EvaluationParamsUtil class described in section \ref{subsec:evalparams}. Every generation, agents are constructed from the individuals of the population and passed, with the options and the level seed, to the MWEvaluationTask class. This returns a score, which is attached to the individual as its fitness.
+
+Generational statistical reporting is handled by an extension of the \emph{Statistics} class, which will output to log files specified in the parameter file.
+
+\subsubsection{Modifications}
+\label{subsec:ecjmod}
 
 
 %-----------------------------------------------------------------------
@@ -1100,10 +1171,18 @@ Another apparent shortcoming was pit length. Pits were only of two sizes, small 
 
 
 %-----------------------------------------------------------------------
-% Parameters
+% Running
+%-----------------------------------------------------------------------
+
+\subsection{Running}
+
+
+%-----------------------------------------------------------------------
+% Parameter Revisions
 %-----------------------------------------------------------------------
 
 \subsection{Parameters}
+\label{subsec:learnparam}
 
 
 %___________________________________________
@@ -1380,6 +1459,12 @@ Another apparent shortcoming was pit length. Pits were only of two sizes, small 
   \url{https://cs.gmu.edu/~eclab/projects/ecj/docs/manual/manual.pdf}
   George Mason University,
   2015.
+  
+\bibitem{ecj-tut3}
+  Sean Luke,
+  \emph{ECJ Tutorial 3: Build a Floating-Point Evolution Strategies Problem},
+  \url{https://cs.gmu.edu/~eclab/projects/ecj/docs/tutorials/tutorial3/index.html}
+  George Mason University.
   
 \bibitem{jgap}
   \emph{JGAP: Java Genetic Algorithms Package},
