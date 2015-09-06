@@ -12,10 +12,47 @@
 \usepackage{array}
 \usepackage{pbox}
 \usepackage{amsmath}
+\usepackage{color}
 
 
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{myred}{rgb}{0.6,0,0.298}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{myorange}{rgb}{1,0.52,0}
 
-\lstset{basicstyle=\footnotesize\ttfamily, columns=fullflexible, breaklines=true}
+\lstset{
+	basicstyle=\footnotesize\ttfamily, 
+	columns=fullflexible, 
+	breaklines=true,
+	captionpos=b,                    % sets the caption-position to bottom
+  	commentstyle=\color{mygreen},    % comment style
+  	escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  	keywordstyle=\color{myred},       % keyword style
+  	stringstyle=\color{myorange},     % string literal style
+	emphstyle=[1]{\color{blue}},
+	showstringspaces=false
+}
+
+% "define" Scala
+\lstdefinelanguage{scala}{
+  emph=[1] {%
+  	Int, Boolean, Vector, Option, Array, Byte, Some, None, Nil, Tuple2
+  },
+  morekeywords={abstract,case,catch,class,def,%
+    do,else,extends,false,final,finally,%
+    for,if,implicit,import,match,mixin,%
+    new,null,object,override,package,%
+    private,protected,requires,return,sealed,%
+    super,this,throw,trait,true,try,%
+    type,val,var,while,with,yield},
+  otherkeywords={=>,<-,<\%,<:,>:,\#,@},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[n]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]"""
+}
 
 \graphicspath{ {images/} }
 
@@ -161,31 +198,31 @@ A rule-based system decides \textbf{actions} from \textbf{inputs} as prescribed 
 Several computational learning approaches have derived their inspiration from learning in animals and humans. Two such approaches are relevant to this project: Reinforcement learning, strategy modelled on simplistic interpretation of how animal learn behaviour from their environment \cite[s.~1.2]{suttonrl}; and evolutionary computation, algorithms that apply Darwinian principles of evolution \cite{ev-comp}.
 
 
-\subsubsection{Reinforcement Learning}
+\subsubsection*{Reinforcement Learning}
 
 A reinforcement learning agent focuses on a learning problem, with its goal to maximise \textbf{reward}. Given a current \textbf{state} the agent chooses an \textbf{action} available to it, which is determined by a \textbf{policy}. This action maps the current \textbf{state} to a new \textbf{state}. This \textbf{transition} is then evaluated for its \textbf{reward} . This \textbf{reward} often affects the \textbf{policy} of future iterations, but \textbf{policies} may be stochastic to some level. \cite[s.~1.3]{suttonrl}
 
-\subsubsection{Evolutionary Computation}
+\subsubsection*{Evolutionary Computation}
 
-The evolutionary computation encompasses many learning algorithms, two of which are described in detail below. The process looks to optimise a data representation of the problem through random variation and selection in a \textbf{population}. It commonly employs techniques similar to survival, breeding and mutation found in biological evolutionary theory.  \cite{ev-comp}
+Evolutionary computation encompasses many learning algorithms, two of which are described in detail below. The process looks to optimise a data representation of the problem through random variation and selection in a \textbf{population}. It commonly employs techniques similar to survival, breeding and mutation found in biological evolutionary theory.  \cite{ev-comp}
+	
+\subsubsection*{Genetic Algorithms (GAs)}
+
+Genetic Algorithms are a subset of evolutionary computation. They model the solution as a \textbf{population} of \textbf{individuals}. Each \textbf{individual} has a set of \textbf{genes} (a  \textbf{genome}), which can be thought of as simple pieces of analogous information (most often in the form of bit strings). Each \textbf{individual} is assessed by some \textbf{fitness function}. This assessment can be used to cull the \textbf{population}, akin to survival of the fittest, or to increase the individual's chance of influencing the next \textbf{population}. The new \textbf{population} is created by \textbf{breeding}, using a combination of the following: \textbf{crossover} of the \textbf{genome} from two (or more) \textbf{individuals} (akin to sexual reproduction), \textbf{mutation} of the \textbf{genes} of one \textbf{individual} (akin to asexual reproduction) and \textbf{re-ordering} of the \textbf{genes} of one \textbf{individual}. Each new \textbf{population} is called a \textbf{generation}. \cite[p.~7]{mitchellga}
+
+\subsubsection*{Evolution Strategies (ESes)}
+
+Evolution Strategies are another example of evolutionary computation. They differ from standard Genetic Algorithms by using \textbf{truncation selection} before breeding. The top $\mu$ individuals of the population are chosen (usually by fitness) and bred to create $\lambda$ children. ES notation has the following form:  $\pmb{(\mu / \rho \  \overset{+}{,} \  \lambda)}$. $\rho$ denotes the number of individuals from $\mu$ used in the creation of a single $\lambda$, (i.e. number of parents of each child) this report will only consider the case $\rho = 1$. The $+$ and $,$ are explained below:  \cite[p.~6-10]{es-book} \cite[s.~4.1.2]{ecj-manual}
+\begin{description}
+	\item[$\pmb{(\mu \  , \   \lambda)}$]  Denotes an ES that has a population size of lambda. The top $\mu$ individuals are taken from the $\lambda$ in generation $g-1$, which then produce $\lambda$ children for generation $g$. This is done by creating $\lambda / \mu$ clones of each $\mu$ and then mutating them individually. 
+	\item[$\pmb{(\mu  + \lambda)}$] Differs from the $\pmb{(\mu \  , \   \lambda)}$ variant by adding the $\mu$ individuals chosen from generation $g-1$ to the new generation $g$ after the mutation phase. Hence the population size is $\lambda + \mu$.
+\end{description}
 
 \subsubsection{Online/Offline Learning}
 \begin{description}
 	\item[Offline] An offline (or batch) learner trains on an entire dataset before applying changes. 
 	\item[Online] A online learner reacts/learns from data immediately after each datapoint.
 \end{description} 
-	
-\subsubsection{Genetic Algorithms (GAs)}
-
-Genetic Algorithms are an subset of evolutionary computation. They model the solution as a \textbf{population} of \textbf{individuals}. Each \textbf{individual} has a set of \textbf{genes} (a  \textbf{genome}), which can be thought of as simple pieces of analogous information (most often in the form of bit strings). Each \textbf{individual} is assessed by some \textbf{fitness function}. This assessment can be used to cull the \textbf{population}, akin to survival of the fittest, or to increase the individual's chance of influencing the next \textbf{population}. The new \textbf{population} is created by \textbf{breeding}, using a combination of the following: \textbf{crossover} of the \textbf{genome} from two (or more) \textbf{individuals} (akin to sexual reproduction), \textbf{mutation} of the \textbf{genes} of one \textbf{individual} (akin to asexual reproduction) and \textbf{re-ordering} of the \textbf{genes} of one \textbf{individual}. Each new \textbf{population} is called a \textbf{generation}. \cite[p.~7]{mitchellga}
-
-\subsubsection{Evolution Strategies (ESes)}
-
-Evolution Strategies differ from standard Genetic Algorithms by using \textbf{truncation selection} before breeding. The top $\mu$ individuals of the population are chosen (usually by fitness) and bred to create $\lambda$ children. ES notation has the following form:  $\pmb{(\mu / \rho \  \overset{+}{,} \  \lambda)}$. $\rho$ denotes the number of individuals from $\mu$ used in the creation of a single $\lambda$, (i.e. number of parents of each child) this report will only consider the case $\rho = 1$. The $+$ and $,$ are explained below:  \cite[p.~6-10]{es-book} \cite[s.~4.1.2]{ecj-manual}
-\begin{description}
-	\item[$\pmb{(\mu \  , \   \lambda)}$]  Denotes an ES that has a population size of lambda. The top $\mu$ individuals are taken from the $\lambda$ in generation $g-1$, which then produce $\lambda$ children for generation $g$. This is done by creating $\lambda / \mu$ clones of each $\mu$ and then mutating them individually. 
-	\item[$\pmb{(\mu  + \lambda)}$] Differs from the $\pmb{(\mu \  , \   \lambda)}$ variant by adding the $\mu$ individuals chosen from generation $g-1$ to the new generation $g$ after the mutation phase. Hence the population size is $\lambda + \mu$.
-\end{description}
 
 
 %-----------------------------------------------------------------------
@@ -250,7 +287,7 @@ It is foreseeable that certain parts of the project will be exploratory and as s
 
 The open-source Mario benchmark software\footnote{Available at http://www.marioai.org/gameplay-track/getting-started} (used in the Mario AI Competition) will form the initial codebase for this project. It is written in Java and contains the game-engine and useful features such as level generation and level playing classes.
 
-I intend to use Scala as the main language of this project as I believe that it's functional and concurrent features will suit the problem. Scala and Java are widely compatible (as they both compile JVM bytecode) so this should not require a significant amount of work. However, the codebase will be assessed for the suitability of this approach, and Java 8 will be used if Scala proves to be counterproductive.
+I intend to use Scala as the main language of this project as I believe that its functional and concurrent features will suit the problem. Scala and Java are widely compatible (as they both compile JVM bytecode) so this should not require a significant amount of work. However, the codebase will be assessed for the suitability of this approach, and Java 8 will be used if Scala proves to be counterproductive.
 
 Furthermore the software will be assessed for the inclusion of build tools, such as \emph{sbt} and \emph{Maven}; testing frameworks, such as \emph{ScalaMock} and \emph{Mockito} and logging, such as \emph{log4j} and Scala's inbuilt logging package.
 
@@ -266,9 +303,9 @@ The learning module will utilise an offline genetic algorithm as seen in previou
 \subsubsection*{Objective \ref{obj:impl}: Implementation}
 \label{meth:impl}
 
-The agent module will implement the \emph{Agent} interface including in the benchmark, which will allow for the agent to used in other areas of the benchmark software, such as the game-playing and evaluation classes. Each agent will be defined by it's ruleset, the contents of which will determine its behaviour. The agent will implement a semantic reasoner for the ruleset, returning a action as prescribed by the chosen rule.
+The agent module will conform to the \emph{Agent} interface included in the benchmark. This will allow the agent to used in other areas of the benchmark software, such as the game-playing and evaluation classes. Each agent will be defined by its ruleset, the contents of which will determine its behaviour. The agent will implement a semantic reasoner for the ruleset, returning a action as prescribed by the chosen rule.
 
-The agent will gather it's sensory information from the game's \emph{Environment} class, which reports visible properties of the level scene. If necessary this class will be extended to include any missing `visible' data. As discussed in \ref{meth:design}, this will be simplified to a list of observations and compared against the agent's ruleset.
+The agent will gather its sensory information from the game's \emph{Environment} class, which reports visible properties of the level scene. If necessary this class will be extended to include any missing `visible' data. As discussed in \ref{meth:design}, this will be simplified to a list of observations and compared against the agent's ruleset.
 
 \vspace{\baselineskip}
 
@@ -297,7 +334,7 @@ The learning itself is likely to be a time consuming, computationally heavy proc
 
 On the conclusion of the learning process the best/final agent will be extracted and evaluated. This will be done by using the level playing module. The agent will go through an extensive set of levels, based on the approach taken by the 2010 Mario AI Competition.
 
-The primary comparison will be with a handcrafted ruleset, which will assess the significance of the agent evolution. Other comparisons can be drawn against agents that are included as examples in the benchmark, such as the \emph{ForwardJumpingAgent} that was used for similar comparisons in the 2009 competition, as well as other entrants into the competition.
+The primary comparison will be with a handcrafted ruleset, which will assess the significance of the agent evolution. Other comparisons can be drawn against agents that are included as examples in the benchmark, such as the \emph{ForwardJumpingAgent} that was used for similar comparisons in the 2009 competition, as well as other entrants into the competition \cite[p.~7]{2010the}.
 
 The second part of this objective is to evaluate the learning procedure. Figures such as average and maximum generation fitness can provide an insight into the effectiveness of the genetic algorithm. Furthermore, a baseline for these values can be provided by having the handcrafted agent play the levels alongside the evolving agent. The final evaluation report will provide an analysis of these figures.
 
@@ -318,7 +355,7 @@ Section 5 will detail the development of the level playing module.This contains 
 
 Section 6 explains the choice of genetic algorithm and the basic parameters used. It also describes extensions made to the learning library to allow it to effectively evolve the agent in an easily customisable and observable fashion. Lastly, it details how specific mutataion and fitness parameters were chosen in response to initial learning runs in order to improve the process.
 
-Section 7 evaluates the agent framework for it's capability by considering 3 hand crafting agent rulesets. It then compares these agents to the final learnt agent, assessing it for attainment, as well as interesting and unexpected behaviour. It also studies the effectiveness of the learning algorithm by examining metrics such as fitness increase over generations. Finally, it concludes with an analysis of the project as a whole, with a discussion on extensions and improvements to the learning and agent modules and the overall methodology.
+Section 7 evaluates the agent framework for its capability by considering 3 hand crafting agent rulesets. It then compares these agents to the final learnt agent, assessing it for attainment, as well as interesting and unexpected behaviour. It also studies the effectiveness of the learning algorithm by examining metrics such as fitness increase over generations. Finally, it concludes with an analysis of the project as a whole, with a discussion on extensions and improvements to the learning and agent modules and the overall methodology.
 
 \clearpage
 
@@ -363,7 +400,7 @@ Some brief details of the competitions which are of relevance to this project ar
     \end{tabular}
   \end{center}
   \end{adjustwidth}
-  \caption{This table summarises some recent game AI competitions \cite{2014how}}
+  \caption{\small This table summarises some recent game AI competitions \cite{2014how}}
   \label{tab:gameaicomp}
 \end{table}
 
@@ -428,7 +465,7 @@ Populations have a fixed size of 50 individuals, with each individual's genome b
 
 Individuals are evaluated by running through 12 different levels. The fitness of an individual is a modified score, averaged over the levels. Score focuses on distance, completion of level, Mario's state at the end and number of kills. Each level an individual plays increases in difficulty. Levels are predictably generated, with the seed being recalculated at the start of each generation. This is to avoid over-fitting and to encourage more general rules.
 
-REALM used the $\pmb{(\mu  + \lambda)}$ variant ES, with $\mu = 5$ and $\lambda = 45$ (i.e. the best 5 individuals are chosen and produce 9 clones each). Offspring are exposed to: \textbf{Mutation}, where rule conditions and actions may change value; \textbf{Crossover}, where a rule from one child may be swapped with a rule from another child\footnote{This is similar to a  $\pmb{(\mu/\rho  + \lambda)}$ ES approach with $\rho = 2$, but crossover occurs in the mutation phase and between all children, rather than specifically with children from another parent.} and \textbf{Reordering}, where rules are randomly reordered. These occur with probabilities of 10\%, 10\% and 20\% respectively. \cite[pp.~88]{realm}
+REALM used the $\pmb{(\mu  + \lambda)}$ variant ES, with $\mu = 5$ and $\lambda = 45$ (i.e. the best 5 individuals are chosen and produce 9 clones each). Offspring are exposed to: \textbf{Mutation}, where rule conditions and actions may change value; \textbf{Crossover}, where a rule from one child may be swapped with a rule from another child\footnote{This is similar to a  $\pmb{(\mu/\rho  + \lambda)}$ ES approach with $\rho = 2$, but crossover occurs in the mutation phase and between all children, rather than specifically with children from another parent.} and \textbf{Reordering}, where rules are randomly reordered. These occur with probabilities of 10\%, 10\% and 20\% respectively \cite[p.~88]{realm}. Unfortunately, the method employed to perform these operations is not clearly explained in the REALM paper \cite{realm}.
 
 \subsubsection*{\hspace{6pt}Performance}
 
@@ -494,7 +531,7 @@ The ruleset developed from REALM V2 was entered into the 2010 unseen Gameplay tr
     \end{tabular}
   \end{center}
   \end{adjustwidth}
-  \caption{Reinforcement learning agent-based approaches to game playing AI}
+  \caption{\small Biologically inspired learning, agent-based approaches to game playing AI}
   \label{tab:agents}
 \end{table}
 
@@ -512,7 +549,7 @@ The ruleset developed from REALM V2 was entered into the 2010 unseen Gameplay tr
 Functionally, the project can be split into three parts: the agent framework, which is responsible for gathering sensory information from the game and producing an action; level generation and playing, which is responsible for having an agent play generated levels with varying parameters; and the learning module, which will apply a genetic algorithm to a representation of an agent, with an aim to improving its level playing ability. 
 
 \subsubsection{Agent}
-The agent framework will conform to the interface supplied in the Mario AI benchmark\footnote{~Add agent interface code to appendix and link~}; receive the game \emph{Environment} and produce an \emph{Action}. It must be able to encode individual agents into a simple format (e.g. a bit string or collection of numbers). Additionally, it should be able to encode and decode agents to and from external files. 
+The agent framework will implement the interface supplied in the Mario AI benchmark; receive the game \emph{Environment} and produce an \emph{Action}. It must be able to encode individual agents into a simple format (e.g. a bit string or collection of numbers). Additionally, it should be able to encode and decode agents to and from external files. 
 
 The framework will be assessed in three ways. Firstly on its complexity, keeping the search space of the encoded agent small is important for the learning process. Secondly on its speed, the agent must be able to respond within one game tick. Thirdly on its capability, the framework must facilitate agents that can complete the easiest levels, and attempt the hardest ones. It is also required that human created agent encoding(s) be written (within the framework) to assist this assessment.
 
@@ -600,7 +637,7 @@ The set of actions Mario can take is any combination of 6 key presses: \textbf{l
 
 \subsubsection{Scala}
 \label{subsec:langchoice}
-The dependency on the Mario AI Benchmark restricts the language choice to those that can run on the JVM. Hence, Scala was chosen to be the primary language of the project. It's functional programming elements (pattern matching, list processing etc.) are very applicable to the ruleset and it's semantic reasoner. Scala's focus on immutability aids in maintaining the thread safety requirement. Furthermore, ECJ's structure necessitates the use of type casting, which Scala handles elegantly. Several other Scala features were used throughout the project, such as lambdas, singletons, type aliases and case classes. 
+The dependency on the Mario AI Benchmark restricts the language choice to those that can run on the JVM. Hence, Scala was chosen to be the primary language of the project. Its functional programming elements (pattern matching, list processing etc.) are very applicable to the ruleset and its semantic reasoner. Scala's focus on immutability aids in maintaining the thread safety requirement. Furthermore, ECJ's structure necessitates the use of type casting, which Scala handles elegantly. Several other Scala features were used throughout the project, such as lambdas, singletons, type aliases and case classes. 
 
 \subsubsection{Maven}
 With two major and several minor dependencies, their management is important to the project. Maven was chosen to maintain this, as well as package the main project and both the sub-projects. It was chosen for its ability to package both Java and Scala projects, keeping the tools consistent across the entire code base.
@@ -618,7 +655,14 @@ The design of the agent framework allows for agents to be fully determined by th
 
 The Perception interface was implemented as an abstract class, with an index integer field and an apply method. \emph{apply} takes the game Environment and returns a Byte (an 8-bit integer) instance, representing the measurement. Perception was extended into two further abstract classes: BoolPerception, which enforces apply's return be either 1 or 0, representing true and false respectively; and BytePerception, which has a limit field and enforces apply's return is between 0 and limit (inclusively).
 
-Concrete perceptions were implemented as objects (singletons) using the \emph{case} keyword, which allows for exhaustive pattern matching on the Perception class, as well as type safe extension by adding further case objects. Each one declares a unique index integer to the Perception superclass (starting at 0 and increasing by one for each). They implement the apply method to return their specific measurement.
+Concrete perceptions were implemented as objects (singletons) using the \emph{case} keyword, which allows for exhaustive pattern matching on the Perception class, as well as type safe extension by adding further case objects. Each one declares a unique index integer to the Perception superclass (starting at 0 and increasing by one for each). They implement the apply method to return their specific measurement. Figure \ref{fig:percumlcd} shows a class diagram of the this system.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.5]{diagrams/PerceptionClassDiagram.png}
+	\caption{UML class diagram of the perception system.}
+	\label{fig:percumlcd}
+\end{figure}
 
 For illustration, consider these examples. The perception PitBelow extends BoolPerception, with a unique index of 8 and implements \emph{apply} to return 1 if there is a pit directly below Mario and 0 otherwise. MarioMode extends BytePerception, with a unique index of 0 and a limit of 2, with \emph{apply} returning 0 if Mario is \textbf{small}, 1 for \textbf{big} and 2 for \textbf{fire}.
 
@@ -627,7 +671,7 @@ This approach keeps all the information about perceptions contained in one file.
 
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}
+\begin{lstlisting}[language=scala]
 val observationVector = 
     Vector.tabulate(Perception.NUMBER_OF_PERCEPTIONS) {
         n: Int => n match {
@@ -641,7 +685,7 @@ val observationVector =
 
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}
+\begin{lstlisting}[language=scala]
 def validateConditions(conditionsVector: Vector[Byte]): Boolean = {
     conditionsVector.zipWithIndex.forall {
         case (b: Byte, Perception(perception)) => perception match {
@@ -670,7 +714,7 @@ Enemy and obstacle perceptions pass the relevant array, a lambda test function, 
 
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}
+\begin{lstlisting}[language=scala]
 case object EnemyLeft extends BoolPerception(3) {
     // Minus = (Up,Left) | Plus = (Down,Right)
     val AREA_UL = (-2,-2); val AREA_BR = (1, -1);
@@ -685,7 +729,7 @@ case object EnemyLeft extends BoolPerception(3) {
 
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}
+\begin{lstlisting}[language=scala]
 def enemyInBoxRelativeToMario(
           environment: Environment, 
           a: (Int, Int), b: (Int, Int)): Boolean = {
@@ -701,7 +745,7 @@ def enemyInBoxRelativeToMario(
 
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}
+\begin{lstlisting}[language=scala]
 def checkBox(grid: Array[Array[Byte]], 
                test: (Array[Array[Byte]], (Int, Int))=>Boolean, 
                mario: (Int, Int), 
@@ -739,7 +783,7 @@ For example, this allowed Observation to be used as such:
 
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}
+\begin{lstlisting}[language=scala]
 abstract class ObservationAgent extends Agent {
     ...
     // Using factory method for a blank observation
@@ -775,7 +819,7 @@ The semantic reasoner of the rule system is split across both classes. In Rule, 
 
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}
+\begin{lstlisting}[language=scala]
 def scoreAgainst(observation: Observation): Int = {
     val conditions = ruleVector.slice(0, Conditions.LENGTH)
     @tailrec
@@ -796,7 +840,7 @@ In Ruleset, the \emph{getBestAction} is passed the observation and returns an ac
 
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}
+\begin{lstlisting}[language=scala]
 def getBestExAction(observation: Observation): Array[Boolean] = {
     
     @tailrec
@@ -823,7 +867,7 @@ def getBestExAction(observation: Observation): Array[Boolean] = {
 
 \subsubsection{Persistence}
 
-Agent's are persisted by persisting their ruleset. Rulesets are persisted in single line csv files. An IO helper object is passed an agent, extracts it's ruleset and requests it's vector representation, writing each byte separated by a comma. On reading an agent file, it constructs a byte vector. This byte vector is passed to the Ruleset's factory method, which groups the vector by rule length to form the rule sequence.
+Agent's are persisted by persisting their ruleset. Rulesets are persisted in single line csv files. An IO helper object is passed an agent, extracts its ruleset and requests its vector representation, writing each byte separated by a comma. On reading an agent file, it constructs a byte vector. This byte vector is passed to the Ruleset's factory method, which groups the vector by rule length to form the rule sequence.
 
 %-----------------------------------------------------------------------
 % Testing
@@ -844,6 +888,7 @@ These tests were added to Maven's build lifecycle, and hence run on every projec
 %-----------------------------------------------------------------------
 
 \subsection{Handcrafted Agents}
+\label{subsec:hca}
 
 For the purpose of evaluation and comparison three handcrafted rulesets were created for the agent framework.
 
@@ -853,7 +898,7 @@ For the purpose of evaluation and comparison three handcrafted rulesets were cre
 	\item[Complex] This agent is the most interesting and highest scoring of the three. It has several different behaviours and builds off of the simple reactive agent. It contains 18 rules and makes use of all perceptions except MarioMode and EnemyLeft. Its behaviour was investigated at length and as such will form a good comparison to the final learnt agent. Effective evolved behaviours unconsidered in this agent's creation are a sign of the validity of the learning process. 
 \end{description}
 Creation of the handcrafted rulesets also informed additions and alterations to the agent's perceptions. For example, it was originally difficult to create an effective pit strategy and so PitAhead was changed from a BoolPerception to a BytePerception, returning 3 values representing \textbf{none}, \textbf{far} and \textbf{close}.
-!PUT RULESETS IN APPENDIX?!
+!APPENDIX!
 
 
 %___________________________________________
@@ -885,9 +930,11 @@ The MarioAIOptions class contains several useful parameters. They include: a int
 
 \vspace{\baselineskip}
 
-The level playing module will extend this system. It's primary objective will be to allow for multiple levels (episodes) to be played with options that update as prescribed by some parameter class. Upon completion it will produce a fitness based on all levels played. Furthermore, it will allow for the injection of different agents and level seeds, to allow different agents to play the same options without rebuilding the instance. A UML class diagram for the module can be found in Figure \ref{fig:pumlcd}.
+The level playing module will extend this system. Its primary objective will be to allow for multiple levels (episodes) to be played with options that update as prescribed by some parameter class. Upon completion it will produce a fitness based on all levels played. Furthermore, it will allow for the injection of different agents and level seeds, to allow different agents to play the same options without rebuilding the instance. A UML class diagram for the module can be found in Figure \ref{fig:pumlcd}.
 
-Level options are stored in the \emph{MWLevelOptions} class, which acts as an adapter for the MarioAIOptions class. Each new level these will be updated by the dedicated \emph{MWLevelOptionsUpdater} class. The \emph{EvaluationMultipliers} class is an adapter for the SystemOfValues class, which is used to calculate the fitness at the end of a sequence of levels. Both MWLevelOptions and EvaluationMultipliers are designed to be data classes, which provides determinism and thread safety, as well as easy persistence. MWLevelOptionsUpdater's qualities in this regard are Implementation details and are discussed in a following section. The full list of parameters held in these classes can be found in the Appendix !REF!.
+Level options are stored in the \emph{MWLevelOptions} class, which acts as an adapter for the MarioAIOptions class. Each new level these will be updated by the dedicated \emph{MWLevelOptionsUpdater} class. The \emph{EvaluationMultipliers} class is an adapter for the SystemOfValues class, which is used to calculate the fitness at the end of a sequence of levels. These classes are separated from the the game playing task and are included using constructor dependency injection. This helps to decouple the system and improve the ability to modify and test.
+
+Both MWLevelOptions and EvaluationMultipliers are designed to be data classes, which provides determinism and thread safety, as well as easy persistence. MWLevelOptionsUpdater's qualities in this regard are Implementation details and are discussed in a following section. The full list of parameters held in these classes can be found in the Appendix !REF!.
 
 
 %-----------------------------------------------------------------------
@@ -897,8 +944,9 @@ Level options are stored in the \emph{MWLevelOptions} class, which acts as an ad
 \subsection{Implementation}
 
 \subsubsection{Parameter Classes}
+\label{subsec:paramclasses}
 
-The MWLevelOptions and MWEvaluationMultipliers classes were implemented as data classes in an immutable builder pattern style. Each field has a \emph{withField(field)} method that returns a cloned instance with that field changed. This affords a concise, declarative style, whilst maintaining immutability. MWEvaluationMultipliers has a implicit converter to a SystemOfValues instance, which is required for evaluation in the benchmark. However, a similar approach was not possible for converting MWLevelOptions to a MarioAIOptions instance (required for the game-engine). MarioAIOptions hold more parameters than MWLevelOptions (e.g. agent and level seed), therefore the adapter function takes both the current MarioAIOptions and a MWLevelOptions instance as parameters and updates the former by overriding the corresponding fields with values from the latter.
+The MWLevelOptions and MWEvaluationMultipliers classes were implemented as data classes in an immutable builder pattern style. Each field has a \emph{withField(field)} method that returns a cloned instance with that field changed. This affords a concise, declarative style, whilst maintaining immutability. MWEvaluationMultipliers has a implicit converter to a SystemOfValues instance, which is required for evaluation in the benchmark. However, a similar approach was not possible for converting MWLevelOptions to a MarioAIOptions instance (required for the game-engine). MarioAIOptions hold more parameters than MWLevelOptions (e.g. agent and level seed), therefore the adapter function takes both the current MarioAIOptions and a MWLevelOptions instance as parameters and updates the former by overriding the corresponding fields with values from the latter. A full list of field for both the MWLevelOptions and MWEvaluationMultipliers classes can be found in the appendix (\ref{}). !APPENDIX!
 
 MWLevelOptions was not implemented as a class. Instead, MWBasicTask expects a lambda function. This lambda takes the episode number and the current MWLevelOptions, returning an updated set of options. MWLevelOptions builder structure ensures this is always a new instance, and hence maintains immutability. The inclusion of the episode number allows the function to remain deterministic. Moreover, with the ability to build closures in Scala, this lambda can be built from data (for example, a list of options, where indexes relate to episode number).
 
@@ -919,7 +967,7 @@ level.base.difficulty-num = 5
 
 A static utility class EvaluationParamsUtil was created to handle the reading of the level playing data from these files. A ParameterDatabase is built and passed to utility class, which builds the required parameter class. For MWLevelOptions and MWEvaluationMultipliers it searches for the prefixes `{\ttfamily level.base}' and `{\ttfamily mult}' respectively and then looks for suffixes corresponding to specific fields. If a field's suffix is not found then it is initialised to a default value (which is always zero for MWEvaluationMutlipliers).
 
-The update lambda is built as a closure on a collection of Map instances, one for each field in MWLevelOptions. For each {\ttfamily n} from 0 to the number of levels (episodes), the utility function looks for the prefix `{\ttfamily level.{n}}', which is used to hold the update for episode \textbf{n}. For each field a Map is built and using the same suffixes as for MWLevelOptions, key-value pairs are added mapping \textbf{n} to the value found. When the update lambda is called, it consults these maps and updates the MWLevelOptions with the new value if one is found for the current episode number.
+The update lambda is built as a closure on a collection of Map instances, one for each field in MWLevelOptions. For each {\ttfamily n} from 0 to the number of levels (episodes), the utility function looks for the prefix `{\ttfamily level.\{n\}}', which is used to hold the update for episode \textbf{n}. For each field a Map is built and using the same suffixes as for MWLevelOptions, key-value pairs are added mapping \textbf{n} to the value found. When the update lambda is called, it consults these maps and updates the MWLevelOptions with the new value if one is found for the current episode number.
 
 For example, if the parameter file contained the following lines:
 
@@ -941,8 +989,7 @@ The entry point of the level playing module is the MWEvaluationTask class, which
 
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}
-
+\begin{lstlisting}[language=scala]
 class MWEvaluationTask(val numberOfLevels: Int, 
                        val evalValues: MWEvaluationMultipliers, 
                        override val baseLevelOptions: MWLevelOptions, 
@@ -964,7 +1011,12 @@ class MWEvaluationTask(val numberOfLevels: Int,
         super.injectAgent(agent, true)
         this
     }
+\end{lstlisting}
+\end{minipage}     
     
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]   
     override def withLevelSeed(seed: Int): MWEvaluationTask = {
         baseLevelSeed = seed
         super.injectLevelSeed(seed, true)
@@ -978,7 +1030,7 @@ On calling the \emph{evaluate()} method, the number of levels is passed to the \
 
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}
+\begin{lstlisting}[language=scala]
 
 def doEpisodes(amount: Int): Unit = {
     @tailrec
@@ -998,7 +1050,12 @@ def doEpisodes(amount: Int): Unit = {
             
             // Resets the evaluation information in the super class
             super.setOptionsAndReset(marioAIOptions)
+\end{lstlisting}
+\end{minipage}
 
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
             // Generates and runs the level using the super class
             // Returns true if the agent was not disqualified (took too long to return an action)
             val notDisqualified: Boolean = runSingleEpisode(1)
@@ -1053,15 +1110,49 @@ Another apparent shortcoming was pit length. Pits were only of two sizes, small 
 
 \subsection{Testing}
 
-!IN PROGRESS!
+The benchmark's BasicTask class is tightly coupled to the MarioEnvironment, which means that we were unable to mock the game-engine for testing. This problem extends to the MWEvaluationTask class.
+
+However, the decoupling of the parameter classes from MWEvaluationTask means that the persistence section of the module can easily be tested. The EvaluationParamUtil class is white-box unit tested by stubbing the ParameterDatabase interface and verifying the contents of the parameter classes requested. For example:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+"getEvaluationMutlipliers" should "return eval mults from databade and zero otherwise" in {
+    val base = blankParam.push(EvaluationParamsUtil.P_EVAL_BASE)
+    (pdStub.exists _) when(base, *) returns(true)
+    
+    (pdStub.exists _) when(base.push(EvaluationParamsUtil.P_COINS), *) returns(true)
+    (pdStub.getIntWithDefault _) when(base.push(EvaluationParamsUtil.P_COINS), *, *) returns(10)
+    
+    (pdStub.exists _) when(base.push(EvaluationParamsUtil.P_KILLED_BY_SHELL), *) returns(true)
+    (pdStub.getIntWithDefault _) when(base.push(EvaluationParamsUtil.P_KILLED_BY_SHELL), *, *) returns(200)
+    
+    (pdStub.exists _) when(base.push(EvaluationParamsUtil.P_DISTANCE), *) returns(true)
+    (pdStub.getIntWithDefault _) when(base.push(EvaluationParamsUtil.P_DISTANCE), *, *) returns(1)
+    
+    val evalMults = EvaluationParamsUtil.getEvaluationMutlipliers(pdStub, base);
+    
+    assert(evalMults.coins == 10)
+    assert(evalMults.killedByShell == 200)
+    assert(evalMults.distance == 1)
+    assert(evalMults.win == 0)
+    assert(evalMults.kills == 0)
+    ...
+}
+
+\end{lstlisting}
+\end{minipage}
+
+
+%-----------------------------------------------------------------------
+% Comparator Task
+%-----------------------------------------------------------------------
 
 \subsection{Comparator Task}
 
 In order to quantifiably compare agents a competitive set of evaluation task options was created, modelled on those used during the final evaluation stage of the 2010 Mario AI Competition.
 
-Agents play 512 levels, spread equally over 16 difficulty levels (0 to 15). Options such as enemies, pits, blocks etc. are periodically turned off for a level. Length is varies greatly from level to level, with the time-limit being adjusted accordingly.
-
-Evaluation multipliers reward all possible positive statistics, such as enemy killed, coins collected and distance travelled. 
+Agents play 512 levels, spread equally over 16 difficulty levels (0 to 15). Options such as enemies, pits, blocks etc. are periodically turned off for a level. Length is varies greatly from level to level, with the time-limit being adjusted accordingly. Evaluation multipliers reward all possible positive statistics, such as enemy killed, coins collected and distance travelled. A full view of the comparator task can be found in the appendix (\ref{}). !APPENDIX!
 
 The scores and other statistics attained by the three handcrafted agents playing the evaluation task, on seed 10, can be found in Table \ref{tab:hceval}.
 
@@ -1079,7 +1170,7 @@ The scores and other statistics attained by the three handcrafted agents playing
     \end{tabular}
   \end{center}
   \end{adjustwidth}
-  \caption{Competitive statistics from handcrafted agents playing the evaluation task with a seed of 10.}
+  \caption{\small Competitive statistics from handcrafted agents playing the evaluation task with a seed of 10.}
   \label{tab:hceval}
 \end{table}
 
@@ -1108,7 +1199,7 @@ Each individual's genome is a byte vector of length 300, representing a ruleset 
 
 Each element of the genome (a gene) has several mutation parameters associated to it. During the mutation phase each gene will be mutated with the probability prescribed by its mutation probability. Each gene can be mutating in one of two ways. The first will simply choose a random byte between its minimum and maximum values (inclusive), known as \textbf{reset} mutation. The second will favour one particular byte value, with a certain probability, which is known as \textbf{favour} mutation. Which method of mutation a gene undergoes, as well as the favoured byte and its probability are all contained in the individual gene's parameters, allowing for very fine grained control over the mutation process.
 
-The evaluation stage takes each individual's genome and constructs an agent. The individual's fitness is calculated by passing the agent to the MWEvaluationTask, which has been initialised with a fixed set of level playing parameters decreed by the parameter file. These parameters have a custom set of evaluation multipliers and describe a task of 10 levels, varying level options for each level. Each generation builds this task with it's own unique level seed to avoid over-fitting to one set of generated levels.
+The evaluation stage takes each individual's genome and constructs an agent. The individual's fitness is calculated by passing the agent to the MWEvaluationTask, which has been initialised with a fixed set of level playing parameters decreed by the parameter file. These parameters have a custom set of evaluation multipliers and describe a task of 10 levels, varying level options for each level. Each generation builds this task with its own unique level seed to avoid over-fitting to one set of generated levels.
 
 Statistics for average and best fitness are logged each generation. Level seed is also reported, to allow direct comparison between the learning process and the hand-crafted agents. After the final generation a selection of agents are written to agent files, including the best individual of the final generation and the best individual over all generations.
 
@@ -1132,11 +1223,19 @@ Statistics for average and best fitness are logged each generation. Level seed i
 	\label{fig:ecjdata}
 \end{figure}
 
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.5]{diagrams/LearningClassDiagram.png}
+	\caption{A simplified UML class diagram of the Learning module's extension to ECJ.}
+	\label{fig:lucl}
+\end{figure}
+
+
 The primary method for specialising ECJ for a particular use case is to extend the classes it provides, and specify these subclasses, alongside other pertinent values, in the parameter file. Nearly every method in ECJ's classes is passed the pseudo-global EvolutionState singleton, which holds instances of all other classes in use. A top-level view of ECJ's structure can be found in figures \ref{fig:ecjop} and \ref{fig:ecjdata}.
 
-For our approach, several of these classes did not need to extended, and simply specifying their default implementations in the parameter file was enough. The classes of interest to this project are the following: \emph{Species}, \emph{Individual}, \emph{SelectionMethod}, \emph{Breeder}, \emph{BreedingPipeline}, \emph{Evaluator}, \emph{Problem} and \emph{Statisitics}.
+The learning module will be built on top of the ECJ library, with a view to adhering to its style and ideology. For our approach, several of ECJ's classes did not need to extended, and simply specifying their default implementations in the parameter file was enough. The classes of interest to this project are the following: \emph{Species}, \emph{Individual}, \emph{SelectionMethod}, \emph{Breeder}, \emph{BreedingPipeline}, \emph{Evaluator}, \emph{Problem} and \emph{Statisitics}. A simplified class diagram of the learning module is included as figure \ref{fig:lucl}.
 
-ECJ provides the \emph{ByteVectorIndividual} class, which contains a Java array of \emph{byte}s, this is used to hold individual byte vector genomes. It also decrees the use of the \emph{IntegerVectorSpecies} class, which holds the gene parameters (e.g. minimum value, mutation probability). Our design first extends this class to the \emph{DynamicParameterIntegerVectorSpecies} class, which holds an subclass instance of another new class, the \emph{DynamicSpeciesParameter} class. The specific subclass to be used is specified in the parameter file. The purpose of this class is to provide a facility to override the min, max and mutation probability properties of each gene directly from the agent framework (rather than the parameter file). This class is then further extended to the \emph{RulesetSpecies} class, which holds gene parameters pertaining to favour mutation. This class also extends the parameter file's vocabulary to allow gene parameters to specified on a \textbf{condition} or \textbf{action} (the composite parts of a rule) basis. For example, the favour byte for all genes that represent conditions can be set as follows in the parameter file:
+ECJ provides the \emph{ByteVectorIndividual} class, which contains a Java array of \emph{byte}s, this is used to hold individual byte vector genomes. It also decrees the use of the \emph{IntegerVectorSpecies} class, which holds the gene parameters (e.g. minimum value, mutation probability). Our design first extends this class to the \emph{DynamicParameterIntegerVectorSpecies} class, which holds a subclass instance of another new class, the \emph{DynamicSpeciesParameters} class. The specific subclass to be used is specified in the parameter file. The purpose of this class is to provide a facility to override the min, max and mutation probability properties of each gene directly from the agent framework (rather than the parameter file). This class is then further extended to the \emph{RulesetSpecies} class, which holds gene parameters pertaining to favour mutation. This class also extends the parameter file's vocabulary to allow gene parameters to specified on a \textbf{condition} or \textbf{action} (the composite parts of a rule) basis. For example, the favour byte for all genes that represent conditions can be set as follows in the parameter file:
 
 \begin{minipage}{0.9\linewidth}
 \centering
@@ -1148,12 +1247,10 @@ ECJ provides the \emph{ByteVectorIndividual} class, which contains a Java array 
 
 The \emph{SelectionMethod} and \emph{Breeder} classes are responsible for selecting individuals (based on fitness) to clone and pass to the breeding pipeline. ECJ natively supports evolution strategies and so it is enough to specify these classes to be ECJ's \emph{ESSelection} and \emph{MuPlusLambda} classes. The \emph{BreedingPipeline} extension, \emph{RulesetMutationPipeline}, performs the mutation of individuals. For each gene in a individual's genome it requests the corresponding mutation parameters from the species class. It then clones and, if required, mutates the gene with either favour or reset mutation. 
 
-The \emph{Evaluator} class is responsible for threading and batching the individuals to have their fitness calculated by cloned instances of the \emph{Problem} class. Hence, the only the Problem class is extended, to the \emph{AgentRulesetEvaluator} class. On initialisation this class reads the the level options from the parameter file using the EvaluationParamsUtil class described in section \ref{subsec:evalparams}. Every generation, agents are constructed from the individuals of the population and passed, with the options and the level seed, to the MWEvaluationTask class. This returns a score, which is attached to the individual as its fitness.
+The \emph{Evaluator} class is responsible for threading and batching the individuals to have their fitness calculated by cloned instances of the \emph{Problem} class. Hence, only the Problem class is extended, to the \emph{AgentRulesetEvaluator} class. On initialisation this class reads the the level options from the parameter file using the EvaluationParamsUtil class described in section \ref{subsec:evalparams}. Every generation, agents are constructed from the individuals of the population and passed, with the options and the level seed, to the MWEvaluationTask class. This returns a score, which is attached to the individual as its fitness.
 
 Generational statistical reporting is handled by an extension of the \emph{Statistics} class, which will output to log files specified in the parameter file.
 
-\subsubsection{Modifications}
-\label{subsec:ecjmod}
 
 
 %-----------------------------------------------------------------------
@@ -1162,12 +1259,282 @@ Generational statistical reporting is handled by an extension of the \emph{Stati
 
 \subsection{Implementation}
 
+Extensions to the ECJ library were implemented in Scala, organised into a package and situated in the same project as the agent framework and level playing modules. This was to allow the level playing parameters to be read through ECJ's ParameterDatabase class (described in section \ref{subsec:evalparams}).
+
+\vspace{\baselineskip}
+
+Nearly every class in the ECJ library implements a \emph{setup(...)} method, which is used initialise an instance. This method is passed the EvolutionState singleton, from which it can access the ParameterDatabase, which holds the contents of the parameter file. Classes can poll the ParameterDatabase by constructing a \emph{Parameter} instance (in a composite pattern) with string keys.
+
+\subsubsection{Modifying the ECJ Library}
+\label{subsec:ecjmod}
+
+During the implementation process it became clear the the proposed species design was problematic due to the setup process of IntegerVectorSpecies and its superclass \emph{VectorSpecies}. The setup method reads in values for gene minimum, maximum and mutation probability and then calls for the \emph{Individual} prototype to be built. This means that any subclass of IntegerVectorSpecies cannot decide the values of the gene minimum, maximum and muation probability. If they are written before calling setup on the superclass (which is required) they will be overridden, if they are written after the calling setup on the superclass they will not be built into the prototype. To address this the VectorSpecies class was modified to include the \emph{prePrototypeSetup} method, which is called immediately before constructing the prototype in the setup method. Subclasses can extend this method to overwrite any properties set by IntegerVectorSpecies and VectorSpecies.
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=java]
+public void setup(final EvolutionState state, final Parameter base) {
+    // Add min, max, mutation probability etc.
+    ...
+
+    // Allow subclasses to override values
+    prePrototypeSetup(state, base, def);
+    state.output.exitIfErrors();          
+
+    // NOW call super.setup(...), which will in turn sets up the prototypical individual
+    super.setup(state,base);
+}
+
+// new method added
+protected void prePrototypeSetup(final EvolutionState state, final Parameter base, final Parameter def) {
+    //None by default, for subclasses
+}
+\end{lstlisting}
+\end{minipage}
+
+\subsubsection{Species}
+
+IntegerVectorSpecies and VectorSpecies store gene parameters (e.g. min, max, mutation probability) as arrays of equal length to the genome, matching by index. These arrays are built during the setup method by polling the ParameterDatabase for the suffixes `{\ttfamily min-value}', `{\ttfamily max-value}' and `{\ttfamily mutation\-prob}'. The parameter file can specify them globally, in segments or by individual gene (by index). For segments and single indexes the \emph{loadParameterForGene} method is used, which takes the gene index and a prefix parameter (e.g. segment number or index). It builds a Parameter instance by appending the gene param suffixes to the passed prefix. It requests the Parameter's value from the ParameterDatabase. If a value is found, it sets it as the element of the corresponding gene parameter array at the given index..
+
+\subsubsection*{\hspace{6pt}Dynamic Parameters}
+
+The DynamicParametersIntegerVectorSpecies performs the same task as described above, but obtains the values from a specified class rather than the parameter file. This class must be a subclass of the DynamicSpeciesParameters class. DynamicSpeciesParameter define methods for global, segment and index gene parameters, each return an Option on the value. The default implementation returns None, allowing subclasses to override only the methods they want to be used in the learning run. For out learning run we used the RulesetParams class, which implemented the \emph{minGene(index)} and \emph{maxGene(index)} methods. These methods return the min and max value for a particular gene, with the values being obtained via the agent framework:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+def getIndexType(index: Int): IndexType = (index % ruleLength) match {
+    case n if n < conditionLength => Condition
+    case _ => Action
+}
+override def maxGene(index: Int): Option[Int] = getIndexType(index) match {
+    case Action => Some(Math.max(MWAction.ACTION_FALSE, MWAction.ACTION_TRUE))
+    case Condition => (index % ruleLength) match { 
+        case Perception(perception) => perception match {
+            case bp : BoolPerception => Some(Math.max(bp.TRUE, bp.FALSE))
+            case ip : BytePerception => Some(ip.limit.toInt)
+        }
+        ...
+    }
+}
+\end{lstlisting}
+\end{minipage}
+
+The setup method of DynamicParametersIntegerVectorSpecies reads the subclass name (in this case RulesetParams) from the parameter file and instantiates it. The prePrototypeSetup method is then used to write the values (overriding those set by IntegerVectorSpecies). It calls each of DynamicSpeciesParameters' methods, if None is returned no action is taken, but if a value is return it is written to the parameter arrays.
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+override def prePrototypeSetup(state: EvolutionState, base: Parameter, default: Parameter): Unit = {
+    if (dynamicParamsClassOpt.isDefined) {
+        val dynamicParamsClass: DynamicSpeciesParameters
+            = dynamicParamsClassOpt.get
+      
+        if (dynamicParamsClass.minGene.isDefined) {
+            fill(minGene, dynamicParamsClass.minGene.get)
+        }
+        ...
+        for(i <- 0 until genomeSize) {
+    	        ....
+            if (dynamicParamsClass.maxGene(i).isDefined) {
+                maxGene(i) = dynamicParamsClass.maxGene(i).get
+            }
+            ...
+        }
+    }
+    super.prePrototypeSetup(state, base, default)
+}
+
+\end{lstlisting}
+\end{minipage}
+
+\subsubsection*{\hspace{6pt}Ruleset Species}
+
+The prePrototypeSetup method of RulesetSpecies checks that the DynamicSpeciesParameter class used is RulesetParams, which contains several utility functions. Adding to globally, by segment and by index methods for declaring gene parameters, this setup also looks for Parameter prefixes `{\ttfamily condition}' and `{\ttfamily action}'. If found, it uses a utility function to run loadParametersForGene on all indexes corresponding to the prefix. This method is also passed the prefix, in this way IntegerVectorSpecies specific parameters such as min and max can be set on a condition or action basis without needing to implement them directly. For example, take the following line in the parameter file:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}
+...species.condition.mutation-prob = 0.1
+\end{lstlisting}
+\end{minipage}
+
+The `{\ttfamily condition}' prefix is found by RulesetSpecies setup method, which indirectly loops through all indexes {\ttfamily x} that pertain to conditions:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+override def prePrototypeSetup(state: EvolutionState, base: Parameter, default: Parameter): Unit = {
+    super.prePrototypeSetup(state, base, default)
+    ...
+    if(state.parameters.exists(base.push(RulesetSpecies.P_CONDITION), default.push(RulesetSpecies.P_CONDITION))) {
+        dpc.runOnIndexes(Condition, genomeSize){
+            (x: Int, mod: Int) => {
+                loadParametersForGene(state, x, base.push(RulesetSpecies.P_CONDITION), default.push(RulesetSpecies.P_CONDITION), "")
+            }
+        }
+    }
+}
+\end{lstlisting}
+\end{minipage}
+
+It passes the condition prefix and the index to the loadParameterForGene method. In IntegerVectorSpecies, the suffix `{\ttfamily mutation-probability}' is added to the condition prefix and the value 0.1 is found, and set for all indexes {\ttfamily x} in the mutation probability array.
+
+\vspace{\baselineskip}
+
+RulesetSpecies also extends the loadParametersForGene method to read in the values for favour mutation from the parameter file. This is controlled by three arrays: favourMutation, a boolean array which holds whether or not a gene should be favour mutated; favourByte, a byte array holding the favoured byte; and favourProbability, the probability with which this byte will be chosen. By extending loadParametersForGene these parameters can be read in on condition or action bases, as well as by segment or individual index.
+
+
+\subsubsection{Mutation}
+
+To implement the mutation strategy, the RulesetMutationPipeline was created. It extends the BreedingPipeline and overrides the \emph{produce} method. It makes no use of the setup method as all mutation parameters are stored in the Species class. The breeding pipeline is threaded, and as such RulesetMutationPipeline is prototypes and cloned for each breed thread. The produce method is called to mutate batches of Individuals, which vary in size.
+
+RulesetMutationPipelines produce method first calls produce on its source (in this case the ESSelection class), which fills the array of individuals to be mutated. It verifies that these individuals are ByteVectorIndividuals and their Species is RulesetSpecies. It then clones each individual and resets its fitness. Lastly it loops through each individual and passes it to the \emph{mutateIndividual} method.
+
+The mutateIndividual method loops through the individual's genome by index. It uses this index to acquire each gene's corresponding parameters from the species class (e.g. minimum, maximum, mutation probability, favour mutated, favour byte etc.). Using the thread's random number generator stored in the EvolutionState object is decides whether to mutate by calling {\ttfamily nextBoolean(mutationProbability)}. If so it mutates the gene by favour or reset mutation (again decided by the gene parameters). For reset mutation it replaces the gene with a random byte between the gene's minimum and maximum. For favour mutation it makes another call to nextBoolean, with the favour probability parameter. If this returns true, the gene is replaced by the favour byte, otherwise a byte between the minimum and maximum is chosen, excluding the favour byte. The code for this method is given below (edited for brevity).
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+protected def mutateIndividual(state: EvolutionState, thread: Int, vecInd: ByteVectorIndividual, species: RulesetSpecies): ByteVectorIndividual = {
+    for (n <- 0 until vecInd.genome.length) {
+        if (state.random(thread).nextBoolean(species.mutationProbability(n))) {
+            if (species.favourMutation(n)) {
+                if (random.nextBoolean(favourProbability))
+                    vecInd.genome(n) = species.favourByte(n)
+                else
+                    vecInd.genome(n) = getRandomByte(
+                       species.minGene(n).toByte,
+                       species.maxGene(n).toByte,
+                       state.random(thread),
+                       species.favourByte(n)
+                     )
+\end{lstlisting}
+\end{minipage}
+                    
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+            } else {
+                vecInd.genome(n) = getRandomByte(
+                  species.minGene(n).toByte,
+                  species.maxGene(n).toByte,
+                  state.random(thread)
+                )    
+            }
+        }
+    }
+\end{lstlisting}
+\end{minipage}
+                    
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+    vecInd.evaluated = false
+    vecInd
+}
+\end{lstlisting}
+\end{minipage}
+
+\subsubsection{Evaluation}
+
+The Evaluator class prototypes the AgentRulesetEvaluator class and holds one clone for each evaluation thread. The AgentRulesetEvaluator overrides three methods from the Problem class: \emph{setup} which is called before creating the prototype, \emph{prepareToEvaluate} which is called once per thread clone before evaluation, and \emph{evaluate} which is called on single individuals multiple times per thread.
+
+The setup method loads in the MWLevelOptions, MWEvaluationMultipliers, update lambda, number of levels, generational level seeds and the default ruleset action using the EvaluationParamUtil class. As these are built into the prototype they are shared across all evaluation threads, taking advantage of their immutability (explained in section /ref{subsec:paramclasses}). 
+
+The MWEvaluationTask instance is built with these options once per thread, in the prepareToEvaluate method. As the game loop is mutating process it cannot be shared across threads, but as the task can be reset and new agents injecting in in can be used multiple times in one thread.
+
+The evaluate method is passed an individual, which is verified to be a ByteVectorIndividual. The individual's genome is built into a ruleset, which is used to initialise an MWRulesetAgent. This agent, along with the level seed for the current generation, is injecting into the task. The task then evaluates the agent, returning a score, which is attached to the individual as its fitness.
+
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+override def evaluate(state: EvolutionState, individual: Individual, subpop: Int, thread: Int): Unit = {
+    individual match {
+        case ind: ByteVectorIndividual => {
+            if (task.isDefined) {
+                val evalTask = task.get
+                val name = this.buildIndAgentName(state, individual, subpop, thread)
+                val ruleset: Ruleset = Ruleset.buildFromArray(ind.genome, defaultAction)
+                val agent: Agent = MWRulesetAgent(name, ruleset)
+            
+                val iFitness = evalTask.withAgent(agent)
+                                      .withLevelSeed(_taskSeeds(state.generation))
+                                      .evaluate
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+                ind.fitness match {
+                    case _: SimpleFitness =>  {
+                        ind.fitness.asInstanceOf[SimpleFitness].setFitness(state, iFitness.toDouble, false)
+                        ind.evaluated = true
+                    }
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+                    case _ => {
+                         state.output.fatal("This evaluator (EvolvedAgentRulesetEvaluator) requires a individuals to have SimpleFitness")
+                    }
+                }
+            } else {
+                state.output.fatal("Task was not defined when evaluating individual, implying prepareToEvaluate was not run on this instance.")
+            }
+        }
+        case _ => {
+          state.output.fatal("This evaluator (AgentRulesetEvaluator) requires a ByteVectorIndividual")
+        }
+    }
+}
+
+\end{lstlisting}
+\end{minipage}
+
+\subsubsection{Statistics}
+
+The Statistics class and its subclasses are setup at the beginning of the learning run and then called as `hook' at various points during the generational loop. RulesetEvolveStatistics implements \emph{setup} and two of the hooks, \emph{postEvaluationStatistics} and \emph{finalStatistics}. The setup method reads the filenames for the generation log and the final agent exports. It registers the log file with EvolutionState's \emph{Output} instance to allow it to be called from the other methods. 
+
+The postEvaluationStatistics method is passed the EvolutionState, from which it can access the current population and generation number. It loops through the individuals of the current population, calculating the average fitness and determining the best individual. The average fitness, best fitness, current level seed, generation number and the best individuals genome are all written to the generation log using the Output class:
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
+state.output.println(
+val all = "~all~ " + genNum + "," + levelSeed + "," + avScore + "," + bestScore
+
+"--------- GENERATION " + genNum + " ---------\n", genLog)
+state.output.println(all + 
+        "\nLevel Seed    : " + levelSeed + 
+        "\nAverage Score : " + avScore + 
+        "\nBest Score    : " + bestScore + 
+        "\nBest Agent    :-" +
+        "\n    " + agentStr + 
+        "\n-----------------------------------\n\n", genLog)
+\end{lstlisting}
+\end{minipage}
+ 
+The best individual in the generation is saved to the currentBestIndividual field. Further checks to see if it is the best overall individual or has the biggest difference to the average are also performed, resulting in the individual being saved to the bestOverallIndividual and biggestDiffIndividual fields respectively. These checks are also controlled by generation number, only being performed after a certain generation, specified in the parameter file.
+
+The finalStatistics method retrieves the current\-Best\-Individual, overall\-Best\-Individual and biggest\-Diff\-Individual. From each it constructs a ruleset, initialises an agent with the correct default action and passes it to agent IO utility class to be persisted with the corresponding filenames captured during setup.
+
 
 %-----------------------------------------------------------------------
 % Testing
 %-----------------------------------------------------------------------
 
 \subsection{Testing}
+
+ECJ's structure makes unit testing extremely difficult, due mainly to its heavy reliance on the EvolutionState singleton. It is utilised by every class and passed to nearly every method. ScalaMock is unable to mock this object as it is not accessed through an interface and building a fixed instance would be overly time consuming (and tantamount to simply running the software).
+
+Ultimately, besides the EvaluationParamsUtil class, no testing was performed. Instead, the implementation adopted a `fail loudly' approach, where any discrepancy was logged and triggered a program shutdown. In this way errors were easily noticed and corrected.
+
+The lack of testing is not desirable, and given more time, efforts would have been made to rectify this. However, as the software has no external `users' (it being used as a tool solely by those that wrote it) it did not affect the final result.
 
 
 %-----------------------------------------------------------------------
@@ -1176,13 +1543,88 @@ Generational statistical reporting is handled by an extension of the \emph{Stati
 
 \subsection{Running}
 
+As learning could take several hours, or even days, the software was run on an external quad-core server. Maven was used to package the main project, with all its dependencies in to a jar file, which allowed it to easily transferred and run. As the project went through several revisions and performed many learning runs, shell scripts were written to facilitate this process. The push script called Maven to package the project, running all tests, which was then copied to the server (using ssh), along with parameter files and their runner scripts. These runner scripts were then run remotely to begin the learning process. On completion another script retrieved the generation log and the agent files.
+
+Immutability and thread safety were a major focus of the project. This was done to allow the evaluation and breeding stages to be run over four threads (to take advantage of the server's quad-core). However, during the initial run it was quickly discovered that multithreading the evaluation process was impossible. Even though each thread had its own evaluation task instance, many of the game engine's assets were held statically and were mutable. Moreover, the MarioEnvironment was implemented as a singleton. This meant only one task could be performed at a time, resulting in the evaluation stage being set to run in only one thread. Despite this setback, learning runs took approximately 6 hours to complete.
 
 %-----------------------------------------------------------------------
 % Parameter Revisions
 %-----------------------------------------------------------------------
 
-\subsection{Parameters}
+\subsection{Parameters and Revisions}
 \label{subsec:learnparam}
+
+\begin{table}
+  \begin{adjustwidth}{-0cm}{-0cm}
+  \begin{center} \footnotesize
+    \begin{tabular}{ | c | c | c | c | c | c | l |}
+    \hline
+    \textbf{Level} & \textbf{Difficulty} & \textbf{Enemies} & \textbf{Type} & \textbf{Length} & \textbf{Time} & \textbf{Other} \TBstrut \\ \thickhline
+    \textbf{1} & 2 & N & 1 & 200 & 100 &  \\ \hline
+    \textbf{2} & 3 & N & 0 & 200 & 100 & \\ \hline
+    \textbf{3} & 5 & N & 2 & 200 & 100 & \\ \hline
+    \textbf{4} & 10 & N & 0 & 200 & 100 & \\ \hline
+    \textbf{5} & 2 & N & 0 & 200 & 100 & Flat Level \\ \hline
+    \textbf{6} & 7 & N & 0 & 200 & 100 & Flat Level \\ \hline
+    \textbf{7} & 2 & Y & 0 & 200 & 100 & Frozen Enemies \\ \hline
+    \textbf{8} & 2 & Y & 0 & 200 & 100 &  \\ \hline
+    \textbf{9} & 3 & Y & 1 & 200 & 100 & Tubes \\ \hline
+    \textbf{10} & 5 & Y & 0 & 200 & 100 & Cannons, no Blocks \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{adjustwidth}
+  \caption{Level playing parameters of the final learning run. Type 0 is outside, and type 1 and 2 are inside. }
+  \label{tab:evalparams}
+\end{table}
+
+\begin{table}
+  \parbox{.45\linewidth}{
+  \begin{center} \small
+    \begin{tabular}{ | l | c | }
+    \hline
+    \textbf{Statistic} & \textbf{Multiplier} \TBstrut \\ \thickhline
+    Distance & 1 \\ \hline
+    Completion & 3200 \\ \hline
+    Mario Mode & 200 \\ \hline
+    Enemy Kills & 100 \\ \hline
+    Time Left & 2 \\ \hline
+    \end{tabular}
+   \end{center}
+
+  \caption{Evaluation multipliers of the final learning run.}
+  \label{tab:multparams}
+  }
+  \hfill
+  \parbox{.5\linewidth}{
+  \begin{center} \small
+    \begin{tabular}{ | l | c | }
+    \hline
+    \textbf{Gene Parameter} & \textbf{Probability} \TBstrut \\ \thickhline
+    Condition Mutation & 0.05 \\ \hline
+    Condition Favour & 0.5 \\ \hline
+    MarioMode Favour & 0.95 \\ \hline
+    EnemyLeft Favour & 0.9 \\ \hline
+    Action Mutation & 0.09 \\ \hline
+    \end{tabular}
+  \end{center}
+  \caption{Mutation parameters of the final learning run.}
+  \label{tab:mutaparams}
+}
+\end{table}
+
+Many learning runs were performed during the project, including numerous parameter revisions. For brevity, only the most significants changes will be presented.
+
+Initial runs used parameter files that closely followed the approach used by the REALM agent team. Conditions favoured the {\footnotesize DONT\_CARE} byte with a probability of $0.4$, whereas actions were reset mutated. Every gene had a mutation probability of 0.2. Agents were evaluated over 10 levels in a similar style to REALM's method. The levels varied over a wide range of difficulties, but favoured easier levels. Enemies were enabled for all but 2 levels. The evaluation multipliers rewarded distance, level completion, Mario's final mode, kills and time left upon completion.
+
+The agents produced with these parameters did not display any interesting behaviours and functioned similarly to the handcrafted Forward Jumping agent (\ref{subsec:hca}). the first revision aimed to address this.
+
+Mutation probability of both conditions and actions was lowered and the {\footnotesize DONT\_CARE} condition favour probability was increased to 0.5. The biggest change came with the evaluation task. Agents now played a narrower band of difficulties, generally more difficult than the first set. Enemies were only enabled for the last 4 levels and pits were enabled for all. These changes were made as they suited a reactive agent over the blind forward jumping approach. Lastly, the level completion was given more weight.
+
+Agents evolved with these parameter demonstrated much more compelling behaviours, as well as higher overall attainment. However, it was observed that much of their ruleset's were unused.
+
+A second revision was made with an aim to increasing the number of rules used and to reduce the search space. Favour probability for genes corresponding to conditions on MarioMode and EnemyLeft were greatly increased, making {\footnotesize DONT\_CARE} likely in these conditions on all rules.
+
+The agents produced with this final approach are evaluate in depth on section \ref{subsec:evallearnt}. Tables \ref{tab:evalparams}, \ref{tab:multparams} and \ref{tab:mutaparams} summarise the final parameters, which can be found in full, in ECJ's file format, in the appendix (\ref{}). !APPENDIX!
 
 
 %___________________________________________
@@ -1192,20 +1634,30 @@ Generational statistical reporting is handled by an extension of the \emph{Stati
 %^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 \section{Evaluation}
+\vspace{\baselineskip}
+
 
 
 %-----------------------------------------------------------------------
-% Agent Framework}
+% Agent Framework
 %-----------------------------------------------------------------------
 
 \subsection{Agent Framework}
 
 
+
+%-----------------------------------------------------------------------
+% Learnt Agents
+%-----------------------------------------------------------------------
+
+\subsection{Learnt Agents}
+\label{subsec:evallearnt}
+
 %-----------------------------------------------------------------------
 % Learning
 %-----------------------------------------------------------------------
 
-\subsection{Learning}
+\subsection{Learning Process}
 
 
 %-----------------------------------------------------------------------
