@@ -1,0 +1,392 @@
+%___________________________________________
+%*************************************************************
+% Appendices
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+\begin{appendices}
+
+\setcounter{table}{0}
+\renewcommand\thetable{\thesection\arabic{table}}
+\setcounter{figure}{0}
+\renewcommand\thefigure{\thesection\arabic{figure}}
+\setcounter{lstlisting}{0}
+\renewcommand\thelstlisting{\thesection\arabic{lstlisting}}
+
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+\makeatletter
+\addtocontents{toc}{%
+  \begingroup
+  \let\protect\l@section\protect\l@subsection
+  \let\protect\l@subsection\protect\l@subsubsection
+}
+\makeatother
+
+\section{Perception Values}
+\label{app:percond}
+
+\vspace{-1\baselineskip}
+\begin{table}[h]
+  \begin{center} 
+    \begin{tabular}{ l c c c}
+    & \textbf{0} & \textbf{1} & \textbf{2} \\
+    \textbf{MarioMode} (MM) & small & big & fire \\
+    \textbf{JumpAvailable} (JA) & false & true & -  \\
+    \textbf{OnGround} (OG) & false & true & -  \\
+    \textbf{EnemyLeft} (EL) & false & true & -  \\
+    \textbf{EnemyUpperRight} (EUR) & false & true & -  \\
+    \textbf{EnemyLowerRight} (ELR) & false & true & -  \\
+    \textbf{ObstacleAhead} (OA) & false & true & -  \\
+    \textbf{PitAhead} (PA) & none & close & far \\
+    \textbf{PitBelow} (PB) & false & true & -  \\
+    \textbf{MovingX} (MX) & none & left & right \\
+    \textbf{MovingY} (MY) & none & down & up \\
+    \end{tabular}
+    \end{center}
+  \caption{Displays the different perceptions and what their byte value represents.}
+  \label{tab:AgKey}
+\end{table}
+
+\section{Handcrafted Agent Rulesets}
+\label{app:har}
+\setcounter{table}{0}
+
+Included below are the full rulesets for the project's handcrafted agents. Blank entries denote a {\footnotesize DONT\_CARE} condition or a {\footnotesize FALSE} action.
+\vspace{\baselineskip}
+
+\begin{table}[h]
+  \begin{adjustwidth}{-2cm}{-2cm}
+  \begin{center} \scriptsize
+    \begin{tabular}{ | c | c | c | c | c | c | c | c | c | c | c | c || c | c | c | c |}
+    \hline
+    \multirow{2}{*}{\textbf{\#}} & \multicolumn{11}{c ||}{\textbf{Conditions}} & \multicolumn{4}{c |}{\textbf{Actions}} \Tstrut \\ \cline{2-16}
+	& \tiny MM & \tiny JA & \tiny OG & \tiny EL & \tiny EUR & \tiny ELR & \tiny OA & \tiny PA & \tiny PB & \tiny MX & \tiny MY & \tiny Left~ & \tiny Right & \tiny Jump~ & \tiny Speed \TBstrut \\ \thickhline
+	1 & & 0 & 1 & & & & & & & & 	& & T & & \\ \hline
+	- & & & & & & & & & & & 		& & T & T & T \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{adjustwidth}
+  \caption{Ruleset for handcrafted Forward Jumping Agent.}
+  \label{tab:FJA}
+\end{table}
+
+\begin{table}[h]
+  \begin{adjustwidth}{-2cm}{-2cm}
+  \begin{center} \scriptsize
+    \begin{tabular}{ | c | c | c | c | c | c | c | c | c | c | c | c || c | c | c | c |}
+    \hline
+    \multirow{2}{*}{\textbf{\#}} & \multicolumn{11}{c ||}{\textbf{Conditions}} & \multicolumn{4}{c |}{\textbf{Actions}} \Tstrut \\ \cline{2-16}
+	& \tiny MM & \tiny JA & \tiny OG & \tiny EL & \tiny EUR & \tiny ELR & \tiny OA & \tiny PA & \tiny PB & \tiny MX & \tiny MY & \tiny Left~ & \tiny Right & \tiny Jump~ & \tiny Speed \TBstrut \\ \thickhline
+	1 & & 0 & 1 & & & & & & & & 	& & T & & \\ \hline
+	2 & & & & & & 1 & & & & & 	& & T & T & \\ \hline
+	3 & & & & & & & 1 & & & & 	& & T & T & \\ \hline
+	4 & & & & & & & & 1 & & & 	& & T & T & T \\ \hline
+	5 & & & & & & & & & 1 & & 	& & T & T & T \\ \hline
+	- & & & & & & & & & & & 		& & T & & \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{adjustwidth}
+  \caption{Ruleset for handcrafted Simple Reactive Agent.}
+  \label{tab:SRA}
+\end{table}
+
+\begin{table}[!h]
+  \begin{adjustwidth}{-2cm}{-2cm}
+  \begin{center} \scriptsize
+    \begin{tabular}{ | c | c | c | c | c | c | c | c | c | c | c | c || c | c | c | c |}
+    \hline
+    \multirow{2}{*}{\textbf{\#}} & \multicolumn{11}{c ||}{\textbf{Conditions}} & \multicolumn{4}{c |}{\textbf{Actions}} \Tstrut \\ \cline{2-16}
+    
+	& \tiny MM & \tiny JA & \tiny OG & \tiny EL & \tiny EUR & \tiny ELR & \tiny OA & \tiny PA & \tiny PB & \tiny MX & \tiny MY & \tiny Left~ & \tiny Right & \tiny Jump~ & \tiny Speed \TBstrut \\ \thickhline
+	1 & & & & & & & & & 1 & & 		& & T & T & T \\ \hline
+	2 & & 1 & 1 & & & & 1 & 2 & 0 & & 		& & T & T & \\ \hline
+	3 & & 0 & 0 & & & & 1 & 2 & 0 & & 		& & T & & \\ \hline
+	4 & & 1 & 1 & & & & 0 & 2 & 0 & & 		& & T & & T \\ \hline
+	5 & & 1 & 1 & & & & 0 & 1 & 0 & 2 & 		& & T & T & T \\ \hline
+	6 & & 0 & 1 & & & & & 1 & 0 & 2 & 		& & T & & T \\ \hline
+	7 & & 0 & 0 & & & & & 2 & 0 & 2 & 		& T & & & \\ \hline
+	8 & & 0 & 0 & & & & & 1 & 0 & 2 & 1 		& T & & & T \\ \hline
+	9 & & 0 & 0 & & & & & 1 & 0 & & 		& & T & T & T \\ \hline
+	10 & & & 0 & & & 1 & & 0 & 0 & 2 & 1 		& T & & & T \\ \hline
+	11 & & 0 & 1 & & & 1 & & 0 & 0 & & 		& & T & & \\ \hline
+	12 & & & & & & 1 & & 0 & 0 & & 		& & T & T & \\ \hline
+	13 & & & 0 & & & 1 & & 0 & 0 & & 		& & T & T & T \\ \hline
+	14 & & & & & 1 & & 1 & 0 & 0 & & 		& T & & T & \\ \hline
+	15 & & 0 & 1 & & & & 1 & 0 & 0 & & 		& & T & & \\ \hline
+	16 & & & & & & & 1 & 0 & 0 & & 		& & T & T & T \\ \hline
+	17 & & & & & & & 1 & 0 & 0 & 2 & 		& & T & T & \\ \hline
+	18 & & & 1 & & & & & & & & 		& & T & & T \\ \hline
+	
+	-  & & & & & & & & & & & 		& & T & & \\ \hline
+    \end{tabular}
+  \end{center}
+  \end{adjustwidth}
+  \caption{Ruleset for handcrafted Complex Agent.}
+  \label{tab:CA}
+\end{table}
+
+\section{Full Level and Evaluation Options}
+\label{app:loem}
+
+\begin{minipage}{0.9\linewidth}
+\begin{lstlisting}[language=scala, basicstyle=\scriptsize\ttfamily, caption=Full field definitions for MWLevelOptions and MWEvaluationMultipliers described in Section \ref{subsec:paramclasses}]
+/***
+ * Options that control level generation
+ */
+class MWLevelOptions(
+    val blocks: Boolean,   // Blocks appear
+    val cannons: Boolean,  // Cannons appear
+    val coins: Boolean,    // Coins appear
+    val deadEnds: Boolean, // Dead ends appear in terrain forcing Mario to turn back
+    val enemies: Boolean,  // Enemies/Creatures appear
+    val flatLevel: Boolean, // Level is flat, no change in elevation
+    val frozenCreatures: Boolean, // All creatures don't move
+    val pits: Boolean,     // Pits appear
+    val hiddenBlocks: Boolean, // Hidden blocks appear
+    val tubes: Boolean,    // Tubes/Pipes appear
+    val ladders: Boolean,  // Ladders appear
+    val levelDifficulty: Int, // Difficulty of level, effective range 0-25, 0 easiest
+    val levelLength: Int,  // Length of level in blocks
+    val levelType: Int,    // Type of level, 0-Outside 1-Cave, 2-Castle
+    val startingMarioMode: Int, // Mode Mario starts as 0-small, 1-big, 2-fire
+    val timeLimit: Int     // Number of Mario seconds allowed to complete level
+)
+
+/***
+ * Multipliers for several level playing statistics.
+ * Comments describe the statistic. For example, if Mario
+ * completes the level It will be win * 1, otherwise it will win * 0
+ */
+class MWEvaluationMultipliers(
+    val distance: Int, // Distance travelled by Mario in pixels (16 pixels to a block)
+    val win: Int,      // 1 for level complete, 0 otherwise
+    val mode: Int,     // Mario's final mode on completion or death, 2-fire, 1-big, 0-small
+    val coins: Int,    // Number of coins collected
+    val flowerFire: Int, // Number fire flowers collected
+    val kills: Int,    // Number of enemy kills
+    val killedByFire: Int, // Number of kills by fireball
+    val killedByShell: Int, // Number of kills by shell
+    val killedByStomp: Int, // Number of kills by stomp
+    val mushroom: Int, // Number of mushrooms collected
+    val timeLeft: Int, // Mario seconds left on completion, 0 if level not completed
+    val hiddenBlock: Int, // Number of hidden blocks hit
+    val greenMushroom: Int, // Number of green mushrooms collected
+    val stomp: Int   // Unused
+)
+\end{lstlisting}
+\end{minipage}
+
+\section{Comparator Task Options}
+\label{app:comptask}
+\setcounter{lstlisting}{0}
+
+
+\begin{minipage}{0.9\linewidth}
+\begin{lstlisting}[language=scala, basicstyle=\scriptsize\ttfamily, caption=Parameter classes for the comparator task described in Section \ref{subsec:comptask}]
+val defaultEvaluationMultipliers = new MWEvaluationMultipliers(
+        	1,    //Distance
+        	2048, //Win
+		16,   //Mode
+		16,   //Coins
+		64,   //FlowerFire
+		58,   //Mushroom
+		42,   //Kills
+		4,    //KilledByFire
+		17,   //KilledByShell
+		12,   //KilledByStomp
+		8,    //TimeLeft
+		24,   //HiddenBlock
+		58,   //GreenMushroom
+		10)   //Stomp
+		
+val compBaseOptions: MWLevelOptions = new MWLevelOptions(
+		true,  //blocks
+		true,  //cannons
+		true,  //coins
+		false, //deadEnds
+		true,  //enemies
+		false, //flatLevel
+		false, //frozenCreatures
+		true,  //gaps
+		false, //hiddenBlocks
+		false, //tubes
+		false, //ladders
+		0,     //levelDifficulty
+		256,   //levelLength
+		0,     //levelType
+		2,     //startingMarioMode
+		200)   //timeLimit
+
+def compUpdate(levelSeed: Int): (Int, MWLevelOptions) => MWLevelOptions = (i: Int, options: MWLevelOptions) => {
+    options.withLevelLength(
+             ((((i+levelSeed) * 431) % (501+levelSeed) ) % 462) + 50)
+           .withTimeLimit((options.levelLength * 0.7).toInt)
+           .withLevelType(i % 3)
+           .withLevelDifficulty((compNumberOfLevels - i)/32)
+           .withPits(i % 4 != 2)
+           .withCannons(i % 6 == 2)
+           .withTubes(i % 5 == 1)
+           .withCoins(i % 5 != 0)
+           .withBlocks(i % 6 != 2)
+           .withLadders(i % 10 == 2)
+           .withFrozenCreatures(i % 3 == 1)
+           .withEnemies(!(i % 4 == 1))
+           .withStartingMarioMode(
+               if (i % 7 == 5 || i % 7 == 1) {
+                 if (i % 2 == 0) 0 else 1
+               } else 2)
+}
+\end{lstlisting}
+\end{minipage}
+
+
+\section{Final Learning Parameter File}
+\label{app:paramfile}
+
+\begin{minipage}{0.9\linewidth}
+\begin{lstlisting}
+parent.0 = @ec.es.ESDefaults es.params
+
+#General
+breedthreads 	= 4
+evalthreads 	= 1
+seed.0 = 1
+seed.1 = 909
+seed.2 = 499311
+seed.3 = 90032
+
+# +++ ES +++
+breed = ec.es.MuPlusLambdaBreeder
+es.mu.0 		= 5
+es.lambda.0 	= 45
+generations 	= 1000
+
+# +++ POP +++
+pop.subpops 						= 1
+pop.subpop.0.size 					= 50
+pop.subpop.0.species 				= com.montywest.marioai.learning.ec.vector.RulesetSpecies
+pop.subpop.0.species.fitness		= ec.simple.SimpleFitness
+
+#	 Rulelength 15, So 20 rules gives 300
+pop.subpop.0.species.genome-size 	= 300
+pop.subpop.0.species.ind 			= ec.vector.ByteVectorIndividual
+
+#	These will be ignored, but warnings otherwise 
+pop.subpop.0.species.min-gene		= -1
+pop.subpop.0.species.max-gene		= 2
+pop.subpop.0.species.mutation-type	= reset
+pop.subpop.0.species.mutation-prob  = 0.0
+pop.subpop.0.species.crossover-type = one
+
+#	Handles min and max
+pop.subpop.0.species.dynamic-param-class = com.montywest.marioai.learning.ec.params.RulesetParams
+
+#	Condition params
+pop.subpop.0.species.condition							= true
+pop.subpop.0.species.condition.mutation-prob 			= 0.05
+pop.subpop.0.species.condition.favour_byte 				= -1
+pop.subpop.0.species.condition.favour_probability 		= 0.5
+
+# MarioMode Condition
+pop.subpop.0.species.condition.0.favour_probability 	= 0.95
+
+# EnemyLeft Condition
+pop.subpop.0.species.condition.3.favour_probability 	= 0.9
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.9\linewidth}
+\begin{lstlisting}
+#	Action params
+pop.subpop.0.species.action								= true
+pop.subpop.0.species.action.mutation-prob 				= 0.09
+
+
+# +++ STATS +++
+stat.num-children 						= 1
+stat.child.0 							= com.montywest.marioai.learning.ec.stats.RulesetEvolveStatistics
+stat.child.0.gen-file					= ../lmm-lel-gen.stat
+stat.child.0.final-file 				= ../lmm-lel-final.stat
+stat.child.0.final-agent-file			= lmm-lel-final
+stat.child.0.best-agent-file			= lmm-lel-best
+stat.child.0.diff-agent-file			= lmm-lel-diff
+stat.child.0.best-agent-limit			= 800
+stat.child.0.diff-agent-limit			= 800
+
+
+# +++ MUTATION +++
+pop.subpop.0.species.pipe.source.0 		= ec.es.ESSelection
+pop.subpop.0.species.pipe 				= com.montywest.marioai.learning.ec.vector.breed.RulesetMutationPipeline
+
+
+# +++ EVAL +++
+eval.problem							= com.montywest.marioai.learning.ec.eval.EvolvedAgentRulesetEvaluator
+
+#	Seeds for generating levels
+#	each generation g, seed used is:
+#		prev_seed + add + g*mult
+#   where prev_seed is seed_start on g  = 0
+eval.problem.seed						= true
+eval.problem.seed.start					= 3348
+eval.problem.seed.add					= 284839
+eval.problem.seed.mult					= 2568849
+
+#	Evaluation Multiplier
+eval.problem.mults						= true
+eval.problem.mults.distance				= 1
+eval.problem.mults.win					= 3200
+eval.problem.mults.mode					= 200
+eval.problem.mults.kills				= 100
+eval.problem.mults.time-left			= 2
+
+#	Fallback Action
+eval.problem.fallback-action			= true
+eval.problem.fallback-action.right		= true
+eval.problem.fallback-action.speed		= true
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.9\linewidth}
+\begin{lstlisting}
+#	Levels
+eval.problem.level						= true
+eval.problem.level.num-levels			= 10
+
+eval.problem.level.base.dead-ends 		= false
+eval.problem.level.base.enemies			= false
+eval.problem.level.base.cannons			= false
+eval.problem.level.base.pipes			= false
+eval.problem.level.base.start-mode-num  = 2
+eval.problem.level.base.length-num		= 200
+eval.problem.level.base.time-limit		= 100
+eval.problem.level.0.difficulty-num		= 2
+eval.problem.level.0.type-num			= 1
+eval.problem.level.1.difficulty-num		= 3
+eval.problem.level.1.type-num			= 0
+eval.problem.level.2.difficulty-num		= 5
+eval.problem.level.2.type-num			= 2
+eval.problem.level.3.difficulty-num		= 10
+eval.problem.level.3.type-num			= 0
+eval.problem.level.4.difficulty-num		= 2
+eval.problem.level.4.flat				= true
+eval.problem.level.5.difficulty-num		= 7
+eval.problem.level.6.difficulty-num		= 2
+eval.problem.level.6.flat				= false
+eval.problem.level.6.enemies			= true
+eval.problem.level.6.frozen-enemies		= true
+eval.problem.level.7.difficulty-num		= 2
+eval.problem.level.7.frozen-enemies		= false
+eval.problem.level.8.difficulty-num		= 3
+eval.problem.level.8.type-num			= 1
+eval.problem.level.8.tubes				= true
+eval.problem.level.9.difficulty-num		= 5
+eval.problem.level.9.type-num			= 0
+eval.problem.level.9.cannons			= true
+eval.problem.level.9.blocks				= false
+eval.problem.level.9.tubes				= false
+\end{lstlisting}
+\end{minipage}
+
+\addtocontents{toc}{\endgroup}
+\end{appendices}

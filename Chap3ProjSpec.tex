@@ -1,0 +1,52 @@
+%___________________________________________
+%*************************************************************
+% Project Specification
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\section{Project Specification}
+
+%-----------------------------------------------------------------------
+% Functional Requirements
+%-----------------------------------------------------------------------
+
+\subsection{Functional Requirements}
+Functionally, the project can be split into three parts: the agent framework, which is responsible for gathering sensory information from the game and producing an action; level generation and playing, which is responsible for having an agent play generated levels with varying parameters; and the learning module, which will apply a genetic algorithm to a representation of an agent, with an aim to improving its level playing ability. 
+
+\subsubsection{Agent}
+The agent framework will implement the interface supplied in the Mario AI benchmark; receive the game \emph{Environment} and produce an \emph{Action}. It must be able to encode individual agents into a simple format (e.g. a bit string or collection of numbers). Additionally, it should be able to encode and decode agents to and from external files. 
+
+The framework will be assessed in three ways. Firstly on its complexity, keeping the search space of the encoded agent small is important for the learning process. Secondly on its speed, the agent must be able to respond within one game tick. Thirdly on its capability, the framework must facilitate agents that can complete the easiest levels, and attempt the hardest ones. It is also required that human created agent encoding(s) be written (within the framework) to assist this assessment.
+
+\subsubsection{Level Playing}
+The level generation and playing module must be able to generate and play levels using an agent, producing a score on completion. It should extend the existing framework included in the Mario AI Benchmark software. Furthermore, it should be able to read parameters for generation and scoring from an external file.
+
+The module will be evaluated on the level of variety in generated levels and the amount of information it can gather in order to score the agent.
+
+\subsubsection{Learning}
+The learning module should utilise a genetic algorithm to evolve an agent (in encoded form). It should also ensure that as many as possible of the parameters that govern the process can be held in external files, this included overall strategy as well fine grained detail (e.g. mutation probabilities and evaluation multipliers). Where impossible or inappropriate to hold such parameters externally it must be able to read them dynamically from their governing packages, for example boundaries on the agent encoding should be loaded from the agent package, rather than held statically in the learning module. It must have the facility to report statistics from learning runs, as well as write out final evolved agents.
+
+The learning module will also be assessed on three counts. Firstly, learning should not run for too long, grating the freedom to increase generation count or adjust parameters. Secondly, the learning process should demonstrate a meaning improvement to the agent over generations as this demonstrates an effective genetic algorithm. Thirdly, the final evolved agent will be assessed, using the level playing package. It will tested against the human created agents and analysed for behaviours and strategies not considered during their creation. 
+
+
+%-----------------------------------------------------------------------
+% Non-Functional Requirements
+%-----------------------------------------------------------------------
+
+\subsection{Non-functional requirements}
+
+Both the level playing module and the agent framework should not prevent or harm thread safety, allowing multi-threading in the learning module. Each part should be deterministic, i.e. if given the same parameter files will always produce the same results. Lastly, the entire project must have the ability to be packaged and run externally.
+
+
+%-----------------------------------------------------------------------
+% Major Dependencies
+%-----------------------------------------------------------------------
+
+\subsection{Major Dependencies}
+The project has two major dependencies: a game engine and a learning library. Their selection influenced the design of all aspects of the project and hence are included here. 
+
+As previously mentioned, the project will extend the Mario AI Benchmark. As previously discussed in Section \ref{subsec:marioaibench} the Mario AI Benchmark is an open-source Java code-base, build around a clone of the game Super Mario Bros. 3. It was chosen for its aforementioned suitability to learning and for its other pertinent features, including an agent interface, level playing and generation package and other useful additions (e.g. the ability to turn off the reliance on the system clock).
+
+The use of the Mario AI Benchmark restricts the choice of language (discussed further in Section \ref{subsec:langchoice}) to those that can run on the JVM. Hence, ECJ was chosen as the learning library as it is written in Java and is available as both source-code and packaged jar. Furthermore, ECJ fit the project specification very well: it provides support for GAs and ESes, its classes and settings are decided at runtime from external parameter files, it is highly flexible and open to extension, and has facilities for logging run statistics.
+
+Although the intention was to include these dependencies as packaged jars, modification of their source code was necessary (which was available on academic licences). This code was modified in Java, packaged and included as dependencies in the main project. Details of the modifications can found in Sections \ref{subsec:enginemod} and \ref{subsec:ecjmod}.
