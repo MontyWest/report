@@ -11,6 +11,7 @@
 %-----------------------------------------------------------------------
 
 \subsection{Design}
+\label{subsec:agentdes}
 
 \begin{figure}[t]
 	\centering
@@ -31,9 +32,11 @@ When asked for an action, the \emph{Agent} passes this observation to its rulese
 
 \vspace{\baselineskip}
 
-Perceptions are hard coded and as such all of an agents behaviour is determined by its ruleset. If ruleset are implemented in a persistable fashion it ensures that agents can be read and written to external files. Furthermore, rulesets are immutable and only information received during the current game tick is considered. Hence, agents have no state and are deterministic and thread safe (assuming the game engine is).
+Perceptions are hard coded; as such, all of an agents behaviour is determined by its ruleset. Thus, an implementation of the ruleset which allows persistence ensures that agents can be read and written to external files. Furthermore, rulesets are immutable and only information received during the current game tick is considered. Hence, agents have no state and are deterministic and thread safe (assuming the game engine is).
 
-The capability of this framework is closely tied to the choice of perceptions, which therefore must be chosen with careful consideration. The perceptions chosen were based upon those used in the REALM v1 agent \cite[p.~85]{realm}. The following is the final list of perceptions chosen:
+The capability of this framework is closely tied to the choice of perceptions. The more detail an agent is able to observe in its environment, the more potentially capable the agent can be. However, increasing the number of perceptions, and the detail they perceive at, increases the search space, making capable agents less likely to result from random mutation. Therefore, selection of perceptions must be careful considered, with a balance being struck between detail and brevity. 
+
+The perceptions chosen were based upon those used in the REALM v1 agent \cite[p.~85]{realm}. The following is the final list of perceptions chosen:
 \begin{description}
 \item[MarioMode] Measures whether Mario is \textbf{small}, \textbf{big} or \textbf{fire} (capable of throwing fireballs).
 \item[JumpAvailable] Detects if Mario has the ability to jump (i.e. on the ground or gripping a wall with the jump key off).
@@ -132,7 +135,7 @@ The \emph{Environment} interface contains several individual methods that report
 
 Perceptions pertaining to enemies, obstacles or pits was more challenging. Environment provides two 19x19 arrays, one for enemies and one for terrain. Centred around Mario, each array element represents a `square' (16 pixels) of the level scene. The value of an element marks the presence of an enemy or terrain square. 
 
-Enemy and obstacle perceptions pass the relevant array, a lambda test function, coordinates for a box segment of the array and a boolean to a helper function. This function uses Scala's for loop comprehensions to search through the box, applying the lambda to each element, returning the boolean parameter if the lambda returns true at least once. In this way it is easy to search for an enemy or obstacle in a box relative to Mario. Pits work in a similar way, but declare columns instead. If there is no terrain in the column below Mario's height, then it is considered a pit. Take EnemyLeft for example:
+Enemy and obstacle perceptions pass the relevant array, a lambda test function, coordinates for a box segment of the array and a boolean to a helper function. This function uses Scala's for loop comprehensions to search through the box, applying the lambda to each element, returning the boolean parameter if the lambda returns true at least once. In this way it is easy to search for an enemy or obstacle in a box relative to Mario. Pits work in a similar way, but declare columns instead (see Listing \ref{lst:prcptpit} in Appendix \ref{app:percond}). If there is no terrain in the column below Mario's height, then it is considered a pit. Take EnemyLeft for example:
 
 \begin{minipage}{0.9\linewidth}
 \centering

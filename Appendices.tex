@@ -14,6 +14,8 @@
 \setcounter{lstlisting}{0}
 \renewcommand\thelstlisting{\thesection\arabic{lstlisting}}
 
+\captionsetup{font={footnotesize,it}}
+
 \addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
 \makeatletter
 \addtocontents{toc}{%
@@ -23,12 +25,12 @@
 }
 \makeatother
 
-\section{Perception Values}
+\section{Perceptions}
 \label{app:percond}
 
 \vspace{-1\baselineskip}
 \begin{table}[h]
-  \begin{center} 
+  \begin{center} \footnotesize
     \begin{tabular}{ l c c c}
     & \textbf{0} & \textbf{1} & \textbf{2} \\
     \textbf{MarioMode} (MM) & small & big & fire \\
@@ -47,6 +49,43 @@
   \caption{Displays the different perceptions and what their byte value represents.}
   \label{tab:AgKey}
 \end{table}
+
+\begin{minipage}{0.9\linewidth}
+\begin{lstlisting}[language=scala, basicstyle=\scriptsize\ttfamily, caption={Pit detection in the perceptions classes.}, label={lst:prcptpit}]
+// Returns NONE if there are no pits ahead, FAR and CLOSE if there is one in a certain number of columns relative to mario.
+case object PitAhead extends BytePerception(7, 2) {
+    val NONE: Byte = 0; val CLOSE: Byte = 1; val FAR: Byte = 2;
+    val COL_CLOSE_L = 1; val COL_CLOSE_R = 1; val COL_FAR_L = 2; val COL_FAR_R = 2
+    def apply(environment: Environment): Byte = {
+        val pitOp: Option[Int] = 
+          Perception.getOpens(environment, COL_CLOSE_L, COL_FAR_R).headOption
+        pitOp match {
+            case Some(x) if (x >= COL_CLOSE_L && x <= COL_CLOSE_R) => CLOSE
+            case Some(x) if (x >= COL_FAR_L && x <= COL_FAR_R) => FAR
+            case _ => NONE
+       }
+    }
+}
+
+def getOpens(environment: Environment, a: Int, b: Int): List[Int] = {
+    val level = environment.getLevelSceneObservationZ(2);
+    val test = (x: Byte) => x == 0 || x == GeneralizerLevelScene.COIN_ANIM;
+    val bottomRow = level.length - 1
+    val mario = getMarioPos(environment)
+    val left = max(0, min(a, b) + mario._2)
+    val right = min(level(0).length, max(a, b) + mario._2)   
+    var opens: List[Int] = left to right toList
+    
+    for {
+        i <- mario._1 + 1 to bottomRow
+        if (!opens.isEmpty)
+    }{
+        opens = opens.filter { j => level(i)(j) == 0 || level(i)(j) == GeneralizerLevelScene.COIN_ANIM }
+    }
+    opens.map { x => x - mario._2 }
+}
+\end{lstlisting}
+\end{minipage}
 
 \section{Handcrafted Agent Rulesets}
 \label{app:har}
@@ -128,9 +167,10 @@ Included below are the full rulesets for the project's handcrafted agents. Blank
 
 \section{Full Level and Evaluation Options}
 \label{app:loem}
+\setcounter{lstlisting}{0}
 
 \begin{minipage}{0.9\linewidth}
-\begin{lstlisting}[language=scala, basicstyle=\scriptsize\ttfamily, caption=Full field definitions for MWLevelOptions and MWEvaluationMultipliers described in Section \ref{subsec:paramclasses}]
+\begin{lstlisting}[language=scala, basicstyle=\scriptsize\ttfamily, caption={Full field definitions for MW\-Level\-Options and MW\-Evaluation\-Multipliers described in Section \ref{subsec:paramclasses}}]
 /***
  * Options that control level generation
  */
