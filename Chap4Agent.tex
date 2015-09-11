@@ -20,6 +20,29 @@
 	\label{fig:aumlcd}
 \end{figure}
 
+
+\begin{figure}[t]
+	\begin{adjustwidth}{-2cm}{-2cm}
+    \centering
+          \begin{subfigure}[b]{0.32\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{obstacles.png}
+                  \caption{Obstacles}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.32\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{pit.png}
+                  \caption{Pit (with Stairs)}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.32\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{enemies.png}
+                  \caption{Enemies}
+          \end{subfigure}
+	\caption{Example level features that agents must overcome.}\label{fig:lpdiff}
+    \end{adjustwidth}
+\end{figure}
+
 The benchmark offers an \emph{Agent} interface, which when extended can be passed into the game playing portion of the software. Every game tick the current \emph{Environment} is passed to the agent, and then the agent is asked for an \emph{Action}, which is a set of explicit key press for Mario to perform.
 
 The agent framework's basis will be extending this interface. Similar to REALM's agent, it will be a rule-based system. A UML class diagram of the system is given in Figure \ref{fig:aumlcd}.
@@ -74,6 +97,13 @@ With two major and several minor dependencies, their management is important to 
 
 \subsection{Implementation}
 
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.5]{PerceptionClassDiagram.png}
+	\caption{UML class diagram of the perception system.}
+	\label{fig:percumlcd}
+\end{figure}
+
 The design of the agent framework allows for agents to be fully determined by their ruleset. In order for an agent to be used in a evolutionary algorithm it must be represented by a simple data structure. Hence, implementation must allow for agent's rulesets to be unambiguously represented as, for example, a one dimensional collection. This section will describe the implementation steps taken to represent rulesets as a array of 8-bit integers, utilising Scala's built in types Vector and Byte.
 
 \subsubsection{Perceptions}
@@ -81,13 +111,6 @@ The design of the agent framework allows for agents to be fully determined by th
 The Perception interface was implemented as an abstract class, with an index integer field and an apply method. \emph{apply} takes the game Environment and returns a Byte (an 8-bit integer) instance, representing the measurement. Perception was extended into two further abstract classes: BoolPerception, which enforces apply's return be either 1 or 0, representing true and false respectively; and BytePerception, which has a limit field and enforces apply's return is between 0 and limit (inclusively). A full list of perceptions and what their byte values represent can be found in Table \ref{tab:AgKey} in Appendix \ref{app:percond}.
 
 Concrete perceptions were implemented as objects (singletons) using the \emph{case} keyword, which allows for exhaustive pattern matching on the Perception class, as well as type safe extension by adding further case objects. Each one declares a unique index integer to the Perception superclass (starting at 0 and increasing by one for each). They implement the apply method to return their specific measurement. Figure \ref{fig:percumlcd} shows a class diagram of the this system.
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[scale=0.5]{PerceptionClassDiagram.png}
-	\caption{UML class diagram of the perception system.}
-	\label{fig:percumlcd}
-\end{figure}
 
 For illustration, consider these examples. The perception PitBelow extends BoolPerception, with a unique index of 8 and implements \emph{apply} to return 1 if there is a pit directly below Mario and 0 otherwise. MarioMode extends BytePerception, with a unique index of 0 and a limit of 2, with \emph{apply} returning 0 if Mario is \textbf{small}, 1 for \textbf{big} and 2 for \textbf{fire}.
 
@@ -145,8 +168,8 @@ case object EnemyLeft extends BoolPerception(3) {
     val AREA_UL = (-2,-2); val AREA_BR = (1, -1);
   
     def apply(environment: Environment): Byte = {
-        if(Perception.enemyInBoxRelativeToMario(environment, AREA_UL, AREA_BR)) 
-            1 else 0  
+        if(Perception.enemyInBoxRelativeToMario(environment,
+            AREA_UL, AREA_BR)) 1 else 0  
     }
 }
 \end{lstlisting}
@@ -155,8 +178,7 @@ case object EnemyLeft extends BoolPerception(3) {
 \begin{minipage}{0.9\linewidth}
 \centering
 \begin{lstlisting}[language=scala]
-def enemyInBoxRelativeToMario(
-          environment: Environment, 
+def enemyInBoxRelativeToMario(environment: Environment, 
           a: (Int, Int), b: (Int, Int)): Boolean = {
     val enemies = environment.getEnemiesObservationZ(2);
     val test = (grid: Array[Array[Byte]], tup: Tuple2[Int, Int]) =>{
@@ -176,20 +198,22 @@ def checkBox(grid: Array[Array[Byte]],
                mario: (Int, Int), 
                a: (Int, Int), b: (Int, Int), 
                ret: Boolean): Boolean = {
-    import Math.min
-    import Math.max
+
     val relARow = min(grid.length-1, max(0, (a._1 + mario._1)))
     val relACol = min(grid(0).length-1, max(0, (a._2 + mario._2)))
     val relBRow = min(grid.length-1, max(0, (b._1 + mario._1)))
     val relBCol = min(grid(0).length-1, max(0, (b._2 + mario._2)))
-    
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]   
     for {
       i <- min(relARow, relBRow) to max(relARow, relBRow)
       j <- min(relACol, relBCol) to max(relARow, relBCol)
       if (test(grid, (i, j)))
-    }{
-        return ret
-    }
+    }{ return ret }
     !ret
 }
 \end{lstlisting}
@@ -210,7 +234,6 @@ For example, this allowed Observation to be used as such:
 \centering
 \begin{lstlisting}[language=scala]
 abstract class ObservationAgent extends Agent {
-    ...
     // Using factory method for a blank observation
     var observation: Observation = Observation.BLANK
     ...
@@ -218,16 +241,14 @@ abstract class ObservationAgent extends Agent {
         // Using the Observation factory method 
         // to build a new observation
         observation = Observation(env)
-        
         if (printObservation) {
             // Using Vector method foreach directly
             observation.foreach { 
                 b:Byte => print(" ~ " + b)
             }
-        } 
+        }
         ...
     }
-    ...
  }
 
 \end{lstlisting}

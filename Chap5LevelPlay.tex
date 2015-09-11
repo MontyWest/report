@@ -29,9 +29,9 @@ The MarioAIOptions class contains several useful parameters. They include: a int
 
 The level playing module will extend this system. Its primary objective will be to allow for multiple levels (episodes) to be played with options that update as prescribed by some parameter class. Upon completion it will produce a fitness based on all levels played. Furthermore, it will allow for the injection of different agents and level seeds, to allow different agents to play the same options without rebuilding the instance. A UML class diagram for the module can be found in Figure \ref{fig:pumlcd}.
 
-Level options are stored in the \emph{MWLevelOptions} class, which acts as an adapter for the MarioAIOptions class. Each new level these will be updated by the dedicated \emph{MWLevelOptionsUpdater} class. The \emph{EvaluationMultipliers} class is an adapter for the SystemOfValues class, which is used to calculate the fitness at the end of a sequence of levels. These classes are separated from the the game playing task and are included using constructor dependency injection. This helps to decouple the system and improve the ability to modify and test.
+Level options are stored in the \emph{MWLevelOptions} class, which acts as an adapter for the MarioAIOptions class. Each new level these will be updated by the dedicated \emph{MWLevelOptionsUpdater} class. The \emph{MWEvaluationMultipliers} class is an adapter for the SystemOfValues class, which is used to calculate the fitness at the end of a sequence of levels. These classes are separated from the the game playing task and are included using constructor dependency injection. This helps to decouple the system and improve the ability to modify and test.
 
-Both MWLevelOptions and EvaluationMultipliers are designed to be data classes, which provides determinism and thread safety, as well as easy persistence. MWLevelOptionsUpdater's qualities in this regard are Implementation details and are discussed in a following section. The full list of parameters held in these classes can be found in the Appendix !REF!.
+Both MWLevelOptions and MWEvaluationMultipliers are designed to be data classes, which provides determinism and thread safety, as well as easy persistence. MWLevelOptionsUpdater's qualities in this regard are Implementation details and are discussed in a following section. A full list of field for both the MWLevelOptions and MWEvaluationMultipliers classes can be found in Appendix \ref{app:loem}.
 
 
 %-----------------------------------------------------------------------
@@ -40,10 +40,47 @@ Both MWLevelOptions and EvaluationMultipliers are designed to be data classes, w
 
 \subsection{Implementation}
 
+\begin{figure}[t]
+	\begin{adjustwidth}{-2cm}{-2cm}
+    \centering
+          \begin{subfigure}[b]{0.32\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{difficulty00.png}
+                  \caption{Difficulty 0}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.32\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{difficulty02.png}
+                  \caption{Difficulty 2}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.32\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{difficulty05.png}
+                  \caption{Difficulty 5}
+          \end{subfigure}
+          \begin{subfigure}[b]{0.32\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{difficulty10.png}
+                  \caption{Difficulty 10}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.32\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{difficulty20.png}
+                  \caption{Difficulty 20}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.32\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{difficulty50.png}
+                  \caption{Difficulty 50}
+          \end{subfigure}
+    \caption{Handcrafted \textbf{complex} agent playing on different difficulty levels.}\label{fig:lpdiff}
+    \end{adjustwidth}
+\end{figure}
+
 \subsubsection{Parameter Classes}
 \label{subsec:paramclasses}
 
-The MWLevelOptions and MWEvaluationMultipliers classes were implemented as data classes in an immutable builder pattern style. Each field has a \emph{withField(field)} method that returns a cloned instance with that field changed. This affords a concise, declarative style, whilst maintaining immutability. MWEvaluationMultipliers has a implicit converter to a SystemOfValues instance, which is required for evaluation in the benchmark. However, a similar approach was not possible for converting MWLevelOptions to a MarioAIOptions instance (required for the game-engine). MarioAIOptions hold more parameters than MWLevelOptions (e.g. agent and level seed), therefore the adapter function takes both the current MarioAIOptions and a MWLevelOptions instance as parameters and updates the former by overriding the corresponding fields with values from the latter. A full list of field for both the MWLevelOptions and MWEvaluationMultipliers classes can be found in Appendix \ref{app:loem}.
+The MWLevelOptions and MWEvaluationMultipliers classes were implemented as data classes in an immutable builder pattern style. Each field has a \emph{withField(field)} method that returns a cloned instance with that field changed. This affords a concise, declarative style, whilst maintaining immutability. MWEvaluationMultipliers has a implicit converter to a SystemOfValues instance, which is required for evaluation in the benchmark. However, a similar approach was not possible for converting MWLevelOptions to a MarioAIOptions instance (required for the game-engine). MarioAIOptions hold more parameters than MWLevelOptions (e.g. agent and level seed), therefore the adapter function takes both the current MarioAIOptions and a MWLevelOptions instance as parameters and updates the former by overriding the corresponding fields with values from the latter.
 
 MWLevelOptions was not implemented as a class. Instead, MWBasicTask expects a lambda function. This lambda takes the episode number and the current MWLevelOptions, returning an updated set of options. MWLevelOptions builder structure ensures this is always a new instance, and hence maintains immutability. The inclusion of the episode number allows the function to remain deterministic. Moreover, with the ability to build closures in Scala, this lambda can be built from data (for example, a list of options, where indexes relate to episode number).
 
@@ -92,7 +129,12 @@ class MWEvaluationTask(val numberOfLevels: Int,
                        override val baseLevelOptions: MWLevelOptions, 
                        override val updateOptionsFunc: (Int, MWLevelOptions) => MWLevelOptions)
                            extends MWBasicTask("MWMainPlayTask", baseLevelOptions, updateOptionsFunc, visualisation, args) with EvaluationTask {
-
+\end{lstlisting}
+\end{minipage}     
+    
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]  
     private var baseLevelSeed: Int = 0;
     
     override def nextLevelSeed(episode: Int, lastSeed: Int) =  {
@@ -137,7 +179,12 @@ def doEpisodes(amount: Int): Unit = {
         } else {
             // Calls the update lambda to get episodes set of options
             val newOptions = updateOptions(iteration, prevOptions)
-            
+\end{lstlisting}
+\end{minipage}     
+    
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]              
             // Converts options to class required for game-engine
             val marioAIOptions = MWLevelOptions.updateMarioAIOptions(super.options, newOptions)
             
@@ -218,13 +265,18 @@ However, the decoupling of the parameter classes from MWEvaluationTask means tha
 "getEvaluationMutlipliers" should "return eval mults from databade and zero otherwise" in {
     val base = blankParam.push(EvaluationParamsUtil.P_EVAL_BASE)
     (pdStub.exists _) when(base, *) returns(true)
-    
+  
     (pdStub.exists _) when(base.push(EvaluationParamsUtil.P_COINS), *) returns(true)
     (pdStub.getIntWithDefault _) when(base.push(EvaluationParamsUtil.P_COINS), *, *) returns(10)
-    
+     
     (pdStub.exists _) when(base.push(EvaluationParamsUtil.P_KILLED_BY_SHELL), *) returns(true)
     (pdStub.getIntWithDefault _) when(base.push(EvaluationParamsUtil.P_KILLED_BY_SHELL), *, *) returns(200)
+\end{lstlisting}
+\end{minipage}     
     
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]       
     (pdStub.exists _) when(base.push(EvaluationParamsUtil.P_DISTANCE), *) returns(true)
     (pdStub.getIntWithDefault _) when(base.push(EvaluationParamsUtil.P_DISTANCE), *, *) returns(1)
     

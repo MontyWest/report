@@ -15,7 +15,7 @@ The learning module's goal is to utilise the ECJ library to evolve a population 
 \subsection{Evolutionary Approach}
 \label{subsec:learndes}
 
-Similar to the approach taken in developing the REALM agent (described in Section \ref{ssec:realm}), this project uses a  $(\mu  + \lambda)$ evolution strategy. However, unlike REALM, it focuses purely on mutation, with no crossover between individuals (a technique not traditionally applied with ESes \cite[p.~]{ecj-tut3}).
+Similar to the approach taken in developing the REALM agent (described in Section \ref{ssec:realm}), this project uses a  ted evolution strategy. However, unlike REALM, it focuses purely on mutation, with no crossover between individuals (a technique not traditionally applied with ESes \cite[p.~]{ecj-tut3}).
 
 Evolution runs for 1000 generations with a population size of 50. The truncation selection size for our ES ($\mu$) is set to 5. Hence, the top 5 fittest individuals are chosen each generation. These are cloned and mutated to form 45 ($\lambda$) new individuals, which are then joined by the original 5 for the next generation.
 
@@ -153,13 +153,11 @@ override def prePrototypeSetup(state: EvolutionState, base: Parameter, default: 
     if (dynamicParamsClassOpt.isDefined) {
         val dynamicParamsClass: DynamicSpeciesParameters
             = dynamicParamsClassOpt.get
-      
         if (dynamicParamsClass.minGene.isDefined) {
             fill(minGene, dynamicParamsClass.minGene.get)
         }
         ...
         for(i <- 0 until genomeSize) {
-    	        ....
             if (dynamicParamsClass.maxGene(i).isDefined) {
                 maxGene(i) = dynamicParamsClass.maxGene(i).get
             }
@@ -192,9 +190,11 @@ override def prePrototypeSetup(state: EvolutionState, base: Parameter, default: 
     super.prePrototypeSetup(state, base, default)
     ...
     if(state.parameters.exists(base.push(RulesetSpecies.P_CONDITION), default.push(RulesetSpecies.P_CONDITION))) {
-        dpc.runOnIndexes(Condition, genomeSize){
+        dpc.runOnIndexes(Condition, genomeSize) {
             (x: Int, mod: Int) => {
-                loadParametersForGene(state, x, base.push(RulesetSpecies.P_CONDITION), default.push(RulesetSpecies.P_CONDITION), "")
+                loadParametersForGene(state, x, 
+                  base.push(RulesetSpecies.P_CONDITION), 
+                  default.push(RulesetSpecies.P_CONDITION), "")
             }
         }
     }
@@ -233,12 +233,6 @@ protected def mutateIndividual(state: EvolutionState, thread: Int, vecInd: ByteV
                        state.random(thread),
                        species.favourByte(n)
                      )
-\end{lstlisting}
-\end{minipage}
-                    
-\begin{minipage}{0.9\linewidth}
-\centering
-\begin{lstlisting}[language=scala]
             } else {
                 vecInd.genome(n) = getRandomByte(
                   species.minGene(n).toByte,
@@ -248,12 +242,6 @@ protected def mutateIndividual(state: EvolutionState, thread: Int, vecInd: ByteV
             }
         }
     }
-\end{lstlisting}
-\end{minipage}
-                    
-\begin{minipage}{0.9\linewidth}
-\centering
-\begin{lstlisting}[language=scala]
     vecInd.evaluated = false
     vecInd
 }
