@@ -353,6 +353,7 @@ The finalStatistics method retrieves the current\-Best\-Individual, overall\-Bes
 %-----------------------------------------------------------------------
 
 \subsection{Testing}
+\label{subsec:learntest}
 
 ECJ's structure makes unit testing extremely difficult, due mainly to its heavy reliance on the EvolutionState singleton. It is utilised by every class and passed to nearly every method. ScalaMock is unable to mock this object as it is not accessed through an interface and building a fixed instance would be overly time consuming (and tantamount to simply running the software).
 
@@ -366,6 +367,7 @@ The lack of testing is not desirable, and given more time, efforts would have be
 %-----------------------------------------------------------------------
 
 \subsection{Running}
+\label{subsec:learnrunning}
 
 As learning could take several hours, or even days, the software was run on an external quad-core server. Maven was used to package the main project, with all its dependencies in to a jar file, which allowed it to easily transferred and run. As the project went through several revisions and performed many learning runs, shell scripts were written to facilitate this process. The push script called Maven to package the project, running all tests, which was then copied to the server (using ssh), along with parameter files and their runner scripts. These runner scripts were then run remotely to begin the learning process. On completion another script retrieved the generation log and the agent files.
 

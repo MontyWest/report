@@ -5,8 +5,6 @@
 %^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-\begin{appendices}
-
 \setcounter{table}{0}
 \renewcommand\thetable{\thesection\arabic{table}}
 \setcounter{figure}{0}
@@ -15,15 +13,6 @@
 \renewcommand\thelstlisting{\thesection\arabic{lstlisting}}
 
 \captionsetup{font={footnotesize,it}}
-
-\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
-\makeatletter
-\addtocontents{toc}{%
-  \begingroup
-  \let\protect\l@section\protect\l@subsection
-  \let\protect\l@subsection\protect\l@subsubsection
-}
-\makeatother
 
 \section{Perceptions}
 \label{app:percond}
@@ -361,7 +350,7 @@ pop.subpop.0.species.pipe 				= com.montywest.marioai.learning.ec.vector.breed.R
 
 
 # +++ EVAL +++
-eval.problem							= com.montywest.marioai.learning.ec.eval.EvolvedAgentRulesetEvaluator
+eval.problem							= com.montywest.marioai.learning.ec.eval.AgentRulesetEvaluator
 
 #	Seeds for generating levels
 #	each generation g, seed used is:
@@ -428,5 +417,3 @@ eval.problem.level.9.tubes				= false
 \end{lstlisting}
 \end{minipage}
 
-\addtocontents{toc}{\endgroup}
-\end{appendices}

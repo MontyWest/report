@@ -234,7 +234,27 @@ The aim was to produce an agent that shows meaningful improvement during learnin
 %^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 \clearpage
+\begin{appendices}
+
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+\makeatletter
+\addtocontents{toc}{%
+  \begingroup
+  \let\protect\l@section\protect\l@subsection
+  \let\protect\l@subsection\protect\l@subsubsection
+}
+\makeatother
+
+% Normal Appendices
 \input{Appendices.tex}
+
+% Source Code
+\input{SourceCode.tex}
+
+
+\addtocontents{toc}{\endgroup}
+
+\end{appendices}
 
 
 %___________________________________________
