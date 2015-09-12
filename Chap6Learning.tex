@@ -310,17 +310,16 @@ override def evaluate(state: EvolutionState, individual: Individual, subpop: Int
 
 \subsubsection{Statistics}
 
-The Statistics class and its subclasses are setup at the beginning of the learning run and then called as `hook' at various points during the generational loop. RulesetEvolveStatistics implements \emph{setup} and two of the hooks, \emph{postEvaluationStatistics} and \emph{finalStatistics}. The setup method reads the filenames for the generation log and the final agent exports. It registers the log file with EvolutionState's \emph{Output} instance to allow it to be called from the other methods. 
+The Statistics class and its subclasses are setup at the beginning of the learning run and then called as `hook' at various points during the generational loop. RulesetEvolveStatistics implements \emph{setup} and two of the hooks, \emph{postEvaluationStatistics} and \emph{finalStatistics}. The setup method reads the filenames for the generation log, final log and the final agent exports. It registers the log file with EvolutionState's \emph{Output} instance to allow it to be called from the other methods. 
 
 The postEvaluationStatistics method is passed the EvolutionState, from which it can access the current population and generation number. It loops through the individuals of the current population, calculating the average fitness and determining the best individual. The average fitness, best fitness, current level seed, generation number and the best individuals genome are all written to the generation log using the Output class:
 
 \begin{minipage}{0.9\linewidth}
 \centering
 \begin{lstlisting}[language=scala]
-state.output.println(
 val all = "~all~ " + genNum + "," + levelSeed + "," + avScore + "," + bestScore
-
-"--------- GENERATION " + genNum + " ---------\n", genLog)
+state.output.println(
+  "--------- GENERATION " + genNum + " ---------\n", genLog)
 state.output.println(all + 
         "\nLevel Seed    : " + levelSeed + 
         "\nAverage Score : " + avScore + 
@@ -333,7 +332,7 @@ state.output.println(all +
  
 The best individual in the generation is saved to the currentBestIndividual field. Further checks to see if it is the best overall individual or has the biggest difference to the average are also performed, resulting in the individual being saved to the bestOverallIndividual and biggestDiffIndividual fields respectively. These checks are also controlled by generation number, only being performed after a certain generation, specified in the parameter file.
 
-The finalStatistics method retrieves the current\-Best\-Individual, overall\-Best\-Individual and biggest\-Diff\-Individual. From each it constructs a ruleset, initialises an agent with the correct default action and passes it to agent IO utility class to be persisted with the corresponding filenames captured during setup.
+The finalStatistics method retrieves the current\-Best\-Individual, overall\-Best\-Individual and biggest\-Diff\-Individual. From each it constructs a ruleset, initialises an agent with the correct default action and passes it to agent IO utility class to be persisted into the corresponding filenames captured during setup. The entire final generation and their fitness values are also written to the final log.
 
 
 %-----------------------------------------------------------------------
@@ -387,7 +386,7 @@ Immutability and thread safety were a major focus of the project. This was done 
     \end{tabular}
   \end{center}
   \end{adjustwidth}
-  \caption{Level playing parameters of the final learning run. Type 0 is outside, and type 1 and 2 are inside. }
+  \caption{Level playing parameters of the LEMMEL learning run. Type 0 is outside, and type 1 and 2 are inside. }
   \label{tab:evalparams}
 \end{table}
 
@@ -405,7 +404,7 @@ Immutability and thread safety were a major focus of the project. This was done 
     \end{tabular}
    \end{center}
 
-  \caption{Evaluation multipliers of the final learning run.}
+  \caption{Evaluation multipliers of the LEMMEL learning run.}
   \label{tab:multparams}
   }
   \hfill
@@ -421,7 +420,7 @@ Immutability and thread safety were a major focus of the project. This was done 
     Action Mutation & 0.09 \\ \hline
     \end{tabular}
   \end{center}
-  \caption{Mutation parameters of the final learning run.}
+  \caption{Mutation parameters of the LEMMEL learning run.}
   \label{tab:mutaparams}
 }
 \end{table}
@@ -436,7 +435,7 @@ Mutation probability of both conditions and actions was lowered and the {\footno
 
 Agents evolved with these parameter demonstrated much more compelling behaviours, as well as higher overall attainment. However, it was observed that much of their ruleset's were unused.
 
-A second revision was made with an aim to increasing the number of rules used and to reduce the search space. Favour probability for genes corresponding to conditions on MarioMode and EnemyLeft were greatly increased, making {\footnotesize DONT\_CARE} likely in these conditions on all rules.
+A second revision was made with an aim to increasing the number of rules used and to reduce the search space. Favour probability for genes corresponding to conditions on MarioMode and EnemyLeft were greatly increased, making {\footnotesize DONT\_CARE} likely in these conditions on all rules. For the clarity, the learning run performed using these parameters will be referred to as the \textbf{LEMMEL} run (for \textbf{LE}ss \textbf{M}ario\textbf{M}ode and \textbf{E}nemy\textbf{L}eft)
 
-The agents produced with this final approach are evaluate in depth on Section \ref{subsec:evallearnt}. Tables \ref{tab:evalparams}, \ref{tab:multparams} and \ref{tab:mutaparams} summarise the final parameters, which can be found in full, in ECJ's file format, in Appendix \ref{app:paramfile}.
+The agents produced with this approach are evaluated in depth on Sections \ref{subsec:evallearnt} and \ref{subsec:evallearn2}. Tables \ref{tab:evalparams}, \ref{tab:multparams} and \ref{tab:mutaparams} summarise the LEMMEL parameters, which can be found in full, in ECJ's file format, in Appendix \ref{app:paramfile}.
 

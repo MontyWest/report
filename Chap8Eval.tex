@@ -33,7 +33,7 @@ In its current form, the agent framework balances these factors reasonably well.
 \]
 being higher than that of REALM's V1 agent ($7,558,272$) \cite{realm}[p.~86]. Thus, improvements to the capability of the agent should not increase the search space, but instead focus on making each perception is purposeful.
 
-In the final set of parameters (and in the handcrafted agents) we encouraged the disregarding of the MarioMode and EnemyLeft perceptions. Our learning parameters allowed us to reduce the search space by increasing the probability of the {\footnotesize DONT\_CARE} condition. This is clearly a counter intuitive approach and the agent design should be amended by removing these perceptions. 
+In the LEMMEL run parameters (and in the handcrafted agents) we encouraged the disregarding of the MarioMode and EnemyLeft perceptions. Our learning parameters allowed us to reduce the search space by increasing the probability of the {\footnotesize DONT\_CARE} condition. This is clearly a counter intuitive approach and the agent design should be amended by removing these perceptions. 
 
 Such removals would allow for additional perceptions and/or design extensions without increasing agent complexity. Given more time, a redesign that allowed agent encoding control over its perceptions would be considered. Perceptions would remain fixed, but the parameters that control them would be variable. For example, the area in which an agent looks for an obstacle or enemy could be controlled by parameters on a ruleset wide basis. Moreover, perceptions that ascertain the last used action (a simplistic form of memory) and greater detail in the identifying enemies would also be investigated.
 

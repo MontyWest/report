@@ -17,7 +17,7 @@
  \begin{figure}
   \centering
   \includegraphics[scale=0.6]{LearnGraph.png}
-  \caption{Graph charting the best and average fitness over the final learning run. Handcrafted \textbf{complex} agent fitness also included.}
+  \caption{Graph charting the best and average fitness over the LEMMEL learning run. Handcrafted \textbf{complex} agent fitness also included.}
   \label{fig:learngraph}
  \end{figure}
 \end{landscape}
@@ -43,12 +43,16 @@
 
 \subsubsection{Generation Variance}
 
-\begin{figure}[t]
+\afterpage{
+\begin{landscape}
+\begin{figure}
 	\centering
-	\includegraphics[scale=0.35]{FixSeedGraph.png}
-	\caption{A learning run which had a fixed level seed of 323548323.}
+	\includegraphics[scale=0.6]{FixSeedGraph.png}
+	\caption{A learning run which had a fixed level seed, performed in response to high generational variation in the LEMMEL run.}
 	\label{fig:fixgraph}
 \end{figure}
+\end{landscape}
+}
 
 \begin{itemize}
 \item It is evident from the graph that there is a lot of variance in both the best and average fitness between generations.
@@ -67,6 +71,7 @@
 \item Both graphs show a large difference between the best and average fitness. This suggest a large variance in fitness over a single population.
 \item The last generation of the fix seed run has a standard deviation ...
 \item As the ES ensures each generation's population are mutated from the previous best agents, this shows that the agent framework is particularly sensitive to mutation, which ruleset fitness dropping dramatically in one mutation round.
+\item For example the final agent of the fixed seed run has a rule as such: ---- The worst agent of the final generation mutated (with only one mutation) this rule to: ---- Which instructed the agent to never move, causing a drop in score from 74xxx to 4xxx.
 \end{itemize}
 
 \clearpage
@@ -74,7 +79,7 @@
 % Learnt Agents
 %-----------------------------------------------------------------------
 
-\subsection{Learnt Agents}
+\subsection{Handcrafted vs. Learnt Agent}
 \label{subsec:evallearnt}
 
 \begin{itemize}
@@ -99,7 +104,7 @@
     \end{tabular}
   \end{center}
   \end{adjustwidth}
-  \caption{\small Statistics from handcrafted and learnt agents playing all the evaluation tasks from the final learning run.}
+  \caption{\small Statistics from handcrafted and learnt agents playing each generation's evaluation task from the LEMMEL run.}
   \label{tab:learnrunagents}
 \end{table}
 
@@ -137,7 +142,7 @@
 \begin{landscape}
  \begin{figure}
   \centering
-  \includegraphics[scale=0.6]{CompTaskGraph.png}
+  \includegraphics[scale=0.5]{CompTaskGraph.png}
   \caption{Graph charting the score achieved on different difficulty levels during the comparator task.}
   \label{fig:compgraph}
  \end{figure}
@@ -151,13 +156,14 @@
 \item Figure \ref{fig:compgraph} shows how the agents performed at different difficulties in the comparator task. Learnt agents were outperformed by complex agent on all difficulties (especially 6, 5 and 4) except 2, which was the most prevalent in the learning evaluation task. Implying that a longer and more representative task may produce a better agent.
 \end{itemize}
 
-
+\clearpage
 %-----------------------------------------------------------------------
 % Learnt Agent Behaviours
 %-----------------------------------------------------------------------
-\subsection{Learnt Agent Behaviours}
+\subsection{Learnt Agent Analysis}
+\label{subsec:evallearn2}
 
-\begin{table}[t]
+\begin{table}[!t]
   \begin{adjustwidth}{-2cm}{-2cm}
   \begin{center} \scriptsize
     \begin{tabular}{ | c | c | c | c | c | c | c | c | c | c | c | c || c | c | c | c |}
@@ -165,41 +171,244 @@
     \multirow{2}{*}{\textbf{\#}} & \multicolumn{11}{c ||}{\textbf{Conditions}} & \multicolumn{4}{c |}{\textbf{Actions}} \Tstrut \\ \cline{2-16}
     
 	& \tiny MM & \tiny JA & \tiny OG & \tiny EL & \tiny EUR & \tiny ELR & \tiny OA & \tiny PA & \tiny PB & \tiny MX & \tiny MY & \tiny Left~ & \tiny Right & \tiny Jump~ & \tiny Speed \TBstrut \\ \thickhline
-	1 & & & & & & & & & 1 & & 		& & T & T & T \\ \hline
-	2 & & 1 & 1 & & & & 1 & 2 & 0 & & 		& & T & T & \\ \hline
-	3 & & 0 & 0 & & & & 1 & 2 & 0 & & 		& & T & & \\ \hline
-	4 & & 1 & 1 & & & & 0 & 2 & 0 & & 		& & T & & T \\ \hline
-	5 & & 1 & 1 & & & & 0 & 1 & 0 & 2 & 		& & T & T & T \\ \hline
-	6 & & 0 & 1 & & & & & 1 & 0 & 2 & 		& & T & & T \\ \hline
-	7 & & 0 & 0 & & & & & 2 & 0 & 2 & 		& T & & & \\ \hline
-	8 & & 0 & 0 & & & & & 1 & 0 & 2 & 1 		& T & & & T \\ \hline
-	9 & & 0 & 0 & & & & & 1 & 0 & & 		& & T & T & T \\ \hline
-	10 & & & 0 & & & 1 & & 0 & 0 & 2 & 1 		& T & & & T \\ \hline
-	11 & & 0 & 1 & & & 1 & & 0 & 0 & & 		& & T & & \\ \hline
-	12 & & & & & & 1 & & 0 & 0 & & 		& & T & T & \\ \hline
-	13 & & & 0 & & & 1 & & 0 & 0 & & 		& & T & T & T \\ \hline
-	14 & & & & & 1 & & 1 & 0 & 0 & & 		& T & & T & \\ \hline
-	15 & & 0 & 1 & & & & 1 & 0 & 0 & & 		& & T & & \\ \hline
-	16 & & & & & & & 1 & 0 & 0 & & 		& & T & T & T \\ \hline
-	17 & & & & & & & 1 & 0 & 0 & 2 & 		& & T & T & \\ \hline
-	18 & & & 1 & & & & & & & & 		& & T & & T \\ \hline
-	
-	-  & & & & & & & & & & & 		& & T & & \\ \hline
+	1 & & & 1 & & 1 & 1 & & 0 & 1 & 2 & 0 		& & & T & T \\ \hline
+	2 & & 0 & & & & & & & & 2 & 2		& & T & T & T \\ \hline
+	3 & & 1 & & & 1 & & 1 & & 0 & & 0 		& & & T & T \\ \hline
+	4 & & 0 & 0 & & & 0 & 1 & 0 & 1 & 0 & 1 		& T & T & T & T \\ \hline
+	5 & & & & & 0 & 0 & 1 & & 0 & 0 & 0 		& & & T & \\ \hline
+	6 & & 0 & & & 1 & 1 & 1 & & 0 & 0 & 		& & & T & T \\ \hline
+	7 & & 1 & 0 & & & 0 & & 0 & 0 & & 2 		& & & & \\ \hline
+	8 & & & & 0 & 0 & 0 & 0 & & 1 & 2 & 1		& & T & T & T \\ \hline
+	9 & & & & & & & & & 0 & 0 & 2 		& & & T & \\ \hline
+	10 & & 0 & 1 & & & & 1 & 1 & & 0 & 		& & & & \\ \hline
+	11 & 0 & & 1 & 1 & 0 & 1 & & 1 & 0 & & 1 		& & T & & T \\ \hline
+	12 & & & & & 1 & & & 2 & & & 		& & & & T \\ \hline
+	13 & & & & & & & 0 & & 0 & 2 & 1 		& T & & T & T \\ \hline
+	14 & & 1 & 0 & 1 & 0 & 1 & 1 & 0 & & 0 & 		& T & T & T & T \\ \hline
+	15 & & 1 & & & & & & & 1 & 0 & 2 		& T & T & T & T \\ \hline
+	16 & & 1 & 1 & 0 & & & & 1 & & & 		& T & T & T & \\ \hline
+	17 & & 1 & 1 & & 0 & & & & 1 & & 0 		& & T & T & T \\ \hline
+	18 & & 1 & 1 & & & 1 & & 0 & & & 		& & & T & \\ \hline
+	19 & & 1 & & & 1 & & & 2 & 0 & & 0 		& T & & & T \\ \hline
+	20 & & & 0 & & & 0 & 0 & & 0 & 0 & 0 		& T & T & T & T \\ \hline
+		
+	-  & & & & & & & & & & & 		& & T & & T \\ \hline
     \end{tabular}
   \end{center}
   \end{adjustwidth}
-  \caption{Ruleset for learnt difference agent. Blank entries denote {\scriptsize DONT\_CARE} for Conditions and \textbf{false} for Actions.}
+  \caption{Ruleset for learnt difference agent. Blank entries denote {\scriptsize DONT\_CARE} for Conditions and \textbf{false} for Actions. A key for this table can be found in Appendix \ref{app:percond}}
   \label{tab:LDA}
 \end{table}
 
 \begin{itemize}
 \item Of the learnt agents the learnt difference agent performs the best in the comparator task
 \item It also displays the most interesting behaviour which will be discussed here
-\item A full ruleset for this agent is included in Figure \ref{} 
+\item A full ruleset for this agent is included in Figure \ref{tab:LDA} 
+\end{itemize}
+
+\subsubsection{Rule usage}
+
+\begin{itemize}
+\item The agent only regularly uses 7 of its 20 rules, and relies heavily on the default action.
+\item Suggests mutation strategy might be too simplistic for ruleset genome.
+\end{itemize}
+
+\subsubsection{Behaviours}
+
+\begin{itemize}
+\item The agent acts similarly to the complex and simple reactive agent. It jumps over pits, obstacles and enemies.
+\item Four behaviours are presented in depth below. 
+\end{itemize}
+
+\subsubsection*{\hspace{6pt}Obstacles}
+
+\begin{figure}[t]
+	\begin{adjustwidth}{-2cm}{-2cm}
+    \centering
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laob1.png}
+                  \caption{Default Rule}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laob2.png}
+                  \caption{Rule 5}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laob3.png}
+                  \caption{Rule 9}
+          \end{subfigure}
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laob4.png}
+                  \caption{Rule 9}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laob5.png}
+                  \caption{Default Rule}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laob6.png}
+                  \caption{Default Rule}
+          \end{subfigure}
+    \caption{Learnt Difference agent tackling obstacles, without over-jumping.}\label{fig:laob}
+    \end{adjustwidth}
+\end{figure}
+
+\begin{itemize}
+\item Most interesting, seen on most learnt agents.
+\item Evolved early, generation 50 or so.
+\item Uses rules 5 and 9 to jump over obstacles. But only when Mario is stationary.
+\item This is very useful for stairs (obstacles before pits) as the agent avoids jumping into the pit, something common with the simple reactive agent.
+\item Figure \ref{fig:laob} shows this process. Agent runs until he hits the wall, activates rule 5 to jump, rule 9 keeps the jump until top height, when coming down uses default rule to move right.
+\item This is an example of a behaviour not considered in handcrafting, as the complex agent solves this problem differently.
+\end{itemize}
+
+\clearpage
+\subsubsection*{\hspace{6pt}Pits}
+
+\begin{figure}[t]
+	\begin{adjustwidth}{-2cm}{-2cm}
+    \centering
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{lapj1.png}
+                  \caption{Default Rule}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{lapj2.png}
+                  \caption{Rule 16}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{lapj3.png}
+                  \caption{Rule 2}
+          \end{subfigure}
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{lapj4.png}
+                  \caption{Rule 8}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{lapj5.png}
+                  \caption{Rule 13}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{lapj6.png}
+                  \caption{Default Rule}
+          \end{subfigure}
+    \caption{Learnt Difference agent tackling pits, without over-jumping.}\label{fig:lapj}
+    \end{adjustwidth}
+\end{figure}
+
+
+\begin{itemize}
+\item Similar but not equivalent system seen on most learnt agents.
+\item Uses rules 16, 2, 8, 13 to jump over pits and land on the very edge of the other side.
+\item This is useful as Mario avoids falling in a proceeding pit or touching an enemy.
+\item Figure \ref{fig:lapj} shows this process. Agent uses obstacle behaviour to climb the stairs. Then uses rule 16 to begin the jump, Rule 2 moves the agent forward at speed when moving up, Rule 8 continues this action as he moves down. When over the pit Rule 13 ensures he doesn't go too far by moving him left until he touches the ground.
 \end{itemize}
 
 
+\clearpage
+\subsubsection*{\hspace{6pt}Enemies}
+
+\begin{figure}[t]
+	\begin{adjustwidth}{-2cm}{-2cm}
+    \centering
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laej1.png}
+                  \caption{Default Rule}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laej2.png}
+                  \caption{Rule 18}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laej3.png}
+                  \caption{Rule 2}
+          \end{subfigure}
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laej4.png}
+                  \caption{Rule 13}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laej5.png}
+                  \caption{Default Rule}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laej6.png}
+                  \caption{Default Rule}
+          \end{subfigure}
+    \caption{Learnt Difference agent tackling enemies.}\label{fig:laej}
+    \end{adjustwidth}
+\end{figure}
 
 
+\begin{itemize}
+\item Similar but not equivalent system seen on most learnt agents.
+\item Uses rules 18, 2, and 13 to jump over enemies and clear the landing zone with a fireball.
+\item Figure \ref{fig:laej} shows this process. Agent approaches an enemy and uses rule 18 to jump, Rule 2 continues the jump and fires a fireball (if in fire mode). This fireball beats Mario to the landing zone, where it can clear enemies.
+\end{itemize}
 
+
+\clearpage
+\subsubsection*{\hspace{6pt}Pits with Enemies}
+
+\begin{figure}[t]
+	\begin{adjustwidth}{-2cm}{-2cm}
+    \centering
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laepa1.png}
+                  \caption{Default Rule}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laepa2.png}
+                  \caption{Default Rule}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laepa3.png}
+                  \caption{Rule 19}
+          \end{subfigure}
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laepa4.png}
+                  \caption{Rule 19}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laepa5.png}
+                  \caption{Default Rule}
+          \end{subfigure}~
+          \begin{subfigure}[b]{0.328\textwidth}
+                  \centering
+                  \includegraphics[width=\textwidth]{laepa6.png}
+                  \caption{Rule 16}
+          \end{subfigure}
+    \caption{Learnt Difference agent tackling pits where enemies are blocking the jump.}\label{fig:laepa}
+    \end{adjustwidth}
+\end{figure}
+
+
+\begin{itemize}
+\item An advanced behaviour that is not seen in other agents.
+\item Uses rule 19 to avoiding jumping into enemies when clearing pits.
+\item Figure \ref{fig:laepa} shows this process. Agent approaches an pit and if there is an enemy blocking the jump, it turns around and moves away. When the enemy moves or falls agent jumps the pit.
+\end{itemize}
 

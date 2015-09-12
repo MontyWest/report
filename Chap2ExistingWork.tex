@@ -54,6 +54,15 @@ Infinite Mario Bros (IMB) \cite{imb} is an open-source clone of Super Mario Bros
 
 \subsubsection*{\hspace{6pt}Suitability to Learning}
 
+\begin{figure}[t]
+	\begin{adjustwidth}{-0cm}{-0cm}
+    \centering
+    \includegraphics[width=\textwidth]{examplelevel.png}
+    \caption{Example of part of a level in the Mario AI Competition's benchmark software. Taken from \cite[p.~6]{2012the}}
+    \label{fig:xmpllevel}
+    \end{adjustwidth}
+\end{figure}
+
 The competitions adaptation of IMB (known henceforth as the `benchmark') incorporates a tuneable level generator and allows for the game to be sped-up by removing the reliance on the GUI and system clock. This makes it a great testbed for reinforcement learning. The ability to learn from large sets of diverse data makes learning a much more effective technique. \cite[p.~3]{2012the}
 
 Besides that, the Mario benchmark presents an interesting challenge for learning algorithms. Despite only a limited view of the ``world" at any one time the state and observable space is still of quite high-dimension. Though not to the same extent, so too is the action space. Any combination of five key presses per timestep gives a action space of $2^5$ \cite[p.~3]{2012the}. Hence part of the problem when implementing a learning algorithm for the Mario benchmark is reducing these search spaces. This has the topic of papers by Handa and Ross and Bagnell \cite{rossbagnell} separately addressed this issue in their papers \cite{handa} and \cite{rossbagnell} respectively.

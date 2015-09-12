@@ -39,7 +39,7 @@
                   \includegraphics[width=\textwidth]{enemies.png}
                   \caption{Enemies}
           \end{subfigure}
-	\caption{Example level features that agents must overcome.}\label{fig:lpdiff}
+	\caption{Example level features that agents must overcome.}\label{fig:lpelements}
     \end{adjustwidth}
 \end{figure}
 
@@ -342,7 +342,7 @@ These tests were added to Maven's build lifecycle, and hence run on every projec
 \subsection{Handcrafted Agents}
 \label{subsec:hca}
 
-For the purpose of evaluation and comparison three handcrafted rulesets were created for the agent framework. Full rulesets, as well as a key for condition values, can be found in Appendix \ref{app:har}.
+For the purpose of evaluation and comparison three handcrafted rulesets were created for the agent framework. Full rulesets for these agents can be found in Appendix \ref{app:har}.
 
 \begin{description}
 	\item[Forward Jumping] This ruleset commands the agent to jump whenever it can, regardless of its surroundings. It contains a single rule and a default action. It is a blind agent that does not take advantage of the framework, however it is surprising effective. An analogous agent was used for comparisons in the 2009 Mario AI Competition and was found to score higher than many entrants \cite[p.~7]{2010the}. The learning process will aim to discourage this behaviour as it is neither interesting or optimal.
