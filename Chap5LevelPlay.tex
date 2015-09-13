@@ -21,25 +21,6 @@ The main purpose of the level playing module is to evaluate the fitness of agent
 	\label{fig:pumlcd}
 \end{figure}
 
-In the benchmark the heart of the game engine is the \emph{MarioEnvironment} class. It is responsible for calling the \emph{LevelGeneration} class, updating the scene each tick with an action, and reporting the scene through the Environment interface. Parameters controlling level generation and playing are contained in the \emph{MarioAIOptions} class. The \emph{BasicTask} class controls the game loop in conjunction with an agent. It initialises the MarioEnvironment class with options, then runs through the loop, commanding a tick, passing the environment to the agent and finally requesting an action and passing it to the MarioEnvironment instance. Statistics pertaining to the agents performance are stored in MarioEnvironment in the \emph{EvaluationInfo} class, which are cloned to BasicTask at the end of the level. Fitness can be requested from EvaluationInfo with the optional parameter, a \emph{SystemOfValues} instance, which contains the multipliers for various measurements.
-
-The MarioAIOptions class contains several useful parameters. They include: a integer seed, which is passed to the level generator's RNGs; a boolean that toggles visualisation; integers that determine level difficulty, length and time-limit; and booleans that toggle enemies, pits and blocks. The SystemOfValues class contains multipliers for  distance achieved, whether or not the level was completed, the amount of time left on completion as well as many others.
-
-\vspace{\baselineskip}
-
-The level playing module will extend this system. Its primary objective will be to allow for multiple levels (episodes) to be played with options that update as prescribed by some parameter class. Upon completion it will produce a fitness based on all levels played. Furthermore, it will allow for the injection of different agents and level seeds, to allow different agents to play the same options without rebuilding the instance. A UML class diagram for the module can be found in Figure \ref{fig:pumlcd}.
-
-Level options are stored in the \emph{MWLevelOptions} class, which acts as an adapter for the MarioAIOptions class. Each new level these will be updated by the dedicated \emph{MWLevelOptionsUpdater} class. The \emph{MWEvaluationMultipliers} class is an adapter for the SystemOfValues class, which is used to calculate the fitness at the end of a sequence of levels. These classes are separated from the the game playing task and are included using constructor dependency injection. This helps to decouple the system and improve the ability to modify and test.
-
-Both MWLevelOptions and MWEvaluationMultipliers are designed to be data classes, which provides determinism and thread safety, as well as easy persistence. MWLevelOptionsUpdater's qualities in this regard are Implementation details and are discussed in a following section. A full list of field for both the MWLevelOptions and MWEvaluationMultipliers classes can be found in Appendix \ref{app:loem}.
-
-
-%-----------------------------------------------------------------------
-% Implementation
-%-----------------------------------------------------------------------
-
-\subsection{Implementation}
-
 \begin{figure}[t]
 	\begin{adjustwidth}{-2cm}{-2cm}
     \centering
@@ -76,6 +57,27 @@ Both MWLevelOptions and MWEvaluationMultipliers are designed to be data classes,
     \caption{Handcrafted \textbf{complex} agent playing on different difficulty levels.}\label{fig:lpdiff}
     \end{adjustwidth}
 \end{figure}
+
+In the benchmark the heart of the game engine is the \emph{MarioEnvironment} class. It is responsible for calling the \emph{LevelGeneration} class, updating the scene each tick with an action, and reporting the scene through the Environment interface. Parameters controlling level generation and playing are contained in the \emph{MarioAIOptions} class.  The \emph{BasicTask} class controls the game loop in conjunction with an agent. It initialises the MarioEnvironment class with options, then runs through the loop, commanding a tick, passing the environment to the agent and finally requesting an action and passing it to the MarioEnvironment instance. Statistics pertaining to the agent's performance are stored in MarioEnvironment in the \emph{EvaluationInfo} class, which are cloned to BasicTask at the end of the level. Fitness can be requested from EvaluationInfo with the optional parameter, a \emph{SystemOfValues} instance, which contains the multipliers for various measurements.
+
+The MarioAIOptions class contains several useful parameters. They include: an integer seed, which is passed to the level generator's RNGs; a boolean that toggles visualisation; integers that determine level length and time-limit; and booleans that toggle enemies, pits and blocks. One parameter of particular importance is level difficulty, which has an effect on nearly all factors of level generation. Examples of different difficulties can be found in Figure \ref{fig:lpdiff}. 
+
+The SystemOfValues class contains multipliers for  distance achieved, whether or not the level was completed, the amount of time left on completion as well as many others.
+
+\vspace{\baselineskip}
+
+The level playing module will extend this system. Its primary objective will be to allow for multiple levels (episodes) to be played with options that update as prescribed by some parameter class. Upon completion it will produce a fitness based on all levels played. Furthermore, it will allow for the injection of different agents and level seeds, to allow different agents to play the same options without rebuilding the instance. A UML class diagram for the module can be found in Figure \ref{fig:pumlcd}.
+
+Level options are stored in the \emph{MWLevelOptions} class, which acts as an adapter for the MarioAIOptions class. Each new level these will be updated by the dedicated \emph{MWLevelOptionsUpdater} class. The \emph{MWEvaluationMultipliers} class is an adapter for the SystemOfValues class, which is used to calculate the fitness at the end of a sequence of levels. These classes are separated from the game playing task and are included using constructor dependency injection. This helps to decouple the system and improve the ability to modify and test.
+
+Both MWLevelOptions and MWEvaluationMultipliers are designed to be data classes, which provides determinism and thread safety, as well as easy persistence. MWLevelOptionsUpdater's qualities in this regard are Implementation details and are discussed in a following section. A full list of field for both the MWLevelOptions and MWEvaluationMultipliers classes can be found in Appendix \ref{app:loem}.
+
+
+%-----------------------------------------------------------------------
+% Implementation
+%-----------------------------------------------------------------------
+
+\subsection{Implementation}
 
 \subsubsection{Parameter Classes}
 \label{subsec:paramclasses}
@@ -179,31 +181,25 @@ def doEpisodes(amount: Int): Unit = {
         } else {
             // Calls the update lambda to get episodes set of options
             val newOptions = updateOptions(iteration, prevOptions)
+          
+            // Converts options to class required for game-engine
+            val marioAIOptions = MWLevelOptions.updateMarioAIOptions(super.options, newOptions)
 \end{lstlisting}
 \end{minipage}     
     
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}[language=scala]              
-            // Converts options to class required for game-engine
-            val marioAIOptions = MWLevelOptions.updateMarioAIOptions(super.options, newOptions)
-            
+\begin{lstlisting}[language=scala]    
             // Updates the level seed (which is set to increase each episode by MWEvaluationClass)
-            // Agent instance is already being held here
             marioAIOptions.setLevelRandSeed(nextLevelSeed(iteration, marioAIOptions.getLevelRandSeed))
             
             // Resets the evaluation information in the super class
             super.setOptionsAndReset(marioAIOptions)
-\end{lstlisting}
-\end{minipage}
 
-\begin{minipage}{0.9\linewidth}
-\centering
-\begin{lstlisting}[language=scala]
             // Generates and runs the level using the super class
-            // Returns true if the agent was not disqualified (took too long to return an action)
+            // Returns true if the agent was not disqualified
             val notDisqualified: Boolean = runSingleEpisode(1)
-            val disqualification: Int = if (!notDisqualified) 1 else 0
+            val disqualification = if (!notDisqualified) 1 else 0
        
             // Update the evaluation information for the entire run
             // (as the super classes evaluationInfo gets reset every level
@@ -224,7 +220,7 @@ def doEpisodes(amount: Int): Unit = {
 
 Before every episode the options are updated by the lambda, updating the base options in the first episode. A new level seed is also requested from the MWEvaluationClass, which simply increases it each episode. These updates are converted and added to a MarioAIOptions instance and passed to the superclass in the benchmark. A single level is then generated and played using the superclass. Evaluation information is added to MWBasicTask's local evaluation information (as the former is reset every episode) and the function loops tail recursively.
 
-When the number of loops equals the number of levels the function exits. At this point the \emph{evaluate()} method requests a fitness from the local evaluation information, passing in the evaluation multipliers, which is then returned.
+The function exits when the it has looped for each level. At this point the \emph{evaluate()} method requests a fitness from the local evaluation information, passing in the evaluation multipliers, which is then returned.
 
 %-----------------------------------------------------------------------
 % Benchmark Edit
@@ -235,7 +231,7 @@ When the number of loops equals the number of levels the function exits. At this
 
 Preliminary runs of the benchmark software revealed several issues and defects. As the learning algorithm would run over several generations, any errors could halt it prematurely, which could be costly in terms of project time keeping. In order to address this a Java project was created from the benchmark's source code and fixes were made. This code was packaged with Maven and included as a dependency in the main project.
 
-Several minor exceptions were caught or addressed, however the two largest issues failed `quietly'. They concerned the LevelGeneration class and surrounded enemy and pit generation in regards to level difficulty. Fixes were made to ensure level difficulty scaled more consistently.
+Several minor exceptions were caught or addressed, however the two largest issues failed `quietly'. They concerned the LevelGeneration class and surrounded enemy and pit generation with regards to level difficulty. Fixes were made to ensure level difficulty scaled more consistently.
 
 \subsubsection{Enemy Generation}
 
@@ -262,21 +258,21 @@ However, the decoupling of the parameter classes from MWEvaluationTask means tha
 \begin{minipage}{0.9\linewidth}
 \centering
 \begin{lstlisting}[language=scala]
-"getEvaluationMutlipliers" should "return eval mults from databade and zero otherwise" in {
+"getEvaluationMutlipliers" should "return eval mults from database and zero otherwise" in {
     val base = blankParam.push(EvaluationParamsUtil.P_EVAL_BASE)
     (pdStub.exists _) when(base, *) returns(true)
-  
+ 
     (pdStub.exists _) when(base.push(EvaluationParamsUtil.P_COINS), *) returns(true)
     (pdStub.getIntWithDefault _) when(base.push(EvaluationParamsUtil.P_COINS), *, *) returns(10)
-     
-    (pdStub.exists _) when(base.push(EvaluationParamsUtil.P_KILLED_BY_SHELL), *) returns(true)
-    (pdStub.getIntWithDefault _) when(base.push(EvaluationParamsUtil.P_KILLED_BY_SHELL), *, *) returns(200)
 \end{lstlisting}
 \end{minipage}     
     
 \begin{minipage}{0.9\linewidth}
 \centering
-\begin{lstlisting}[language=scala]       
+\begin{lstlisting}[language=scala]      
+    (pdStub.exists _) when(base.push(EvaluationParamsUtil.P_KILLED_BY_SHELL), *) returns(true)
+    (pdStub.getIntWithDefault _) when(base.push(EvaluationParamsUtil.P_KILLED_BY_SHELL), *, *) returns(200)
+     
     (pdStub.exists _) when(base.push(EvaluationParamsUtil.P_DISTANCE), *) returns(true)
     (pdStub.getIntWithDefault _) when(base.push(EvaluationParamsUtil.P_DISTANCE), *, *) returns(1)
     
@@ -301,7 +297,7 @@ However, the decoupling of the parameter classes from MWEvaluationTask means tha
 \subsection{Comparator Task}
 \label{subsec:comptask}
 
-In order to quantifiably compare agents a competitive set of evaluation task options was created, modelled on those used during the final evaluation stage of the 2010 Mario AI Competition.
+In order to quantifiably compare agents, a competitive set of evaluation task options was created, modelled on those used during the final evaluation stage of the 2010 Mario AI Competition.
 
 Agents play 512 levels, spread equally over 16 difficulty levels (0 to 15). Options such as enemies, pits, blocks etc. are periodically turned off for a level. Length is varies greatly from level to level, with the time-limit being adjusted accordingly. Evaluation multipliers reward all possible positive statistics, such as enemy killed, coins collected and distance travelled. A full view of the comparator task's parameter classes can be found in Appendix \ref{app:comptask}.
 

@@ -27,17 +27,17 @@
           \begin{subfigure}[b]{0.32\textwidth}
                   \centering
                   \includegraphics[width=\textwidth]{obstacles.png}
-                  \caption{Obstacles}
+                  \caption{Obstacles}  \label{fig:elemobs}
           \end{subfigure}~
           \begin{subfigure}[b]{0.32\textwidth}
                   \centering
                   \includegraphics[width=\textwidth]{pit.png}
-                  \caption{Pit (with Stairs)}
+                  \caption{Pit (with Stairs)} \label{fig:elempit}
           \end{subfigure}~
           \begin{subfigure}[b]{0.32\textwidth}
                   \centering
                   \includegraphics[width=\textwidth]{enemies.png}
-                  \caption{Enemies}
+                  \caption{Enemies} \label{fig:elemenemy}
           \end{subfigure}
 	\caption{Example level features that agents must overcome.}\label{fig:lpelements}
     \end{adjustwidth}
@@ -53,6 +53,8 @@ Each \emph{Agent} instance is initialised with a ruleset, consisting of a list o
 
 When asked for an action, the \emph{Agent} passes this observation to its ruleset, which tests it against each rule. Rules contain conditions on what perception measurements should be, which determine its score for a given observation. The highest scoring rule (with a conflict strategy for ties) is then asked for its action, which is returned from the agent.
 
+Examples of the typical level features that the agent must detect and overcome can be seen in Figure \ref{fig:lpelements}.
+
 \vspace{\baselineskip}
 
 Perceptions are hard coded; as such, all of an agents behaviour is determined by its ruleset. Thus, an implementation of the ruleset which allows persistence ensures that agents can be read and written to external files. Furthermore, rulesets are immutable and only information received during the current game tick is considered. Hence, agents have no state and are deterministic and thread safe (assuming the game engine is).
@@ -64,17 +66,17 @@ The perceptions chosen were based upon those used in the REALM v1 agent \cite[p.
 \item[MarioMode] Measures whether Mario is \textbf{small}, \textbf{big} or \textbf{fire} (capable of throwing fireballs).
 \item[JumpAvailable] Detects if Mario has the ability to jump (i.e. on the ground or gripping a wall with the jump key off).
 \item[OnGround] Measures whether Mario is in the air or not.
-\item[EnemyLeft] Detects if an enemy is to the left of Mario.
-\item[EnemyUpperRight] Detects if an enemy is to the upper right of Mario.
-\item[EnemyLowerRight] Detects if an enemy is to the lower right or directly to the right of Mario.
-\item[ObstacleAhead] Detects if there is a block or terrain directly to the right of Mario.
-\item[PitAhead] Detects if there is a pit (falling into pits will end the level) to the right of Mario.
-\item[PitBelow] Detects if there is a pit directly below Mario.
+\item[EnemyLeft] Detects if an enemy is to the left of Mario, as seen in Figure \ref{fig:elemenemy}.
+\item[EnemyUpperRight] Detects if an enemy is to the upper right of Mario, as seen in Figure \ref{fig:elemenemy}.
+\item[EnemyLowerRight] Detects if an enemy is to the lower right or directly to the right of Mario, as seen in Figure \ref{fig:elemenemy}.
+\item[ObstacleAhead] Detects if there is a block or terrain directly to the right of Mario, as seen in Figure \ref{fig:elemobs}.
+\item[PitAhead] Detects if there is a pit (falling into pits will end the level) to the right of Mario, as seen in Figure \ref{fig:elempit}.
+\item[PitBelow] Detects if there is a pit directly below Mario, as seen in Figure \ref{fig:elempit}.
 \item[MovingX] Measures the direction Mario is moving horizontally.
 \item[MovingY] Measures the direction Mario is moving vertically.
 \end{description}
 
-The set of actions Mario can take is any combination of 6 key presses: \textbf{left}, \textbf{right}, \textbf{up}, \textbf{down}, \textbf{jump} and \textbf{speed} (which also shoots a fireball if possible). It was decided that this set would be restricted for use in the ruleset agent, only allowing cobinations of \textbf{left}, \textbf{right}, \textbf{jump} and \textbf{speed}. This was to reduce the size of the rules, which reduces the search space of any learning process. The \textbf{up} key performed no function and the \textbf{down} key made Mario crouch, which seemed too niche to be useful during the design process.
+The set of actions Mario can take is any combination of 6 key presses: \textbf{left}, \textbf{right}, \textbf{up}, \textbf{down}, \textbf{jump} and \textbf{speed} (which also shoots a fireball if possible). It was decided that this set would be restricted for use in the ruleset agent, only allowing combinations of \textbf{left}, \textbf{right}, \textbf{jump} and \textbf{speed}. This was to reduce the size of the rules, which reduces the search space of any learning process. The \textbf{up} key performed no function and the \textbf{down} key made Mario crouch, which seemed too niche to be useful during the design process.
 
 
 %-----------------------------------------------------------------------
@@ -154,7 +156,7 @@ Notice that no information about specific concrete perceptions is required, enfo
 
 \subsubsection{Perceiving the Environment}
 
-The \emph{Environment} interface contains several individual methods that report Mario's situation. Therefore implementing Perceptions that concerned Mario (e.g. MarioMode, MovingX etc.) was trivial.
+The \emph{Environment} interface contains several individual methods that report Mario's situation. Therefore, implementing Perceptions that concerned Mario (e.g. MarioMode, MovingX etc.) was trivial.
 
 Perceptions pertaining to enemies, obstacles or pits was more challenging. Environment provides two 19x19 arrays, one for enemies and one for terrain. Centred around Mario, each array element represents a `square' (16 pixels) of the level scene. The value of an element marks the presence of an enemy or terrain square. 
 
@@ -237,6 +239,12 @@ abstract class ObservationAgent extends Agent {
     // Using factory method for a blank observation
     var observation: Observation = Observation.BLANK
     ...
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{0.9\linewidth}
+\centering
+\begin{lstlisting}[language=scala]
     def integrateObservation{env: Environment}: Unit = {
         // Using the Observation factory method 
         // to build a new observation
@@ -250,7 +258,6 @@ abstract class ObservationAgent extends Agent {
         ...
     }
  }
-
 \end{lstlisting}
 \end{minipage}
 
@@ -345,9 +352,9 @@ These tests were added to Maven's build lifecycle, and hence run on every projec
 For the purpose of evaluation and comparison three handcrafted rulesets were created for the agent framework. Full rulesets for these agents can be found in Appendix \ref{app:har}.
 
 \begin{description}
-	\item[Forward Jumping] This ruleset commands the agent to jump whenever it can, regardless of its surroundings. It contains a single rule and a default action. It is a blind agent that does not take advantage of the framework, however it is surprising effective. An analogous agent was used for comparisons in the 2009 Mario AI Competition and was found to score higher than many entrants \cite[p.~7]{2010the}. The learning process will aim to discourage this behaviour as it is neither interesting or optimal.
-	\item[Simple Reactive] This agent only jumps when it detects an enemy, obstacle or pit in its way. It contains 5 rules and defaults to moving right at speed. This agent makes better use of the framework, but still does not use all of its perceptions. Its behaviour is more interesting, however it tends to score similarly to the forward jumping agent. Despite low attainment, a learnt agent that behaves in a similar way will be evaluating more favourably as it is using more of the agent's perceptions.
-	\item[Complex] This agent is the most interesting and highest scoring of the three. It has several different behaviours and builds off of the simple reactive agent. It contains 18 rules and makes use of all perceptions except MarioMode and EnemyLeft. Its behaviour was investigated at length and as such will form a good comparison to the final learnt agent. Effective evolved behaviours unconsidered in this agent's creation are a sign of the validity of the learning process. 
+	\item[Forward Jumping] This ruleset commands the agent to jump whenever it can, regardless of its surroundings. It contains a single rule and a default action. It is a blind agent that does not take advantage of the framework, however it is surprising effective. An analogous agent was used for comparisons in the 2009 Mario AI Competition and was found to score higher than many entrants \cite[p.~7]{2010the}. The learning process will aim to discourage this behaviour as it is neither interesting nor optimal.
+	\item[Simple Reactive] This agent only jumps when it detects an enemy, obstacle or pit in its way. It contains 5 rules and defaults to moving right at speed. This agent makes better use of the framework, but still does not use all of its perceptions. Its behaviour is more interesting, however it tends to score similarly to the forward jumping agent. Despite low attainment, a learnt agent that behaves similarly will be evaluating more favourably, because it is making use of the agent's perceptions.
+	\item[Complex] This agent is the most interesting and highest scoring of the three. It has a multitude of behaviours and builds off of the simple reactive agent. It contains 18 rules and makes use of all perceptions except MarioMode and EnemyLeft. Its behaviour was investigated at length and as such will form a good comparison to the final learnt agent. Effective evolved behaviours unconsidered in this agent's creation are a sign of the validity of the learning process. 
 \end{description}
 Creation of the handcrafted rulesets also informed additions and alterations to the agent's perceptions. For example, it was originally difficult to create an effective pit strategy and so PitAhead was changed from a BoolPerception to a BytePerception, returning 3 values representing \textbf{none}, \textbf{far} and \textbf{close}.
 
