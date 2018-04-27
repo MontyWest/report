@@ -1,0 +1,299 @@
+\documentclass[a4paper, 11pt]{article}
+
+%\usepackage[parfill]{parskip}
+\usepackage{titlesec}
+\newcommand{\sectionbreak}{\clearpage}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[nounderscore]{syntax}
+\usepackage{multirow}
+\usepackage{chngpage}
+\usepackage{array}
+\usepackage{pbox}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage[toc,page]{appendix}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{rotating}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+
+\captionsetup{font={small,it}}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{myred}{rgb}{0.6,0,0.298}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{myorange}{rgb}{1,0.52,0}
+
+\lstset{
+	basicstyle=\footnotesize\ttfamily, 
+	columns=fullflexible, 
+	breaklines=true,
+	captionpos=b,                    % sets the caption-position to bottom
+  	commentstyle=\color{mygreen},    % comment style
+  	escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  	keywordstyle=\color{myred},       % keyword style
+  	stringstyle=\color{myorange},     % string literal style
+	emphstyle=[1]{\color{blue}},
+	showstringspaces=false
+}
+
+% "define" Scala
+\lstdefinelanguage{scala}{
+  emph=[1] {%
+  	Int, Boolean, Vector, Option, Array, Byte, Some, None, Nil, Tuple2
+  },
+  morekeywords={abstract,case,catch,class,def,%
+    do,else,extends,false,final,finally,%
+    for,if,implicit,import,match,mixin,%
+    new,null,object,override,package,%
+    private,protected,requires,return,sealed,%
+    super,this,throw,trait,true,try,%
+    type,val,var,while,with,yield},
+  otherkeywords={=>,<-,<\%,<:,>:,\#,@},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[n]{/*}{*/},
+  morestring=[b]",
+  morestring=[b]',
+  morestring=[b]"""
+}
+
+\graphicspath{ {images/}, {diagrams/} }
+
+
+\makeatletter
+\newcommand{\thickhline}{%
+    \noalign {\ifnum 0=`}\fi \hrule height 1pt
+    \futurelet \reserved@a \@xhline
+}
+\newcolumntype{"}{@{\hskip\tabcolsep\vrule width 1pt\hskip\tabcolsep}}
+\makeatother
+
+\newcommand\Tstrut{\rule{0pt}{3.3ex}}       % "top" strut
+\newcommand\Bstrut{\rule[-1.3ex]{0pt}{0pt}} % "bottom" strut
+\newcommand{\TBstrut}{\Tstrut\Bstrut} % top&bottom struts
+
+\begin{document}
+
+%------------------
+% Title Page
+%------------------
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\center
+
+\textsc{\LARGE Birkbeck College}\\[1.5cm] % Name of your university/college
+
+\textsc{\Large Msc Computer Science Project Report}
+
+\HRule \\[0.4cm]
+{ \LARGE \bfseries Learning and Video Games: Implementing an Evolutionary Agent}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+Monty \textsc{West} % Your name
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisor:} \\
+Dr. George \textsc{Magoulas} % Supervisor's Name
+\end{flushright}
+\end{minipage}\\[4cm]
+
+\emph{MSc Computer Science project report, Department of
+Computer Science and Information Systems, Birkbeck College,
+University of London 2015}
+
+\vspace{5mm}
+
+\emph{This report is substantially the result of my own work,
+expressed in my own words, except where explicitly indicated in
+the text. I give my permission for it to be submitted to the
+JISC Plagiarism Detection Service.}
+
+\vspace{5mm}
+
+\emph{The report may be freely copied and distributed provided the
+source is explicitly acknowledged.}
+
+\end{titlepage}
+
+\clearpage
+\thispagestyle{empty}
+~
+\clearpage
+%------------------
+% Abstract
+%------------------
+\thispagestyle{empty}
+\begin{abstract}
+Artificial intelligence in video games has long shunned the use of machine learning in favour of a handcrafted approach. However, the recent rise in the use of video games as a benchmark for academic AI research has demonstrated interesting and successful learning approaches. This project follows this research and explores the viability of a game-playing learning AI. Considering previous approaches, an evolutionary agent was created for a platform game based on Super Mario Bros.
+
+The project builds on top of software developed for the Mario AI Competition, which provides the game-engine and agent interface, as well as several other pertinent features. The basic agent was constructed first and a learning framework was built to improve it, utilising a genetic algorithm. The project followed an agile methodology, revisiting design by analysing learning capability.
+
+The aim was to produce an agent that shows meaningful improvement during learning and demonstrated unforeseen behaviours. Ultimately this was achieved. The final learnt agent is able to complete most medium and some high difficulty levels and demonstrated several advanced strategies.
+
+\end{abstract}
+
+\vspace{10mm}
+
+\iffalse
+\begin{center}
+\includegraphics[scale=0.3]{mario}  %What are you doing, remove this.
+\end{center}
+\fi
+
+\clearpage
+
+%------------------
+% Contents
+%------------------
+
+\tableofcontents
+\clearpage
+
+%___________________________________________
+%*************************************************************
+% Introduction (Brief Description of Topic + Fits in Field)
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\input{Chap1Intro.tex}
+
+
+%___________________________________________
+%*************************************************************
+% Existing Work
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\input{Chap2ExistingWork.tex}
+
+
+%___________________________________________
+%*************************************************************
+% Project Specification
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\input{Chap3ProjSpec.tex}
+
+
+%___________________________________________
+%*************************************************************
+% Agent Framework
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\input{Chap4Agent.tex}
+
+
+%___________________________________________
+%*************************************************************
+% Level Playing
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\input{Chap5LevelPlay.tex}
+
+
+%___________________________________________
+%*************************************************************
+% Learning
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\input{Chap6Learning.tex}
+
+
+%___________________________________________
+%*************************************************************
+% Results
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\input{Chap7Results.tex}
+
+
+%___________________________________________
+%*************************************************************
+% Evaluation
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\input{Chap8Eval.tex}
+
+
+
+%___________________________________________
+%*************************************************************
+% Appendices
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\clearpage
+\begin{appendices}
+
+\addtocontents{toc}{\protect\setcounter{tocdepth}{2}}
+\makeatletter
+\addtocontents{toc}{%
+  \begingroup
+  \let\protect\l@section\protect\l@subsection
+  \let\protect\l@subsection\protect\l@subsubsection
+}
+\makeatother
+
+% Normal Appendices
+\input{Appendices.tex}
+
+% Source Code
+\input{SourceCode.tex}
+
+
+\addtocontents{toc}{\endgroup}
+
+\end{appendices}
+
+
+%___________________________________________
+%*************************************************************
+% Bibliography
+%___________________________________________
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+\clearpage
+\input{Bibliography.tex}
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

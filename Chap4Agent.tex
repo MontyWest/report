@@ -43,13 +43,13 @@
     \end{adjustwidth}
 \end{figure}
 
-The benchmark offers an \emph{Agent} interface, which when extended can be passed into the game playing portion of the software. Every game tick the current \emph{Environment} is passed to the agent, and then the agent is asked for an \emph{Action}, which is a set of explicit key press for Mario to perform.
+The benchmark offers an \emph{Agent} interface, which when extended, can be passed into the game playing portion of the software. Every game tick the current \emph{Environment} is passed to the agent, and then the agent is asked for an \emph{Action}, which is a set of explicit key press for Mario to perform.
 
-The agent framework's basis will be extending this interface. Similar to REALM's agent, it will be a rule-based system. A UML class diagram of the system is given in Figure \ref{fig:aumlcd}.
+The agent framework's basis will extend this interface. Similar to REALM's agent, it will be a rule-based system. A UML class diagram of the system is given in Figure \ref{fig:aumlcd}.
 
 \vspace{\baselineskip}
 
-Each \emph{Agent} instance is initialised with a ruleset, consisting of a list of rules, each containing an \emph{Action}. On receiving the current game \emph{Environment} it is passed to a number of perception objects. Each one is responsible for a exactly one measurement (e.g. Enemy ahead, Mario moving to right etc.). These measurements are collected in to an observation object and stored in the agent.
+Each \emph{Agent} instance is initialised with a ruleset, consisting of a list of rules, each containing an \emph{Action}. On receiving the current game \emph{Environment}, it is passed to a number of perception objects. Each one is responsible for a exactly one measurement (e.g. Enemy ahead, Mario moving to right etc.). These measurements are collected in an observation object and stored in the agent.
 
 When asked for an action, the \emph{Agent} passes this observation to its ruleset, which tests it against each rule. Rules contain conditions on what perception measurements should be, which determine its score for a given observation. The highest scoring rule (with a conflict strategy for ties) is then asked for its action, which is returned from the agent.
 
@@ -87,7 +87,7 @@ The set of actions Mario can take is any combination of 6 key presses: \textbf{l
 
 \subsubsection{Scala}
 \label{subsec:langchoice}
-The dependency on the Mario AI Benchmark restricts the language choice to those that can run on the JVM. Hence, Scala was chosen to be the primary language of the project. Its functional programming elements (pattern matching, list processing etc.) are very applicable to the ruleset and its semantic reasoner. Scala's focus on immutability aids in maintaining the thread safety requirement. Furthermore, ECJ's structure necessitates the use of type casting, which Scala handles elegantly. Several other Scala features were used throughout the project, such as lambdas, singletons, type aliases and case classes. 
+The dependency on the Mario AI Benchmark restricts the language choice to those that can run on the JVM. Therefore, Scala was chosen to be the primary language of the project. Its functional programming elements (pattern matching, list processing etc.) are very applicable to the ruleset and its semantic reasoner. Scala's focus on immutability aids in maintaining the thread safety requirement. Furthermore, ECJ's structure necessitates the use of type casting, which Scala handles elegantly. Several other Scala features were used throughout the project, such as lambdas, singletons, type aliases and case classes. 
 
 \subsubsection{Maven}
 With two major and several minor dependencies, their management is important to the project. Maven was chosen to maintain this, as well as package the main project and both the sub-projects. It was chosen for its ability to package both Java and Scala projects, keeping the tools consistent across the entire code base.
@@ -106,7 +106,7 @@ With two major and several minor dependencies, their management is important to 
 	\label{fig:percumlcd}
 \end{figure}
 
-The design of the agent framework allows for agents to be fully determined by their ruleset. In order for an agent to be used in a evolutionary algorithm it must be represented by a simple data structure. Hence, implementation must allow for agent's rulesets to be unambiguously represented as, for example, a one dimensional collection. This section will describe the implementation steps taken to represent rulesets as a array of 8-bit integers, utilising Scala's built in types Vector and Byte.
+The design of the agent framework allows for agents to be fully determined by their ruleset. In order for an agent to be used in an evolutionary algorithm, it must be represented by a simple data structure. Hence, implementation must allow for agent's rulesets to be unambiguously represented as, for example, a one dimensional collection. This section will describe the implementation steps taken to represent rulesets as a array of 8-bit integers, utilising Scala's built in types Vector and Byte.
 
 \subsubsection{Perceptions}
 
